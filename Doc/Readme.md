@@ -6,9 +6,11 @@ Welcome to the C File Templates repository! Here you will find templates for bot
 
 | File                       | Description                                                                                                                                      |
 | -------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `PREFIX_ModuleName.c`      | Implementation file for _ModuleName_. Never add `typedef` or `#define` macros in this file. Use the `PREFIX_ModuleName_Priv.h` for that instead. |
+| `PREFIX_ModuleName.c`      | Implementation file for _ModuleName_. Never add `typedef` or `#define` macros in this file. Use the `PREFIX_ModuleName_int.h` for that instead. |
 | `PREFIX_ModuleName.h`      | Public interface. It includes all the _ModuleName_ public declarations.                                                                          |
-| `PREFIX_ModuleName_Priv.h` | Private header. It includes all the _ModuleName_ private declarations (e.g. configuration macros).                                               |
+| `PREFIX_ModuleName_Private.h` | Private header. It includes all the _ModuleName_ private declarations (e.g. configuration macros). 
+| `PREFIX_ModuleName_config.h` | public header. It includes all the _ModuleName_ configrations.
+                    |
 
 ## Naming Conventions & Coding Style
 
@@ -20,11 +22,8 @@ Welcome to the C File Templates repository! Here you will find templates for bot
   | Prefix  | Description                | Example             |
   | ------- | -------------------------- | ------------------- |
   | **APP** | Application layer          | APP_SystemManager.c |
-  | **SYS** | System and MCU setup       | SYS_Includes.h      |
-  | **BSP** | Board Service Package      | BSP_UserButton.c    |
-  | **DRV** | Driver                     | DRV_GPIO.c          |
-  | **OS**  | Operating System           | OS_FreeRTOS.c       |
-  | **HAL** | Hardware Abstraction Layer | HAL_STM32L4xx.h     |
+  | **MCAL**| MCAL Abs Layer             | MCAL_GPIO.h            |
+  | **HAL** | Hardware Abstraction Layer | HAL_STM32L4xx.h       |
 
 ### Functions
 
@@ -36,7 +35,12 @@ Welcome to the C File Templates repository! Here you will find templates for bot
 
   ```c
   /** A function inside the DRV_ADC.c module */
-  void ADC_StartConversion(void);
+  void MCAL_ADC_vStartConversion(void);
+  ```
+
+  ```c
+  /** A function inside the DRV_ADC.c module */
+  u8 MCAL_ADC_u8Getxxxx(void);
   ```
 
 ### Macros
@@ -68,25 +72,20 @@ Welcome to the C File Templates repository! Here you will find templates for bot
   typedef struct
   {
      /* some code */
-  } DRV_ADC_ChannelConfig_t;
+  } ADC_ChannelConfig_t;
   ```
 
 ### Variables
 
-- Start variable names always with a letter and use camelcase to separate different words.
-- Avoid using `_` to separate words at least if it's a suffix like an engineering unit (e.g. `_mV`).
-- Begin the name of _local variables_ (intended as global just within a single file) with the letter `l`.
+
 
 ```c
-uint16_t lBatteryVoltage_uV = 0;
+u8 Local_u8BatteryVoltage_uV = 0;
+
+u8 Global_u8BatteryVoltage_uV = 0;
 ```
 
-- Begin the name of _pointer variables_ with `p`.
-- Begin the same of _local pointer variables_ with `lp`.
 
-```c
-DRV_ADC_ChannelConfig_t * lpMotorAdcConfig = NULL;
-```
 
 ### Comments
 
@@ -103,7 +102,4 @@ DRV_ADC_ChannelConfig_t * lpMotorAdcConfig = NULL;
   uint8_t lMotorCurrent_mA = 0;
   ```
 
-### Line width
 
-- Don't write lines of code longer than **120 characters**.
-- If you're using VS Code you can set this up with `"editor.wordWrapColumn": 120` in `settings.json`.
