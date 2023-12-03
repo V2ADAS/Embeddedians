@@ -1,0 +1,33 @@
+git clone URL of repo
+
+git add  file.format
+ 
+git add*  //add all files
+
+git status
+ 
+git commit -m" any comment"
+
+git push RemoteRepo branch
+
+git remote||branch -v   // to get repo and branch name
+
+git pull remoteRepoNAME
+
+git reset Filename   // remove added file before commit 
+
+git branch -----> git all ur branches names 
+
+git branch xx ---> create a branch 
+
+git checkout branchname   --> switch to branch 
+
+git branch -d branchname   --> delete a branch 
+
+git branch -m newbranch name   --> change the name of the branch
+
+git merge branchname ---> merge the branch to the main branch  
+
+git push origin branchname
+
+
