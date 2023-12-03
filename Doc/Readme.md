@@ -22,8 +22,8 @@ Welcome to the C File Templates repository! Here you will find templates for bot
   | Prefix  | Description                | Example             |
   | ------- | -------------------------- | ------------------- |
   | **APP** | Application layer          | APP_SystemManager.c |
-  | **MCAL**| MCAL Abs Layer             | M_GPIO.h            |
-  | **HAL** | Hardware Abstraction Layer | H_STM32L4xx.h       |
+  | **MCAL**| MCAL Abs Layer             | MCAL_GPIO.h            |
+  | **HAL** | Hardware Abstraction Layer | HAL_STM32L4xx.h       |
 
 ### Functions
 
@@ -35,7 +35,12 @@ Welcome to the C File Templates repository! Here you will find templates for bot
 
   ```c
   /** A function inside the DRV_ADC.c module */
-  void ADC_StartConversion(void);
+  void MCAL_ADC_vStartConversion(void);
+  ```
+
+  ```c
+  /** A function inside the DRV_ADC.c module */
+  u8 MCAL_ADC_u8Getxxxx(void);
   ```
 
 ### Macros
