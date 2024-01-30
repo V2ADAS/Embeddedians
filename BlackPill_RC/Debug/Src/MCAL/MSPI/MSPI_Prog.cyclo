@@ -1,0 +1,13 @@
+../Src/MCAL/MSPI/MSPI_Prog.c:20:6:MSPI_vMasterInit	6
+../Src/MCAL/MSPI/MSPI_Prog.c:62:6:MSPI_vSlaveInit	6
+../Src/MCAL/MSPI/MSPI_Prog.c:95:4:MSPI_u8MasterTransceiver	8
+../Src/MCAL/MSPI/MSPI_Prog.c:136:4:MSPI_u8SlaveTransceiver	8
+../Src/MCAL/MSPI/MSPI_Prog.c:165:6:MSPI_vEnableRxInt	6
+../Src/MCAL/MSPI/MSPI_Prog.c:180:6:MSPI_vEnableTxInt	6
+../Src/MCAL/MSPI/MSPI_Prog.c:198:6:MSPI_vSetTxCallBackFunc	1
+../Src/MCAL/MSPI/MSPI_Prog.c:205:6:MSPI_vSetRxCallBackFunc	1
+../Src/MCAL/MSPI/MSPI_Prog.c:213:4:MSPI_u8ReadRecievedData	5
+../Src/MCAL/MSPI/MSPI_Prog.c:227:6:SPI1_IRQHandler	5
+../Src/MCAL/MSPI/MSPI_Prog.c:237:6:SPI2_IRQHandler	1
+../Src/MCAL/MSPI/MSPI_Prog.c:243:6:SPI3_IRQHandler	1
+../Src/MCAL/MSPI/MSPI_Prog.c:249:6:SPI4_IRQHandler	1

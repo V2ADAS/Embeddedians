@@ -1,0 +1,8 @@
+../Src/MCAL/MI2C/MI2C_Prog.c:30:6:MI2C_vMasterInit	5
+../Src/MCAL/MI2C/MI2C_Prog.c:65:6:MI2C_vMasterTx	6
+../Src/MCAL/MI2C/MI2C_Prog.c:101:6:MI2C_vSlaveInit	5
+../Src/MCAL/MI2C/MI2C_Prog.c:128:4:MI2C_u8SlaveRx	8
+../Src/MCAL/MI2C/MI2C_Prog.c:162:6:MI2C_vGenerateStart	2
+../Src/MCAL/MI2C/MI2C_Prog.c:170:6:MI2C_vClearStart	1
+../Src/MCAL/MI2C/MI2C_Prog.c:178:6:MI2C_vClearADDR	2
+../Src/MCAL/MI2C/MI2C_Prog.c:186:6:MI2C_vGenerateStop	1

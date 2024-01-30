@@ -1,0 +1,7 @@
+../Src/MCAL/MUART/MUSART_Program.c:26:6:MUART_Enable	1
+../Src/MCAL/MUART/MUSART_Program.c:59:6:MUART_Disable	1
+../Src/MCAL/MUART/MUSART_Program.c:65:6:MUART_Send_Byte	2
+../Src/MCAL/MUART/MUSART_Program.c:72:6:MUART_Send_Data	3
+../Src/MCAL/MUART/MUSART_Program.c:86:4:MUART_Receive_Byte	2
+../Src/MCAL/MUART/MUSART_Program.c:97:6:MUART_Receive_Data	1
+../Src/MCAL/MUART/MUSART_Program.c:102:11:Get_UART	5

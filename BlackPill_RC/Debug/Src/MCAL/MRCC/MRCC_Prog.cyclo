@@ -1,0 +1,3 @@
+../Src/MCAL/MRCC/MRCC_Prog.c:13:6:MRCC_vInit	3
+../Src/MCAL/MRCC/MRCC_Prog.c:49:6:MRCC_vEnableClock	4
+../Src/MCAL/MRCC/MRCC_Prog.c:66:6:MRCC_vDisableClock	4
