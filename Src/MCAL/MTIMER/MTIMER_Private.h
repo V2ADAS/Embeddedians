@@ -41,7 +41,7 @@
 #define OCxM1	5
 #define OCxM2	6
 #define	OCxCE	7
-/*CCER REGISTER*/
+/*CCER REGISTER*/  // ( .. + 3 * x )
 #define CCxE	0
 #define	CCxP	1
 #define CCxNE	2
@@ -64,16 +64,73 @@ typedef struct{
 	u32 BDTR;
 	u32 DCR; //DMA CONTROLLER
 	u32 DMAR;
-}TIM_MemMap_t;
+}TIM1_MemMap_t;
 
-#define TIM1		((volatile TIM_MemMap_t *) (TIMER1_Base_Add))
-#define TIM2		((volatile TIM_MemMap_t *) (TIMER2_Base_Add))
-#define TIM3		((volatile TIM_MemMap_t *) (TIMER3_Base_Add))
-#define TIM4		((volatile TIM_MemMap_t *) (TIMER4_Base_Add))
-#define TIM5		((volatile TIM_MemMap_t *) (TIMER5_Base_Add))
+typedef struct{
+	u32 CR1; //Control Reg 1
+	u32 CR2; //Control Reg 2
+	u32 SMCR;
+	u32 DIER; //DMA/Interrupt Enable Reg
+	u32 SR;  //Status Reg
+	u32 EGR;
+	u32 CCMR[2];
+	u32 CCER;
+	u32 CNT; //COUNTER
+	u32 PSC; //PRESCALER
+	u32 ARR; //AUTO-RELOAD
+	u32 RESERVED1;
+	u32 CCR[4];
+	u32 RESERVED2;
+	u32 DCR; //DMA CONTROLLER
+	u32 DMAR;
+	u32 TIM2_OR;
+}TIM2_5_MemMap_t;
 
-#define TIM9		((volatile TIM_MemMap_t *) (TIMER9_Base_Add))
-#define TIM10		((volatile TIM_MemMap_t *) (TIMER10_Base_Add))
-#define TIM11		((volatile TIM_MemMap_t *) (TIMER11_Base_Add))
+typedef struct{
+	u32 CR1; //Control Reg 1
+	u32 RESERVED1;
+	u32 SMCR;
+	u32 DIER; //DMA/Interrupt Enable Reg
+	u32 SR;  //Status Reg
+	u32 EGR;
+	u32 CCMR;
+	u32 RESERVED2;
+	u32 CCER;
+	u32 CNT; //COUNTER
+	u32 PSC; //PRESCALER
+	u32 ARR; //AUTO-RELOAD
+	u32 RESERVED3;
+	u32 CCR[2];
+	u32 RESERVED4[5];
+}TIM9_MemMap_t;
+
+typedef struct{
+	u32 CR1; //Control Reg 1
+	u32 RESERVED1;
+	u32 SMCR;
+	u32 DIER; //DMA/Interrupt Enable Reg
+	u32 SR;  //Status Reg
+	u32 EGR;
+	u32 CCMR;
+	u32 RESERVED2;
+	u32 CCER;
+	u32 CNT; //COUNTER
+	u32 PSC; //PRESCALER
+	u32 ARR; //AUTO-RELOAD
+	u32 RESERVED3;
+	u32 CCR;
+	u32 RESERVED[6];
+	u32 TIMx_OR;
+}TIM10_11_MemMap_t;
+
+#define TIM1		((volatile TIM1_MemMap_t *) (TIMER1_Base_Add))
+#define TIM2		((volatile TIM2_5_MemMap_t *) (TIMER2_Base_Add))
+#define TIM3		((volatile TIM2_5_MemMap_t *) (TIMER3_Base_Add))
+#define TIM4		((volatile TIM2_5_MemMap_t *) (TIMER4_Base_Add))
+#define TIM5		((volatile TIM2_5_MemMap_t *) (TIMER5_Base_Add))
+
+#define TIM9		((volatile TIM9_MemMap_t *) (TIMER9_Base_Add))
+#define TIM10		((volatile TIM10_11_MemMap_t *) (TIMER10_Base_Add))
+#define TIM11		((volatile TIM10_11_MemMap_t *) (TIMER11_Base_Add))
 
 #endif /* MCAL_MTIMER_MTIMER_PRIVATE_H_ */
