@@ -21,6 +21,22 @@
 #define TIMER10_Base_Add	0x40014400
 #define TIMER11_Base_Add	0x40014800
 
+//Initialize with TIMER2 as it's LOWEST ADD
+#define TIMERS_OFFSET \
+    { \
+        (TIMER1_Base_Add - TIMER2_Base_Add), \
+        (TIMER2_Base_Add - TIMER2_Base_Add), \
+        (TIMER3_Base_Add - TIMER2_Base_Add), \
+        (TIMER4_Base_Add - TIMER2_Base_Add), \
+        (TIMER5_Base_Add - TIMER2_Base_Add), \
+        (TIMER9_Base_Add - TIMER2_Base_Add), \
+        (TIMER10_Base_Add - TIMER2_Base_Add), \
+        (TIMER11_Base_Add - TIMER2_Base_Add) \
+    }
+
+
+
+
 /*CR REGISTER BITS*/
 #define	CEN		0	//Control Enable
 #define OPM		3	//One Pulse Mode "RUN ONE TIME ONLY"
@@ -41,6 +57,11 @@
 #define OCxM1	5
 #define OCxM2	6
 #define	OCxCE	7
+/*CCMRx REGISTER BITS 'INPUT'*/
+#define ICxF0	4
+#define ICxF1	5
+#define ICxF2	6
+#define ICxF3	7
 /*CCER REGISTER*/  // ( .. + 3 * x )
 #define CCxE	0
 #define	CCxP	1
@@ -64,6 +85,7 @@ typedef struct{
 	u32 BDTR;
 	u32 DCR; //DMA CONTROLLER
 	u32 DMAR;
+	u32 RESERVED;
 }TIM1_MemMap_t;
 
 typedef struct{
@@ -93,7 +115,7 @@ typedef struct{
 	u32 DIER; //DMA/Interrupt Enable Reg
 	u32 SR;  //Status Reg
 	u32 EGR;
-	u32 CCMR;
+	u32 CCMR[1];
 	u32 RESERVED2;
 	u32 CCER;
 	u32 CNT; //COUNTER
@@ -111,14 +133,14 @@ typedef struct{
 	u32 DIER; //DMA/Interrupt Enable Reg
 	u32 SR;  //Status Reg
 	u32 EGR;
-	u32 CCMR;
+	u32 CCMR[1];
 	u32 RESERVED2;
 	u32 CCER;
 	u32 CNT; //COUNTER
 	u32 PSC; //PRESCALER
 	u32 ARR; //AUTO-RELOAD
 	u32 RESERVED3;
-	u32 CCR;
+	u32 CCR[1];
 	u32 RESERVED[6];
 	u32 TIMx_OR;
 }TIM10_11_MemMap_t;

@@ -11,7 +11,7 @@
 
 void MSYSTICK_vInit(void);
 
-void MSYSTICK_vTimeMS(u32 Copy_u32Delay);
+void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);
 
 void MSYSTICK_vDelayms(u32 Copy_u32Delay);
 
