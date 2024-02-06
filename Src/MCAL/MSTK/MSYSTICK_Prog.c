@@ -23,7 +23,7 @@ void MSYSTICK_vInit(void){
 	CLR_BIT(STK->CTRL,STK_EN);
 }
 
-void MSYSTICK_vTimeMS(u32 Copy_u32Delay){
+void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay){
 	//Cal Value in mills sec
 	Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
 	//Load Reload Value
@@ -37,10 +37,14 @@ void MSYSTICK_vTimeMS(u32 Copy_u32Delay){
 }
 
 void MSYSTICK_vDelayms(u32 Copy_u32Delay){
+	/* MAX Delay: ((1or8)/SYS_CLOCK)* 2^24  " 1.04sec for HSI " */
 	//Disable INT
 	CLR_BIT(STK->CTRL,STK_INT);
 	//Cal Value in mills sec
-	Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
+	if( (Copy_u32Delay*1000 * STK_CLOCK) >= MAX_LOAD_VALUE)
+		Copy_u32Delay = MAX_LOAD_VALUE;
+	else
+		Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
 	//Load Reload Value
 	STK->LOAD = Copy_u32Delay;
 	//CLR VAL Reg
