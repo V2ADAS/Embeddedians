@@ -1,4 +1,4 @@
-# Embedded Graphics Project
+# Embedded Graphics Project   ""
 
 Welcome to the Embedded Graphics Project repository! This repository is dedicated to our collaborative effort in creating an embedded graphics project. The project structure is designed for clarity, maintainability, and collaboration.
 
