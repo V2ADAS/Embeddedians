@@ -7,6 +7,7 @@
 
 #ifndef HAL_HSERVO_HSERVO_INT_H_
 #define HAL_HSERVO_HSERVO_INT_H_
+#include "../../MCAl/MTIMER/MTIMER_Int.h"
 
 void HSERVO_vServoInit(Enum_TIMER_NUM Copy_u8TimerNum,u8 Copy_u8ChannelNum);
 
