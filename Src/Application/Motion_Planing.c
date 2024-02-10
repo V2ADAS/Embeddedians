@@ -4,7 +4,7 @@
 //parallel Backward Path
 f32 PaB_Path (f32 x ){
 	f32 y , a=1  , b=0 ;
-	y = a * (x) + b ;
+	y = a * (x)*(x) + b ;
 	return y ;
 }
 

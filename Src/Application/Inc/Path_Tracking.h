@@ -3,9 +3,7 @@
 
 #include "../../LIB/STD_TYPES.h"
 #include "../Inc/Motion_Planing.h"
-
-u16 Distance ;
-s8 Angle ;
+#include "../../LIB/BIT_MATH.h"
 
 
 Point_t Get_Current_location ();
@@ -21,9 +19,9 @@ Point_t Get_Current_location ();
 /******************************************************************************************************/
 Point_t Get_Next_location (f32 (*Func_Path)(f32 x));
 
-u16 Get_Distance_bet_2Points (Point_t point1 ,Point_t point2 );
+f32 Get_Distance_bet_2Points (Point_t point1 ,Point_t point2 );
 
-s8 Get_Angle_of_slope(Point_t point1 ,Point_t point2);
+f32 Get_Angle_of_slope(Point_t point1 ,Point_t point2);
 
 void Track_Path () ;
 
