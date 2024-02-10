@@ -1,4 +1,3 @@
 Src/main.c
 Src/syscalls.c
 Src/sysmem.c
-Src/.vscode
