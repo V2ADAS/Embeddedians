@@ -1,5 +1,5 @@
 /*******************************************************************************************************/
-/* Author            : Ahmed khaled Hammad                                                             */
+/* Author            : Mohamed Hawas                                                             */
 /* Version           : V0.0.0                                                                          */
 /* Data              : 23 May 2022                                                                     */
 /* Description       : MUSART_Interface.c --> implementations                                          */

@@ -3,19 +3,27 @@
 
 #include "../../LIB/STD_TYPES.h"
 #include "../Inc/Scenario_Select.h"
+
+
 typedef struct 
 {
-    u8 x ;
-    u8 y ;
+    f32 x ;
+    f32 y ;
 
 }Point_t;
 
 
-u8 Scanned_Area [100] = {0};
 
-Point_t Get_Current_location ();
+u8 Scanned_Area [100] ;
+//parallel Backward Path
+f32 PaB_Path (f32 x );
 
-Point_t Get_Next_location ();
+//Perpendicular backward Path
+f32 PeB_Path (f32 x );
+
+//perpendicular forward Path
+f32 PeF_Path (f32 x );
+
 
 void Scan(u8 Scanned_Area );
 
