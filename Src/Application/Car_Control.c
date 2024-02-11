@@ -1,10 +1,5 @@
 #include "Inc/CAR_CONTROL.h"
 
-void CAR_CONTROL_Init() {
-    // Initialize motor and servo
-    HAL_MOTOR_Init(/* fill in Our ports & Pins */);
-    HSERVO_vServoInit(/* fill in Our ports & Pins */);
-}
 
 void CAR_CONTROL_Move(f32 distance, s8 direction) {
     // Control the movement of the DC motor
@@ -45,7 +40,7 @@ void CAR_CONTROL_Steer(s8 angle) {
         for (u8 i = 5; i < angle; i+5)
         {
             angle = 85 + i;
-            HSERVO_vServoDeg(/* fill in your parameters */);
+            HSERVO_vServoDeg(angle,angle,angle);
         }
    }
    else
@@ -57,7 +52,7 @@ void CAR_CONTROL_Steer(s8 angle) {
         for (u8 i = -5; i > angle; i-5)
         {
             angle = 85 + i;
-            HSERVO_vServoDeg(/* fill in your parameters */);
+            HSERVO_vServoDeg(angle,angle,angle);
         }
    }
    
