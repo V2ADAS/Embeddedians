@@ -33,7 +33,7 @@ f32 PaB_Path(f32 x) {
     f32 x_2 = _param_a - 2 * _param_a * sin_theta;
 
     // y_2 is the y-coord of the center of the second circle
-    f32 y_2 = 2 * _param_a * sqrt(1 - pow(sin_theta, 2));
+    f32 y_2 = - 2 * _param_a * sqrt(1 - pow(sin_theta, 2));
 
     y = sqrt(pow(_param_a, 2) - pow(x - x_2, 2)) + y_2;
   }
