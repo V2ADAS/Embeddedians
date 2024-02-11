@@ -1,5 +1,6 @@
 #include "Inc/Motion_Planing.h"
 
+u8 Scanned_Area [100];
 
 //parallel Backward Path
 f32 PaB_Path (f32 x ){
