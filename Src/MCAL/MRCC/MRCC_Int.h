@@ -1,12 +1,12 @@
 /*******************************************************************************************************/
-/* Author            : Amr Elmagraby                                                             */
+/* Author            : Amr Elmagraby                                                                   */
 /* Version           : V0.0.0                                                                          */
-/* Data              : 5 nov 2023                                                                     */
-/* Description       : RCC_Prog.c --> implementations                                          */
+/* Data              : 5 nov 2023                                                                      */
+/* Description       : RCC_Prog.c --> implementations                                                  */
 /* Module  Features  :                                                                                 */
-/*      01- void MRCC_vInit(void);                                                               */
-/*      02- void MRCC_vEnableClock(PeripheralEnable_t Copy_u8PeripheralNo);                      */
-/*      03- void MRCC_vDisableClock(PeripheralEnable_t Copy_u8PeripheralNo);                     */                                                                       */
+/*      01- void MRCC_vInit(void);                                                                     */
+/*      02- void MRCC_vEnableClock(PeripheralEnable_t Copy_u8PeripheralNo);                            */
+/*      03- void MRCC_vDisableClock(PeripheralEnable_t Copy_u8PeripheralNo);                           */                                                                       */
 /*******************************************************************************************************/
 
     
