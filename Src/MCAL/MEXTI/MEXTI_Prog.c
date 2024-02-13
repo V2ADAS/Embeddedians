@@ -1,15 +1,20 @@
-/*
- * MEXTI_Prog.c
+/*******************************************************************************************************/
+/* Author            : Amr Elmaghraby                                                                   */
+/* Version           : V0.0.0                                                                          */
+/* Data              : 5 nov 2023                                                                      */
+/* Description       : Driver Functions Implementation                                                 */
+/*******************************************************************************************************/
 
- *
- *  Created on: Nov 7, 2023
- *      Author: Hardware
- */
-
+/***************************************************************************/
+/*                           MCAL Components                               */
+/***************************************************************************/
 #include"MEXTI_Config.h"
 #include"MEXTI_Private.h"
 #include"MEXTI_Int.h"
 
+/***************************************************************************/
+/*                        Functions Implementations                        */
+/***************************************************************************/
 static void (*GLOBAL_EXTIPtr[16])(void) = {STD_NULL};
 
 void SYSCFG_vConfigEXTI_Line(u8 Copy_u8Port,Enum_MEXTI_No_t Copy_u8EXTI_Num){
