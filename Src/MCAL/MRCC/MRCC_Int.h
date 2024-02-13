@@ -1,10 +1,18 @@
-/*
- * MRCC_Int.h
- *
- *  Created on: Nov 5, 2023
- *      Author: Hardware
- */
+/*******************************************************************************************************/
+/* Author            : Amr Elmagraby                                                             */
+/* Version           : V0.0.0                                                                          */
+/* Data              : 5 nov 2023                                                                     */
+/* Description       : RCC_Prog.c --> implementations                                          */
+/* Module  Features  :                                                                                 */
+/*      01- void MRCC_vInit(void);                                                               */
+/*      02- void MRCC_vEnableClock(PeripheralEnable_t Copy_u8PeripheralNo);                      */
+/*      03- void MRCC_vDisableClock(PeripheralEnable_t Copy_u8PeripheralNo);                     */                                                                       */
+/*******************************************************************************************************/
 
+    
+/*******************************************************************************************************/
+/*                                   guard of file will call on time in .c                             */
+/*******************************************************************************************************/
 #ifndef MCAL_MRCC_MRCC_INT_H_
 #define MCAL_MRCC_MRCC_INT_H_
 
