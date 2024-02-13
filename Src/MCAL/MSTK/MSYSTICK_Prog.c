@@ -1,5 +1,5 @@
 /*******************************************************************************************************/
-/* Author            : Amr Elmagraby                                                                   */
+/* Author            : Amr Elmaghraby                                                                   */
 /* Version           : V0.0.0                                                                          */
 /* Data              : 5 nov 2023                                                                      */
 /* Description       : Driver Functions Implementation                                                 */
