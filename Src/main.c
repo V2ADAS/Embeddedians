@@ -23,10 +23,59 @@ void Led(void){
 	Tog ^= 1;
 }	
 
-void testt(){
-	static u8 x = 0;
-	HSERVO_vServoDeg(TIMER4, CH4, x);
-	x = (x+30)%180;
+void ULTRA_SONIC(){
+	static f64 Distance=0,Distance1=0;
+	HULTRA_vSendTrigger(PORTB, PIN12);
+	HULTRA_vGetDistance(ULTRA_SONIC2,&Distance);
+	HULTRA_vGetDistance(ULTRA_SONIC1,&Distance1);
+	if(Distance<10){
+		MGPIO_vSetPinAtomic(PORTA, PIN1, HIGH);
+		MGPIO_vSetPinAtomic(PORTA, PIN2, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN3, LOW);
+	}
+	else if(Distance <20){
+		MGPIO_vSetPinAtomic(PORTA, PIN1, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN2, HIGH);
+		MGPIO_vSetPinAtomic(PORTA, PIN3, LOW);
+	}
+	else if(Distance <50){
+		MGPIO_vSetPinAtomic(PORTA, PIN1, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN2, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN3, HIGH);
+	}
+	else{
+		MGPIO_vSetPinAtomic(PORTA, PIN1, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN2, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN3, LOW);
+	}
+
+	if(Distance1<10){
+		MGPIO_vSetPinAtomic(PORTA, PIN5, HIGH);
+		MGPIO_vSetPinAtomic(PORTA, PIN6, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN7, LOW);
+	}
+	else if(Distance1 <20){
+		MGPIO_vSetPinAtomic(PORTA, PIN5, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN6, HIGH);
+		MGPIO_vSetPinAtomic(PORTA, PIN7, LOW);
+	}
+	else if(Distance1 <50){
+		MGPIO_vSetPinAtomic(PORTA, PIN5, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN6, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN7, HIGH);
+	}
+	else{
+		MGPIO_vSetPinAtomic(PORTA, PIN5, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN6, LOW);
+		MGPIO_vSetPinAtomic(PORTA, PIN7, LOW);
+	}
+}
+
+void test(){
+	static u8 x=0;
+	HSERVO_vServoDeg(SERVO5, x);
+	MSYSTICK_vDelayms(1000);
+	x = (x+20) %180;
 }
 
 u8 main(){
@@ -88,61 +137,16 @@ u8 main(){
 	MNVIC_vEnableInterrupt(NVIC_TIM4);
 	MNVIC_vEnableInterrupt(NVIC_TIM5);
 
-	HULTRA_vInitialize(TIMER1, CH1);
-	HULTRA_vInitialize(TIMER1, CH2);
-	HSERVO_vServoInit(TIMER4,CH4);
+	HULTRA_vInitialize(ULTRA_SONIC1,TIMER1, CH1);
+	HULTRA_vInitialize(ULTRA_SONIC2,TIMER1, CH2);
+	HSERVO_vServoInit(SERVO5,TIMER10,CH1);
 
-	MTIMER_vPeriodicMS(TIMER5, 2000);
-	MTIMER_CallBack(TIMER5, &testt);
+	/*MTIMER_vPeriodicMS(TIMER5, 15);
+	MTIMER_CallBack(TIMER5, &ULTRA_SONIC);*/
 
-	f64 Distance=0;
-	f64 Distance1=0;
 	while(1){
-		HULTRA_vSendTrigger(PORTB, PIN12);
-		HULTRA_vGetDistance(&Distance, TIMER1, CH1);
-		HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
-		if(Distance<10){
-			MGPIO_vSetPinAtomic(PORTA, PIN1, HIGH);
-			MGPIO_vSetPinAtomic(PORTA, PIN2, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN3, LOW);
-		}
-		else if(Distance <20){
-			MGPIO_vSetPinAtomic(PORTA, PIN1, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN2, HIGH);
-			MGPIO_vSetPinAtomic(PORTA, PIN3, LOW);
-		}
-		else if(Distance <50){
-			MGPIO_vSetPinAtomic(PORTA, PIN1, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN2, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN3, HIGH);
-		}
-		else{
-			MGPIO_vSetPinAtomic(PORTA, PIN1, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN2, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN3, LOW);
-		}
-
-		if(Distance1<10){
-			MGPIO_vSetPinAtomic(PORTA, PIN5, HIGH);
-			MGPIO_vSetPinAtomic(PORTA, PIN6, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN7, LOW);
-		}
-		else if(Distance1 <20){
-			MGPIO_vSetPinAtomic(PORTA, PIN5, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN6, HIGH);
-			MGPIO_vSetPinAtomic(PORTA, PIN7, LOW);
-		}
-		else if(Distance1 <50){
-			MGPIO_vSetPinAtomic(PORTA, PIN5, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN6, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN7, HIGH);
-		}
-		else{
-			MGPIO_vSetPinAtomic(PORTA, PIN5, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN6, LOW);
-			MGPIO_vSetPinAtomic(PORTA, PIN7, LOW);
-		}
-
+		test();
+		ULTRA_SONIC();
 	}
 
 }
