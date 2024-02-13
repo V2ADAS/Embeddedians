@@ -67,7 +67,7 @@ typedef struct{
 	u32 Reserved1;
 	u32 Reserved2;
 	u32 APB1RSTR;
-	u32	APB2RSTR;
+	u32 APB2RSTR;
 	u32 Reserved3;
 	u32 Reserved4;
 	u32 AHB1ENR;
