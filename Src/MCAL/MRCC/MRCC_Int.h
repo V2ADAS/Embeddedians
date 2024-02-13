@@ -65,7 +65,7 @@ void MRCC_vInit(void);
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      01- MRCC_vEnableClock                                                */
+/*                                      02- MRCC_vEnableClock                                                */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function Enable Clock for a certain peripheral                           */
 /* 2- Function Input       -> @param Copy_u8PeripheralNo = Number of peripheral from enum PeripheralEnable_t */                                                                 */                   
@@ -75,7 +75,7 @@ void MRCC_vEnableClock(PeripheralEnable_t Copy_u8PeripheralNo);
 /*************************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      01- MRCC_vDisableClock                                                */
+/*                                      03- MRCC_vDisableClock                                                */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function Disable Clock for a certain peripheral                           */
 /* 2- Function Input       -> @param Copy_u8PeripheralNo = Number of peripheral from enum PeripheralEnable_t */                                                                 */                   
