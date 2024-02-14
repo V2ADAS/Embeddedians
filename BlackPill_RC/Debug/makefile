@@ -20,6 +20,7 @@ RM := rm -rf
 -include Src/MCAL/MI2C/subdir.mk
 -include Src/MCAL/MGPIO/subdir.mk
 -include Src/MCAL/MEXTI/subdir.mk
+-include Src/MCAL/I2C_2/subdir.mk
 -include Src/HAL/HSERVO/subdir.mk
 -include Src/HAL/HCOMPASS/subdir.mk
 -include Src/subdir.mk
@@ -63,6 +64,9 @@ default.size.stdout \
 OBJDUMP_LIST += \
 BlackPill_RC.list \
 
+OBJCOPY_HEX += \
+BlackPill_RC.hex \
+
 
 # All Target
 all: main-build
@@ -71,8 +75,8 @@ all: main-build
 main-build: BlackPill_RC.elf secondary-outputs
 
 # Tool invocations
-BlackPill_RC.elf BlackPill_RC.map: $(OBJS) $(USER_OBJS) D:\Colleage\grad_proj\ARM\STM_Workspace\BlackPill_RC\STM32F401RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
-	arm-none-eabi-gcc -o "BlackPill_RC.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Colleage\grad_proj\ARM\STM_Workspace\BlackPill_RC\STM32F401RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BlackPill_RC.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
+BlackPill_RC.elf BlackPill_RC.map: $(OBJS) $(USER_OBJS) D:\Colleage\grad_proj\Embeddedians\BlackPill_RC\STM32F401RCTX_FLASH.ld makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-gcc -o "BlackPill_RC.elf" @"objects.list" $(USER_OBJS) $(LIBS) -mcpu=cortex-m4 -T"D:\Colleage\grad_proj\Embeddedians\BlackPill_RC\STM32F401RCTX_FLASH.ld" --specs=nosys.specs -Wl,-Map="BlackPill_RC.map" -Wl,--gc-sections -static --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -Wl,--start-group -lc -lm -Wl,--end-group
 	@echo 'Finished building target: $@'
 	@echo ' '
 
@@ -86,12 +90,17 @@ BlackPill_RC.list: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
 	@echo 'Finished building: $@'
 	@echo ' '
 
+BlackPill_RC.hex: $(EXECUTABLES) makefile objects.list $(OPTIONAL_TOOL_DEPS)
+	arm-none-eabi-objcopy  -O ihex $(EXECUTABLES) "BlackPill_RC.hex"
+	@echo 'Finished building: $@'
+	@echo ' '
+
 # Other Targets
 clean:
-	-$(RM) BlackPill_RC.elf BlackPill_RC.list BlackPill_RC.map default.size.stdout
+	-$(RM) BlackPill_RC.elf BlackPill_RC.hex BlackPill_RC.list BlackPill_RC.map default.size.stdout
 	-@echo ' '
 
-secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST)
+secondary-outputs: $(SIZE_OUTPUT) $(OBJDUMP_LIST) $(OBJCOPY_HEX)
 
 fail-specified-linker-script-missing:
 	@echo 'Error: Cannot find the specified linker script. Check the linker settings in the build configuration.'

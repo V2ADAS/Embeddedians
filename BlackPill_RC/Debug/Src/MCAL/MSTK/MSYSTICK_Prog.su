@@ -1,8 +1,8 @@
 ../Src/MCAL/MSTK/MSYSTICK_Prog.c:14:6:MSYSTICK_vInit	4	static
 ../Src/MCAL/MSTK/MSYSTICK_Prog.c:26:6:MSYSTICK_vTimeMS	16	static
 ../Src/MCAL/MSTK/MSYSTICK_Prog.c:39:6:MSYSTICK_vDelayms	16	static
-../Src/MCAL/MSTK/MSYSTICK_Prog.c:56:5:MSYSTICK_u32GetElapsedTime	16	static
-../Src/MCAL/MSTK/MSYSTICK_Prog.c:62:5:MSYSTICK_u32GetRemainingTime	4	static
-../Src/MCAL/MSTK/MSYSTICK_Prog.c:67:6:MSYSTICK_vStop	4	static
-../Src/MCAL/MSTK/MSYSTICK_Prog.c:72:6:MSYSTICK_vCallBack	16	static
-../Src/MCAL/MSTK/MSYSTICK_Prog.c:76:6:SysTick_Handler	8	static
+../Src/MCAL/MSTK/MSYSTICK_Prog.c:57:5:MSYSTICK_u32GetElapsedTime	16	static
+../Src/MCAL/MSTK/MSYSTICK_Prog.c:63:5:MSYSTICK_u32GetRemainingTime	4	static
+../Src/MCAL/MSTK/MSYSTICK_Prog.c:68:6:MSYSTICK_vStop	4	static
+../Src/MCAL/MSTK/MSYSTICK_Prog.c:73:6:MSYSTICK_vCallBack	16	static
+../Src/MCAL/MSTK/MSYSTICK_Prog.c:77:6:SysTick_Handler	8	static

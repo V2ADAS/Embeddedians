@@ -48,6 +48,7 @@ typedef struct {
 #define CR1_STOP							9
 #define CR1_ACK								10
 #define CR1_POS								11
+#define CR1_SWRST							15
 
 #define SR1_SB								0
 #define SR1_ADDR							1
