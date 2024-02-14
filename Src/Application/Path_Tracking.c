@@ -1,6 +1,6 @@
 #include "Inc/Path_Tracking.h"
 
-Point_t Get_Current_location (){
+static Point_t LOC_GetCurrentLocation (){
 	Point_t current_point;
 	//code using MPU6050
 
@@ -11,12 +11,12 @@ Point_t Get_Current_location (){
 }
 
 
-Point_t Get_Next_location (f32 (*Func_Path)(f32 x)){
+static Point_t LOC_GetNextLocation (f32 (*Func_Path)(f32 x)){
 	Point_t current_point , next_point ;
 	f32 delta_x = 0.1 ;
 	f32 x_new , y_new ;
 	//get current point to increment its x by delta_x and get y_new by substituting
-	current_point = Get_Current_location();
+	current_point = LOC_GetCurrentLocation();
 	x_new = current_point.x + delta_x ;
 	y_new = Func_Path(x_new);
 	next_point.x = x_new ;
@@ -24,13 +24,13 @@ Point_t Get_Next_location (f32 (*Func_Path)(f32 x)){
 	return next_point ;
 }
 
-f32 Get_Distance_bet_2Points (Point_t point1 ,Point_t point2 ){
+static f32 LOC_GetDistanceBet2Points (Point_t point1 ,Point_t point2 ){
 
 	return sqrt(pow(point2.x - point1.x, 2) + pow(point2.y - point1.y, 2));
 }
 
 
-f32 Get_Angle_of_slope(Point_t point1 ,Point_t point2){
+static s8 LOC_GetAngleofslope(Point_t point1 ,Point_t point2){
     f32 deltaX = point2.x - point1.x;
     f32 deltaY = point2.y - point1.y;
 
@@ -40,15 +40,15 @@ f32 Get_Angle_of_slope(Point_t point1 ,Point_t point2){
     // Convert the angle from radians to degrees
     angle = angle * (180.0 / PI);
 
-    return angle;
+    return (s8) angle;
 }
 
-void Track_Path () {
+void PT_TrackThePath (f32 (*Func_Path)(f32 x)) {
 	f32 distance , angle ;
 	Point_t current_point , next_point ;
-	current_point = Get_Current_location();
-	next_point = Get_Next_location(PaB_Path);
-	distance = Get_Distance_bet_2Points(current_point, next_point);
+	current_point = LOC_GetCurrentLocation();
+	next_point = LOC_GetNextLocation(Func_Path);
+	distance = LOC_GetDistanceBet2Points(current_point, next_point);
 	angle = Get_Angle_of_slope(current_point, next_point);
 
 	//It is expected to pass "distance , angle" to a control function will be finished soon
