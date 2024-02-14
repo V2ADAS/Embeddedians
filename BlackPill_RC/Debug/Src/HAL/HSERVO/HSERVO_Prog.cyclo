@@ -1,2 +1,0 @@
-../Src/HAL/HSERVO/HSERVO_Prog.c:19:6:HSERVO_vServoInit	1
-../Src/HAL/HSERVO/HSERVO_Prog.c:26:6:HSERVO_vServoDeg	2
