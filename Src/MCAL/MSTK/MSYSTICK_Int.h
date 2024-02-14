@@ -32,7 +32,7 @@ void MSYSTICK_vInit(void);
 /*                                      02- MSYSTICK_vPeriodicMS                                              */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function with millisecond delay using interrupt                                */
-/* 2- Function Input       -> @param Copy_u32Delay = desired delay in millisecond                            */                                                                 */                   
+/* 2- Function Input       -> @param Copy_u32Delay = desired delay in millisecond                            */                                                                                  
 /* 3- Function Return      -> void                                                                           */
 /*************************************************************************************************************/
 void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);
@@ -42,7 +42,7 @@ void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);
 /*                                      03- MSYSTICK_vDelayms                                                */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function with millisecond delay using polling                                  */
-/* 2- Function Input       -> @param Copy_u32Delay = desired delay in millisecond                            */                                                                 */                   
+/* 2- Function Input       -> @param Copy_u32Delay = desired delay in millisecond                            */                                                                                   
 /* 3- Function Return      -> void                                                                           */
 /*************************************************************************************************************/
 void MSYSTICK_vDelayms(u32 Copy_u32Delay);
