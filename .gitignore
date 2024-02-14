@@ -1,3 +1,8 @@
+
+Src/main.c
+Src/syscalls.c
+Src/sysmem.c
+
 # Ignore BlackPill_RC/ folder and its contents
 BlackPill_RC/
 
@@ -5,3 +10,4 @@ BlackPill_RC/
 !BlackPill_RC/Src/MCAL/
 !BlackPill_RC/Src/HAL/
 !BlackPill_RC/Src/LIB/
+

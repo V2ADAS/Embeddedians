@@ -74,4 +74,3 @@ void HAL_MOTOR_STOP(){
 	MGPIO_vSetPinValue(Motor_Pins.PORT_N1, Motor_Pins.PIN_N1, LOW);
 	MGPIO_vSetPinValue(Motor_Pins.PORT_N2, Motor_Pins.PIN_N2, LOW);
 }
-
