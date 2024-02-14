@@ -1,18 +1,36 @@
-/*
- * MI2C_Prog.c
- *
- *  Created on: Jan 28, 2024
- *      Author: Omar
- */
+/*******************************************************************************************************/
+/* Author            : Omar                                                                          */
+/* Version           : V0.0.0                                                                        */
+/* Data              : 28 Jan 2024                                                                   */
+/* Description       : MI2C_Prog.c --> implementations                                              */
+/* Module  Features  :                                                                               */
+/*      01- MI2C_vMasterInit                                                                        */
+/*      02- MI2C_vMasterTx                                                                          */
+/*      03- MI2C_u8MasterRx                                                                         */
+/*      04- MI2C_vSlaveInit                                                                         */
+/*      05- MI2C_u8SlaveRx                                                                          */
+/*      06- MI2C_vSendSlaveADDR                                                                     */
+/*      07- MI2C_vSendDataByte                                                                      */
+/*      08- MI2C_vReadDataByte                                                                      */
+/*      09- MI2C_vGenerateStart                                                                     */
+/*      10- MI2C_vClearStart                                                                        */
+/*      11- MI2C_vClearADDR                                                                         */
+/*      12- MI2C_vGenerateStop                                                                      */
+/*******************************************************************************************************/
 
-#include"../../LIB/BIT_MATH.h"
-#include"../../LIB/STD_TYPES.h"
+/***************************************************************************/
+/*                  File Includes and Definitions                        */
+/***************************************************************************/
+#include "../../LIB/BIT_MATH.h"
+#include "../../LIB/STD_TYPES.h"
+#include "MI2C_Config.h"
+#include "MI2C_Private.h"
+#include "MI2C_int.h"
 
-#include"MI2C_Config.h"
-#include"MI2C_Private.h"
-#include"MI2C_int.h"
 
-#include"../MSTK/MSYSTICK_Int.h"
+/***************************************************************************/
+/*                       Function Implementations                         */
+/***************************************************************************/
 
 
 
