@@ -1,8 +1,7 @@
-Src/main.c
-Src/syscalls.c
-Src/sysmem.c
-<<<<<<< HEAD
+# Ignore BlackPill_RC/ folder and its contents
 BlackPill_RC/
-=======
-BlackPill_RC/
->>>>>>> 6a92d7a4af98c7a440f9a11253a71b9133aca86f
+
+# Exclude specific subfolders within BlackPill_RC/
+!BlackPill_RC/Src/MCAL/
+!BlackPill_RC/Src/HAL/
+!BlackPill_RC/Src/LIB/
