@@ -44,15 +44,15 @@ typedef	enum{
 /**
  * @Description  Initialize ultrasonic sensor parameters including GPIO and timer configurations.
  *
- * @param   Copy_u8TimerNum: The timer number used for ultrasonic sensor measurement.
- * 			Should be one of the Timer Enum values {TIMER1,TIMER2,TIMER3,TIMER4,TIMER5,
- * 														 TIMER9,TIMER10,TIMER11}
- * @param   Copy_u8ChannelNum: The timer channel number used for ultrasonic sensor measurement.
- * 			Should be {CH1,CH2,CH3,CH4}
+ *@param	Copy_u8Ultra_NUM: Numbering ultrasonic as wanted to be used in the HULTRA_vGetDistance function.
+ * 								Expected to be Enum_ULTRA_SONIC_NUM { ULTRA_SONIC1 , .... , ULTRA_SONIC20 }
  *
- * @param	Copy_u8Ultra_NUM: Enum for ultrasonic from ULTRA_SONIC1 to ULTRA_SONIC20
- * 			e.g.. {ULTRA_SONIC1 , .... , ULTRA_SONIC20}
- * 			Numbering ultrasonic as wanted to be used in the HULTRA_vGetDistance function
+ * @param   Copy_u8TimerNum: The timer number used for ultrasonic sensor measurement.
+ * 								Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ * 									TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @param   Copy_u8ChannelNum: The timer channel number used for ultrasonic sensor measurement.
+ * 								Expected to be Enum_TIMER_CHs ==> { CH1, CH2, CH3, CH4 }
+ *
  *
  * @return	void
  *
@@ -69,9 +69,9 @@ void HULTRA_vInitialize(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,Enum_TIMER_NUM Cop
  * @Description   Send a trigger signal to an ultrasonic sensor.
  *
  * @param   Copy_u8Port: The GPIO port of the ultrasonic sensor trigger pin.
- * 			e.g..  {GPIOA, GPIOB, GPIOC}
+ * 							Expected to be any defined port name {GPIOA, GPIOB, GPIOC}
  * @param   Copy_u8Pin: The GPIO pin of the ultrasonic sensor trigger.
- *			e.g..  {PIN1 , . . . , PIN15}
+ *							Expected to be any defined pin number  {PIN1 , . . . , PIN15}
  *
  * @return	void
  *
@@ -87,10 +87,8 @@ void HULTRA_vSendTrigger(u8 Copy_u8Port, u8 Copy_u8Pin);
 /**
  * @Description   Get the distance measurement from an ultrasonic sensor.
  *
- * @param	Copy_u8Ultra_NUM: Enum for ultrasonic from ULTRA_SONIC1 to ULTRA_SONIC20
- * 			e.g.. {ULTRA_SONIC1 , .... , ULTRA_SONIC20}
- * 			Write any ultrasonic number defined in initialization function as wanted
- *
+ * @param	Copy_u8Ultra_NUM: Write any ultrasonic number defined in initialization function as wanted.
+ * 								Expected to be Enum_ULTRA_SONIC_NUM { ULTRA_SONIC1 , .... , ULTRA_SONIC20 }
  * @param   Copy_f64Distance: Pointer to a variable to store the calculated distance.
  *
  * @return	void

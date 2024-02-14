@@ -13,7 +13,6 @@
 /*******************************************************************************************************/
 #ifndef HAL_HSERVO_HSERVO_INT_H_
 #define HAL_HSERVO_HSERVO_INT_H_
-#include "../../MCAl/MTIMER/MTIMER_Int.h"
 
 /*******************************************************************************************************/
 /*                                   enum for Servo number					                           */
@@ -26,22 +25,28 @@ typedef enum {
 } Enum_SERVO_NUM;
 /*******************************************************************************************************/
 
-/******************************************************************************************************/
-/*                                          APIs                                                      */
-/******************************************************************************************************/
+/*******************************************************************************************************/
+/*                                          APIs                                                       */
+/*******************************************************************************************************/
 
-/******************************************************************************************************/
-/*                                      01- HSERVO_vServoInit                                              */
-/*----------------------------------------------------------------------------------------------------*/
+/*******************************************************************************************************/
+/*                                      01- HSERVO_vServoInit                                          */
+/*-----------------------------------------------------------------------------------------------------*/
 /**
- * @Description Initializes a servo motor connected to a specific timer and channel for PWM control.
+ * @Description Initializes a servo motor connected to a specific TIMER and channel for PWM control.
  * @param Copy_u8ServoNum: The enumeration representing the servo motor number.
- * @param Copy_u8TimerNum: The enumeration representing the timer to be used for PWM control.
- * @param Copy_u8ChannelNum: The channel number on the selected timer to which the servo is connected.
+ * 							Expected to be Enum_SERVO_NUM ==> {SERVO1, SERVO2, ... , SERVO20}
+ * @param Copy_u8TimerNum: The enumeration representing the TIMER to be used for PWM control.
+ * 							Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ * 								TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @param Copy_u8ChannelNum: The channel number on the selected TIMER to which the servo is connected.
+ * 							Expected to be Enum_TIMER_CHs ==> { CH1, CH2, CH3, CH4 }
  *
- * @note This function configures the specified timer and channel to generate PWM signals suitable for servo control.
- *       Ensure that the corresponding timer and channel are available for servo control on the selected microcontroller.
- *       Additionally, adjust the servo-specific parameters, such as PWM frequency and duty cycle, based on servo specifications.
+ * @note This function configures the specified TIMER and channel to generate PWM signals suitable for
+ * 		 servo control.Ensure that the corresponding timer and channel are available for servo control
+ * 		 on the selected microcontroller.
+ *       Additionally, adjust the servo-specific parameters, such as PWM frequency and duty cycle,
+ *        based on servo specifications.
  */
 void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8TimerNum,u8 Copy_u8ChannelNum);
 /******************************************************************************************************/
@@ -52,7 +57,9 @@ void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8Time
 /**
  * @brief Moves a servo motor to a specified angle in degrees.
  * @param Copy_u8ServoNum: The enumeration representing the servo motor number.
+ * 							Expected to be Enum_SERVO_NUM ==> {SERVO1, SERVO2, ... , SERVO20}
  * @param Copy_u8Deg: The desired angle in degrees to which the servo motor should be positioned.
+ * 							Expected to be { ANY ANGLE from 0 to 180 }
  * @return:	void
  * @note This function adjusts the PWM signal sent to the specified servo motor to achieve the desired angle.
  *       Ensure that the servo motor is initialized using HSERVO_vServoInit before calling this function.
