@@ -4,9 +4,9 @@ Welcome to the Embedded Graphics Project repository! This repository is dedicate
 
 ## Contributors
 
-- **Omar Wael**
-- **Amr Maghraby**
-- **Mohamed Hawas**
+- [Omar Wael](https://github.com/OmarWael22)
+- [Amr Elmaghraby](https://github.com/Amr-Elmaghraby)
+- [Mohamed Hawas](https://github.com/Mohamed-Hawas)
 - **Toka Bishara**
 - **Maya Emad**
 
