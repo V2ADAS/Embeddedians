@@ -15,6 +15,5 @@
 #define GET_2BITS(var,Bit_No)   	((var>>Bit_No) & 0x03)
 
 #define SET_VAL(Var,Bit_No,Val)		(Var |= (Val<<Bit_No))
-#define PI 3.14159265359
-#include <math.h>
+
 #endif

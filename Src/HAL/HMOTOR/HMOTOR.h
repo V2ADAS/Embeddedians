@@ -9,14 +9,13 @@
 #define HAL_MOTOR_H_
 
 
-#include "../../LIB/STD_TYPES.h"
 
 
-void HAL_MOTOR_Init ( u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 ,u8 PORT_PWM ,
-					u8 PIN_PWM, u8 PWM_TIMER , u8 ENCODER_EXTIx ,u8 NVIC_EXTIx);
-void HAL_MOTOR_MOVE(u8 DIRCTION ,u8 SPEED , f32 DISTANCE_cm_ );
+
+void HAL_MOTOR_Init(u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 ,u8 PORT_PWM , u8 PIN_PWM);
+void HAL_MOTOR_MOVE(u8 DIRCTION ,u8 SPEED );
 void HAL_MOTOR_STOP();
-
+void test(u8 x);
 
 
 
@@ -36,7 +35,6 @@ typedef struct {
 	u8 PIN_SIGNAL1 	;
 	u8 PORT_SIGNAL2 ;
 	u8 PIN_SIGNAL2 	;
-
 }MOTOR_PINS_t;
 
 #define FORWARD   1

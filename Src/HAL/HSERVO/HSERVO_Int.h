@@ -59,14 +59,16 @@ void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8Time
  * @param Copy_u8ServoNum: The enumeration representing the servo motor number.
  * 							Expected to be Enum_SERVO_NUM ==> {SERVO1, SERVO2, ... , SERVO20}
  * @param Copy_u8Deg: The desired angle in degrees to which the servo motor should be positioned.
- * 							Expected to be { ANY ANGLE from 0 to 180 }
+ * 							Expected to be { ANY ANGLE from ( ZERO_POS - 45 ) to ( ZERO_POS + 45 )  }
+ * 							NOTE: Input Angle input will be added to ZERO_POS Macros defined
+ * 							 						in configuration file.
  * @return:	void
  * @note This function adjusts the PWM signal sent to the specified servo motor to achieve the desired angle.
  *       Ensure that the servo motor is initialized using HSERVO_vServoInit before calling this function.
  *       Additionally, consider the servo motor specifications and adjust the PWM signal parameters accordingly.
  *       PWM signal:	20msec FullTime		(0.5 => 2.5msec) Duty Cycle for 0 to 180 Deg.
  */
-void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum,u32 Copy_u8Deg);
+void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum,s8 Copy_s8Deg);
 /******************************************************************************************************/
 
 #endif /* HAL_HSERVO_HSERVO_INT_H_ */

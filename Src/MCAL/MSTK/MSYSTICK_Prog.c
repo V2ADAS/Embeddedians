@@ -1,19 +1,13 @@
-/*******************************************************************************************************/
-/* Author            : Amr Elmaghraby                                                                   */
-/* Version           : V0.0.0                                                                          */
-/* Data              : 5 nov 2023                                                                      */
-/* Description       : Driver Functions Implementation                                                 */
-/*******************************************************************************************************/
-/***************************************************************************/
-/*                           MCAL Components                               */
-/***************************************************************************/
+/*
+ * MSTK_Prog.c
+ *
+ *  Created on: Dec 3, 2023
+ *      Author: Hardware
+ */
 #include"MSYSTICK_Private.h"
 #include"MSYSTICK_Config.h"
 #include"MSYSTICK_Int.h"
 
-/***************************************************************************/
-/*                        Functions Implementations                        */
-/***************************************************************************/
 static void (*GLOBAL_SYSTICK_CallBack) (void)= STD_NULL;
 
 void MSYSTICK_vInit(void){

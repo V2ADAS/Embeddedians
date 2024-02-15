@@ -72,11 +72,13 @@ void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8Time
 	SERVO_STRUCT[Copy_u8ServoNum].CHANNEL = Copy_u8ChannelNum;
 }
 
-void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum,u32 Copy_u8Deg){
-	if(Copy_u8Deg >180){
-		Copy_u8Deg = 180;
-	}
-	u16 Positive_Duty = ( (Copy_u8Deg * 2000)/180 + 500 );
+void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum,s8 Copy_s8Deg){
+	if(Copy_s8Deg < -45)
+		Copy_s8Deg = -45;
+	else if(Copy_s8Deg > 45)
+		Copy_s8Deg = 45;
+	Copy_s8Deg += ZERO_POS;
+	u16 Positive_Duty = ( (Copy_s8Deg * 2000)/180 + 500 );
 	MTIMER_vPWM(SERVO_STRUCT[Copy_u8ServoNum].TIMER,SERVO_STRUCT[Copy_u8ServoNum].CHANNEL, SERVO_FullPeriod, Positive_Duty);
 }
 

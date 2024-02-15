@@ -1,18 +1,10 @@
-/*******************************************************************************************************/
-/* Author            : Amr Elmaghraby                                                                   */
-/* Version           : V0.0.0                                                                          */
-/* Data              : 5 nov 2023                                                                      */
-/* Description       : RCC_Prog.c --> implementations                                                  */
-/* Module  Features  :                                                                                 */
-/*      01- void MRCC_vInit(void);                                                                     */
-/*      02- void MRCC_vEnableClock(PeripheralEnable_t Copy_u8PeripheralNo);                            */
-/*      03- void MRCC_vDisableClock(PeripheralEnable_t Copy_u8PeripheralNo);                           */                                                                       
-/*******************************************************************************************************/
+/*
+ * MRCC_Int.h
+ *
+ *  Created on: Nov 5, 2023
+ *      Author: Hardware
+ */
 
-    
-/*******************************************************************************************************/
-/*                                   guard of file will call on time in .c                             */
-/*******************************************************************************************************/
 #ifndef MCAL_MRCC_MRCC_INT_H_
 #define MCAL_MRCC_MRCC_INT_H_
 
@@ -54,35 +46,13 @@ typedef enum {
     TIM10_EN,
     TIM11_EN
 } PeripheralEnable_t;
-/******************************************************************************************************/
-/*                                      01- MRCC_vInit                                                */
-/*----------------------------------------------------------------------------------------------------*/
-/* 1- Function Description -> Function Initializing RCC                                               */
-/* 2- Function Input       -> void                                                                    */                   
-/* 3- Function Return      -> void                                                                    */
-/******************************************************************************************************/
+
 void MRCC_vInit(void);
-/******************************************************************************************************/
 
-/******************************************************************************************************/
-/*                                      02- MRCC_vEnableClock                                                */
-/*-----------------------------------------------------------------------------------------------------------*/
-/* 1- Function Description -> Function Enable Clock for a certain peripheral                           */
-/* 2- Function Input       -> @param Copy_u8PeripheralNo = Number of peripheral from enum PeripheralEnable_t */                                                                                    
-/* 3- Function Return      -> void                                                                           */
-/*************************************************************************************************************/
 void MRCC_vEnableClock(PeripheralEnable_t Copy_u8PeripheralNo);
-/*************************************************************************************************************/
 
-/******************************************************************************************************/
-/*                                      03- MRCC_vDisableClock                                                */
-/*-----------------------------------------------------------------------------------------------------------*/
-/* 1- Function Description -> Function Disable Clock for a certain peripheral                           */
-/* 2- Function Input       -> @param Copy_u8PeripheralNo = Number of peripheral from enum PeripheralEnable_t */                                                                                 
-/* 3- Function Return      -> void                                                                           */
-/*************************************************************************************************************/
 void MRCC_vDisableClock(PeripheralEnable_t Copy_u8PeripheralNo);
-/*************************************************************************************************************/
+
 
 
 #endif /* MCAL_MRCC_MRCC_INT_H_ */
