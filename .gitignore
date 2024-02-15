@@ -1,5 +1,6 @@
 # Ignore BlackPill_RC/ folder and its contents
 BlackPill_RC/
+.vscode/
 
 # Exclude specific subfolders within BlackPill_RC/
 !BlackPill_RC/Src/MCAL/
