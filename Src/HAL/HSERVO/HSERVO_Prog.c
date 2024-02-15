@@ -6,16 +6,19 @@
  */
 
 #include"../../MCAL/MRCC/MRCC_Int.h"
-
 #include"../../MCAL/MGPIO/MGPIO_Int.h"
-
 #include"../../MCAL/MTIMER/MTIMER_Int.h"
 
 #include"HSERVO_Config.h"
 #include"HSERVO_Int.h"
 
+typedef struct{
+	Enum_TIMER_NUM	TIMER;
+	Enum_TIMER_CHs	CHANNEL;
+}LOC_SERVO_NUM;
+LOC_SERVO_NUM	SERVO_STRUCT[20];
 
-void HSERVO_vServoInit(Enum_TIMER_NUM Copy_u8TimerNum,u8 Copy_u8ChannelNum){
+void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8TimerNum,u8 Copy_u8ChannelNum){
 
 	switch(Copy_u8TimerNum){
 	case TIMER1:
@@ -65,14 +68,18 @@ void HSERVO_vServoInit(Enum_TIMER_NUM Copy_u8TimerNum,u8 Copy_u8ChannelNum){
 		MGPIO_vSetAlternativeFunction(PORTB, Copy_u8ChannelNum + 8 , MGPIO_ALTFUNC_TIM911);
 		break;
 	}
+	SERVO_STRUCT[Copy_u8ServoNum].TIMER = Copy_u8TimerNum;
+	SERVO_STRUCT[Copy_u8ServoNum].CHANNEL = Copy_u8ChannelNum;
 }
 
-void HSERVO_vServoDeg(u8 Copy_u8TimerNum,u8 Copy_u8ChannelNum,u32 Copy_u8Deg){
-	if(Copy_u8Deg >180){
-		Copy_u8Deg = 180;
-	}
-	u16 Positive_Duty = ( (Copy_u8Deg * 2000)/180 + 500 );
-	MTIMER_vPWM(Copy_u8TimerNum,Copy_u8ChannelNum, SERVO_FullPeriod, Positive_Duty);
+void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum,s8 Copy_s8Deg){
+	if(Copy_s8Deg < -45)
+		Copy_s8Deg = -45;
+	else if(Copy_s8Deg > 45)
+		Copy_s8Deg = 45;
+	Copy_s8Deg += ZERO_POS;
+	u16 Positive_Duty = ( (Copy_s8Deg * 2000)/180 + 500 );
+	MTIMER_vPWM(SERVO_STRUCT[Copy_u8ServoNum].TIMER,SERVO_STRUCT[Copy_u8ServoNum].CHANNEL, SERVO_FullPeriod, Positive_Duty);
 }
 
 
