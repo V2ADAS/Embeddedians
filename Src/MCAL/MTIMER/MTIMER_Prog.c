@@ -175,7 +175,7 @@ u32 MTIMER_GET_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel
  * @param   Copy_u8TimerNum: The timer number.
  * @param   ptr: A pointer to the callback function to be set.
  *
- * @return  void.
+ * @return  None.
  *
  * @note    The callback function will be called when the specified timer triggers an interrupt.
  */

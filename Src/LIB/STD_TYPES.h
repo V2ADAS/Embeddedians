@@ -15,23 +15,5 @@ typedef float                     f32;
 typedef double                    f64;
 typedef long double               f128;
 
-#ifndef FALSE
-#define FALSE       (0u)
-#endif
-#ifndef TRUE
-#define TRUE        (1u)
-#endif
-#ifndef STD_HIGH
-#define STD_HIGH    (0u)
-#endif
-#ifndef STD_LOW
-#define STD_LOW     (1u)
-#endif
-#ifndef STD_ON
-#define STD_ON      (1u)
-#endif
-#ifndef STD_OFF
-#define STD_OFF     (0u)
-#endif
 
 #endif

@@ -2,7 +2,7 @@
  * HULTRA_SONIC_Prog.c
  *
  *  Created on: Feb 1, 2024
- *      Author: Amr ElMaghraby
+ *      Author: Hardware
  */
 
 #include"../../MCAL/MRCC/MRCC_Int.h"
@@ -13,14 +13,8 @@
 #include"HULTRA_SONIC_Config.h"
 #include"HULTRA_SONIC_Int.h"
 
-typedef struct{
-	Enum_TIMER_NUM	TIMER;
-	Enum_TIMER_CHs CHANNELS;
-}LOC_ULTRA_NUM;
-LOC_ULTRA_NUM	ULTRA_STRUCT[20];
 
-
-void HULTRA_vInitialize(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,Enum_TIMER_NUM Copy_u8TimerNum, u8 Copy_u8ChannelNum)
+void HULTRA_vInitialize(Enum_TIMER_NUM Copy_u8TimerNum , u8 Copy_u8ChannelNum)
 {
 	switch(Copy_u8TimerNum){
 	case TIMER1:
@@ -72,8 +66,6 @@ void HULTRA_vInitialize(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,Enum_TIMER_NUM Cop
 	}
 
 	MTIMER_vICU(Copy_u8TimerNum,Copy_u8ChannelNum);
-	ULTRA_STRUCT[Copy_u8Ultra_NUM].TIMER = Copy_u8TimerNum;
-	ULTRA_STRUCT[Copy_u8Ultra_NUM].CHANNELS = Copy_u8ChannelNum;
 
 }
 
@@ -84,16 +76,16 @@ void HULTRA_vSendTrigger(u8 Copy_u8Port, u8 Copy_u8Pin) {
 
     // Raise the ultrasonic sensor trigger pin to HIGH for a short duration
     MGPIO_vSetPinAtomic(Copy_u8Port, Copy_u8Pin, HIGH);
-    MSYSTICK_vDelayms(Trigger_Pulse_Width);  // Wait for "Trigger_Pulse_Width" milliseconds
+    MSYSTICK_vDelayms(100);  // Wait for 100 milliseconds
 
     // Bring the ultrasonic sensor trigger pin back to LOW
     MGPIO_vSetPinAtomic(Copy_u8Port, Copy_u8Pin, LOW);
 }
 
 
-void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance) {
+void HULTRA_vGetDistance(f64* Copy_f64Distance, u8 Copy_u8TimerNum, u8 Copy_u8ChannelNum) {
     // Calculate distance based on timer values and assume speed of sound is 343 meters per second
-    *Copy_f64Distance = ((f64)MTIMER_GET_ICU(ULTRA_STRUCT[Copy_u8Ultra_NUM].TIMER, ULTRA_STRUCT[Copy_u8Ultra_NUM].CHANNELS) / 2) * 3.43;
+    *Copy_f64Distance = ((f64)MTIMER_GET_ICU(Copy_u8TimerNum, Copy_u8ChannelNum) / 2) * 3.43;
 }
 
 
