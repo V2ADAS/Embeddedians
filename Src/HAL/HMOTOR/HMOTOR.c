@@ -7,8 +7,8 @@
 #include"../../MCAL/MEXTI/MEXTI_int.h"
 #include"../../MCAL/MSTK/MSYSTICK_int.h"
 
-#define WHEEL_AREA  8.5*PI
-#define PULSES_PER_REVOLUTION 512
+#define WHEEL_AREA   26.4
+#define PULSES_PER_REVOLUTION 1024
 
 
 volatile MOTOR_PINS_t Motor_Pins ;
@@ -32,7 +32,7 @@ void HAL_MOTOR_Init(u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 ,u8 PORT_PWM 
 	MGPIO_vSetPinMode(PORT_N1, PIN_N1, OUTPUT);
 	MGPIO_vSetPinMode(PORT_N2, PIN_N2, OUTPUT);
 	MGPIO_vSetPinMode(PORT_PWM, PIN_PWM,ALTFUNC);
-	MGPIO_vSetAlternativeFunction(PORT_PWM, PIN_PWM, PWM_TIMER);
+	MGPIO_vSetAlternativeFunction(PORT_PWM, PIN_PWM,PWM_TIMER);
 
 	/********************Interrupt of encoder*****************************/
 	MEXTI_vEnableInterrupt(ENCODER_EXTIx);
@@ -43,10 +43,10 @@ void HAL_MOTOR_Init(u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 ,u8 PORT_PWM 
 }
 
 
-void HAL_MOTOR_MOVE(u8 DIRCTION ,u8 SPEED , f32 DISTANCE_cm_ ){
-	u8 high_duty = (u8)(SPEED / 100)  ;
-	f32 num_of_revolutions ;
-	u32 total_pulses ;
+void HAL_MOTOR_MOVE(u8 DIRCTION ,u8 SPEED , f32 DISTANCE_cm_){
+	f32 high_duty = (SPEED / 100.0)  ;
+	f32 num_of_revolutions  ;
+	u32 total_pulses = 0 ;
 	switch(DIRCTION){
 	case BACKWARD :
 		MGPIO_vSetPinValue(Motor_Pins.PORT_N1, Motor_Pins.PIN_N1, HIGH);
@@ -58,17 +58,15 @@ void HAL_MOTOR_MOVE(u8 DIRCTION ,u8 SPEED , f32 DISTANCE_cm_ ){
 		break;
 	}
 	/****************************speed********************************/
-	MTIMER_vPWM(TIMER1,CH1, 10000, high_duty * 10000 );
-
+	MTIMER_vPWM(TIMER1, CH1, 10000, high_duty*10000);
 	/***************************distance******************************/
 	num_of_revolutions = (DISTANCE_cm_/ WHEEL_AREA);
-	total_pulses = (u32)(num_of_revolutions * PULSES_PER_REVOLUTION) ;
-	while( total_pulses > temp_pulses );
-	HAL_MOTOR_STOP();
-	temp_pulses = 0 ;
+//	num_of_revolutions = 4;
+	total_pulses = (u32)(num_of_revolutions * PULSES_PER_REVOLUTION);
+		while( total_pulses > temp_pulses );
+		HAL_MOTOR_STOP();
+		temp_pulses = 0 ;
 }
-
-u16 HAL_MOTOR_Get_Distance();
 
 void HAL_MOTOR_STOP(){
 	MGPIO_vSetPinValue(Motor_Pins.PORT_N1, Motor_Pins.PIN_N1, LOW);
