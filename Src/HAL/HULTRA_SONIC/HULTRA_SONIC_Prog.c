@@ -1,27 +1,39 @@
-/*
- * HULTRA_SONIC_Prog.c
- *
- *  Created on: Feb 1, 2024
- *      Author: Amr ElMaghraby
- */
+/********************************************************************************************************/
+/* Author            : Amr ElMaghraby                                                             		*/
+/* Version           : V1.0.5                                                                           */
+/* Data              : 5 Feb 2024                                                                       */
+/* Description       : HULTRA_SONIC_Prog.c --> implementations                                          */
+/* Module  Features  :																					*/
+/* @Functions:																							*/
+/*      01- HULTRA_vInitialize                                                                          */
+/*      02- HULTRA_vSendTrigger                                                                         */
+/*      03- HULTRA_vGetDistance																			*/
+/* @TypeDef:																							*/
+/* 		@Enums:																							*/
+/* 	    	 01- Enum_ULTRA_SONIC_NUM                                                        			*/
+/********************************************************************************************************/
 
-#include"../../MCAL/MRCC/MRCC_Int.h"
-#include"../../MCAL/MGPIO/MGPIO_int.h"
-#include"../../MCAL/MTIMER/MTIMER_Int.h"
-#include"../../MCAL/MSTK/MSYSTICK_Int.h"
+#include "../../MCAL/MRCC/MRCC_Int.h"   // MRCC: Reset and Clock Control driver
+#include "../../MCAL/MGPIO/MGPIO_Int.h" // MGPIO: General Purpose Input/Output driver
+#include "../../MCAL/MTIMER/MTIMER_Int.h" // MTIMER: Timer driver
+#include "../../MCAL/MSTK/MSYSTICK_Int.h" // MSTK: SysTick timer driver
 
-#include"HULTRA_SONIC_Config.h"
-#include"HULTRA_SONIC_Int.h"
+#include "HULTRA_SONIC_Config.h" // Configuration header for the Ultrasonic Sensor
+#include "HULTRA_SONIC_Int.h"    // Interface header for the Ultrasonic Sensor
 
-typedef struct{
-	Enum_TIMER_NUM	TIMER;
-	Enum_TIMER_CHs CHANNELS;
-}LOC_ULTRA_NUM;
-LOC_ULTRA_NUM	ULTRA_STRUCT[20];
+
+// Definition of a structure to hold Ultrasonic Sensor information
+typedef struct {
+    Enum_TIMER_NUM TIMER;
+    Enum_TIMER_CHs CHANNELS;
+} LOC_ULTRA_NUM;
+
+// Array to store information for multiple Ultrasonic Sensors
+LOC_ULTRA_NUM ULTRA_STRUCT[TOT_ULTRA_SONIC_NUM];
 
 
 void HULTRA_vInitialize(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,Enum_TIMER_NUM Copy_u8TimerNum, u8 Copy_u8ChannelNum)
-{
+{	// Configure GPIO pins and alternative functions based on the selected timer and channel
 	switch(Copy_u8TimerNum){
 	case TIMER1:
 		MGPIO_vSetPinMode(PORTA, Copy_u8ChannelNum + 7 , ALTFUNC);
