@@ -1,23 +1,37 @@
-/*
- * MI2C_Private.h
- *
- *  Created on: Jan 28, 2024
- *      Author: Omar
- */
+/***************************************************************************/
+/* Author       : Omar Wael                                                */
+/* Version      : V0.0.0                                                   */
+/*  Date        :  Jan 28, 2024                                             */
+/*  Description : Driver Functions Implementation                          */
+/*  Features    : Register Definition                                      */
+/***************************************************************************/
 
+/***************************************************************************/
+/*                  File Guard Will Call On Time in .c File                */
+/***************************************************************************/
 #ifndef MCAL_MI2C_MI2C_PRIVATE_H_
 #define MCAL_MI2C_MI2C_PRIVATE_H_
 
-
-/********************* I2Cs BASE ADDRESS *******************/
+/***************************************************************************/
+/*                      I2Cs BASE ADDRESS                                  */
+/***************************************************************************/
 
 #define I2C1_BASE_ADDR					(0x40005400)
 #define I2C2_BASE_ADDR					(0x40005800)
 #define I2C3_BASE_ADDR					(0x40005C00)
 
 
-
-/******************** REGISTERS ***************************/
+/**************************************************************************/
+/* Register Definition :-                                                 */
+/* Features    : Private File Can`t Be Edit By User                       */
+/* Description :-                                                         */
+/*               - #define :      YES                                     */
+/*               - union   :      NO                                      */
+/*               - struct  :      YEs                                     */
+/**************************************************************************/
+/***************************************************************************/
+/*                      I2C REGISTERS MAP                                  */
+/***************************************************************************/
 
 typedef struct {
 
@@ -34,20 +48,23 @@ typedef struct {
 
 }I2C_Mem_Map_t ;
 
-
-/***************** POINTER TO REG **************************/
+/***************************************************************************/
+/*                      POINTER TO I2C REGISTER                            */
+/***************************************************************************/
 
 #define I2C1_REG							((volatile I2C_Mem_Map_t*)(I2C1_BASE_ADDR))
 #define I2C2_REG							((volatile I2C_Mem_Map_t*)(I2C2_BASE_ADDR))
 #define I2C3_REG							((volatile I2C_Mem_Map_t*)(I2C3_BASE_ADDR))
 
-/****************** SOME BITS POSITIONS *******************/
-
+/***************************************************************************/
+/*                       SOME BITS POSITIONS                               */
+/***************************************************************************/
 #define CR1_PE								0
 #define CR1_START							8
 #define CR1_STOP							9
 #define CR1_ACK								10
 #define CR1_POS								11
+#define CR1_SWRST							15
 
 #define SR1_SB								0
 #define SR1_ADDR							1
