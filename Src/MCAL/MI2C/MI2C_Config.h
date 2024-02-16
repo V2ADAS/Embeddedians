@@ -12,7 +12,7 @@
 • 2 MHz in Sm mode
 • 4 MHz in Fm mode
 */
-#define I2C_PCLK	8  // in MHZ
+#define I2C_PCLK	16  // in MHZ
 
 
 #endif /* MCAL_MI2C_MI2C_CONFIG_H_ */
