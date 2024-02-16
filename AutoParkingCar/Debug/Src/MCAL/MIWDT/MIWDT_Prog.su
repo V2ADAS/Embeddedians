@@ -1,0 +1,2 @@
+MIWDT_Prog.c:21:6:MIWDG_vStart	16	static
+MIWDT_Prog.c:44:6:MIWDG_vReload	4	static
