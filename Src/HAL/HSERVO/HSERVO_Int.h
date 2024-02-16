@@ -1,8 +1,8 @@
 /*******************************************************************************************************/
 /* Author            : Amr ElMaghraby                                                                  */
-/* Version           : V0.0.0                                                                          */
+/* Version           : V1.0.3                                                                          */
 /* Data              : 28 Dec 2023                                                                     */
-/* Description       : HSERVO_Interface.c --> implementations                                          */
+/* Description       : HSERVO_Interface.h --> implementations                                          */
 /* Module  Features  :                                                                                 */
 /*      01- HSERVO_vServoInit                                                                          */
 /*      02- HSERVO_vServoDeg                                                                           */
