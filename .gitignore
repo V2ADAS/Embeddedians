@@ -1,7 +1,5 @@
 # Ignore BlackPill_RC/ folder and its contents
-BlackPill/*
-
-
+BlackPill_RC/
 
 # Exclude specific subfolders within BlackPill_RC/
 !BlackPill/Src/MCAL/
