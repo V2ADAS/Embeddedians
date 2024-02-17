@@ -1,8 +1,0 @@
-MNVIC_Prog.c:18:6:MNVIC_vEnableInterrupt	0	static
-MNVIC_Prog.c:24:6:MNVIC_vDisableInterrupt	0	static
-MNVIC_Prog.c:31:6:MNVIC_vSetPendingFlag	0	static
-MNVIC_Prog.c:37:6:MNVIC_vClearPendingFlag	0	static
-MNVIC_Prog.c:43:4:MNVIC_u8ReadActiveFlag	0	static
-MNVIC_Prog.c:51:6:MNVIC_vInitGrouping	0	static
-MNVIC_Prog.c:57:6:MNVIC_vSetIntPriority	0	static
-MNVIC_Prog.c:86:6:MNVIC_vTrigSoftwareInt	0	static
