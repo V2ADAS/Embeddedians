@@ -16,7 +16,7 @@ u32 Time[29]={0};
 
 TIM2_5_MemMap_t* GET_TIMER(u32 Copy_u8TimerNum){
     u32 Timer_Offset[8] = TIMERS_OFFSET;
-	TIM2_5_MemMap_t* TIMx = (u32)TIM2 + Timer_Offset[Copy_u8TimerNum-1];
+    TIM2_5_MemMap_t* TIMx = (TIM2_5_MemMap_t*)((u32)TIM2 + Timer_Offset[Copy_u8TimerNum-1]);
 	return TIMx;
 }
 
@@ -49,6 +49,14 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay) {
 
     // Set the Counter Enable bit to start the timer
     SET_BIT(TIMx->CR1, CEN);
+}
+
+// Function to clear the counter (CNT) of the specified timer
+void MTIMER_vClearCNT(Enum_TIMER_NUM Copy_u8TimerNum) {
+    // Get the base address of the specified timer
+    TIM2_5_MemMap_t* TIMx = GET_TIMER(Copy_u8TimerNum);
+    // Clear the counter value (CNT) by setting it to 0x00
+    TIMx->CNT = 0x00;
 }
 
 
