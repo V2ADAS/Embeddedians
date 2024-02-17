@@ -1,0 +1,5 @@
+Path_Tracking.c:3:16:LOC_GetCurrentLocation	32	static
+Path_Tracking.c:14:16:LOC_GetNextLocation	64	static
+Path_Tracking.c:27:12:LOC_GetDistanceBet2Points	32	static
+Path_Tracking.c:33:11:LOC_GetAngleofslope	56	static
+Path_Tracking.c:46:6:PT_TrackThePath	40	static

@@ -1,0 +1,2 @@
+HSERVO_Prog.c:18:6:HSERVO_vServoInit	8	static
+HSERVO_Prog.c:70:6:HSERVO_vServoDeg	0	static

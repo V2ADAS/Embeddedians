@@ -1,0 +1,3 @@
+HULTRA_SONIC_Prog.c:35:6:HULTRA_vInitialize	16	static
+HULTRA_SONIC_Prog.c:93:6:HULTRA_vSendTrigger	16	static
+HULTRA_SONIC_Prog.c:106:6:HULTRA_vGetDistance	24	static

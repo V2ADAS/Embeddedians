@@ -1,0 +1,9 @@
+Collision_Avoidance.c:11:24:InitCollisionAvoidance	16	static
+Collision_Avoidance.c:44:6:FR_CA_Scenario	4	static
+Collision_Avoidance.c:52:6:FL_CA_Scenario	4	static
+Collision_Avoidance.c:59:6:BR_CA_Scenario	4	static
+Collision_Avoidance.c:67:6:BL_CA_Scenario	4	static
+Collision_Avoidance.c:74:6:RF_CA_Scenario	4	static
+Collision_Avoidance.c:82:6:RB_CA_Scenario	4	static
+Collision_Avoidance.c:89:6:LF_CA_Scenario	4	static
+Collision_Avoidance.c:96:6:LB_CA_Scenario	4	static

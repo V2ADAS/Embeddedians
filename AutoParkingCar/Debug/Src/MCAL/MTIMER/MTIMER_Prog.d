@@ -1,0 +1,15 @@
+Src/MCAL/MTIMER/MTIMER_Prog.o: ../Src/MCAL/MTIMER/MTIMER_Prog.c \
+ ../Src/MCAL/MTIMER/MTIMER_Private.h \
+ ../Src/MCAL/MTIMER/../../LIB/BIT_MATH.h \
+ ../Src/MCAL/MTIMER/../../LIB/STD_TYPES.h ../Src/MCAL/MTIMER/MTIMER_Int.h \
+ ../Src/MCAL/MTIMER/MTIMER_Config.h
+
+../Src/MCAL/MTIMER/MTIMER_Private.h:
+
+../Src/MCAL/MTIMER/../../LIB/BIT_MATH.h:
+
+../Src/MCAL/MTIMER/../../LIB/STD_TYPES.h:
+
+../Src/MCAL/MTIMER/MTIMER_Int.h:
+
+../Src/MCAL/MTIMER/MTIMER_Config.h:
