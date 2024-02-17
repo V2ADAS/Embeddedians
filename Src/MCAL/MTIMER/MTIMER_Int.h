@@ -18,10 +18,14 @@
 #define MCAL_MTIMER_MTIMER_INT_H_
 
 /*******************************************************************************************************/
+/*                                    Include files needed for MTIMER_Int.h 		                   */
+/*******************************************************************************************************/
+#include"../../LIB/STD_TYPES.h" //Standard Types Lib
+
+/*******************************************************************************************************/
 /*                                   enum for Timer numbers   					                       */
 /*						' TIMER 1, TIMER2, TIMER3, TIMER4, TIMER5,									   */
 /* 														TIMER9, TIMER10, TIMER11'					   */
-/* 																									   */
 /*******************************************************************************************************/
 typedef enum{
 	TIMER1=1,
@@ -72,7 +76,20 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay);
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      02- MTIMER_vPWM                                       		  */
+/*                                      02- MTIMER_vClearCNT                                          */
+/*----------------------------------------------------------------------------------------------------*/
+/**
+ * @Description Clears the counter (CNT) of the specified TIMER.
+ * @param Copy_u8TimerNum: The TIMER number to clear the counter.
+ * 							Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ * 								TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @return	void
+ */
+void MTIMER_vClearCNT(Enum_TIMER_NUM Copy_u8TimerNum);
+/******************************************************************************************************/
+
+/******************************************************************************************************/
+/*                                      03- MTIMER_vPWM                                       		  */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Configures the specified TIMER in PWM mode on a specific channel.
@@ -89,7 +106,7 @@ void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel, 
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      03- MTIMER_vICU                                       		  */
+/*                                      04- MTIMER_vICU                                       		  */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Configures the specified TIMER to work as an Input Capture Unit (ICU) on a specific channel.
@@ -104,7 +121,7 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel);
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      04- MTIMER_GET_ICU                                       	  */
+/*                                      05- MTIMER_GET_ICU                                       	  */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Retrieves the captured time value from an Input Capture event on the specified TIMER and channel.
@@ -119,7 +136,7 @@ u32 MTIMER_GET_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      05- MTIMER_CallBack                                       	  */
+/*                                      06- MTIMER_CallBack                                       	  */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Registers a callback function to be executed when the specified TIMER generates an interrupt.
