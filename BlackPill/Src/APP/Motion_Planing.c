@@ -71,7 +71,8 @@ void Scan_Process (u8 Scanned_Area[], u8 speed)
 	for (int i=0;i<100;i++)
 	{
 		HULTRA_vSendTrigger(PORTB, PIN12);
-		HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
+		// TODO : fix this
+		//HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
 		Scanned_Area[i]=(u8)Distance1;
 		if (((u8)Distance1 > Car_width) && ((u8)Distance1 < Car_Length) )
 		{
@@ -104,7 +105,8 @@ void Scan(u8 Scanned_Area[])
 	for (int i=0;i<100;i++)
 	{
 		HULTRA_vSendTrigger(PORTB, PIN12);
-		HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
+		// TODO : fix this
+		HULTRA_vGetDistance(ULTRA_SONIC1,&Distance1);
 		Scanned_Area[i]=(u8)Distance1;
 	}
 }
