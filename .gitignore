@@ -1,22 +1,8 @@
-
-Src/main.c
-Src/syscalls.c
-Src/sysmem.c
-
 # Ignore BlackPill_RC/ folder and its contents
-BlackPill_RC/
+BlackPill/
 
 # Exclude specific subfolders within BlackPill_RC/
-!BlackPill_RC/Src/MCAL/
-!BlackPill_RC/Src/HAL/
-!BlackPill_RC/Src/LIB/
-
-
-# Ignore BlackPill_RC/ folder and its contents
-AutoParkingCar/
-
-# Exclude specific subfolders within BlackPill_RC/
-!AutoParkingCar/Src/MCAL/
-!AutoParkingCar/Src/HAL/
-!AutoParkingCar/Src/LIB/
+!BlackPill/Src/MCAL/
+!BlackPill/Src/HAL/
+!BlackPill/Src/LIB/
 
