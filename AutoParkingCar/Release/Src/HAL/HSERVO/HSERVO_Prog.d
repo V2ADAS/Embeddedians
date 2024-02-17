@@ -1,0 +1,21 @@
+Src/HAL/HSERVO/HSERVO_Prog.o: ../Src/HAL/HSERVO/HSERVO_Prog.c \
+ ../Src/HAL/HSERVO/../../MCAL/MRCC/MRCC_Int.h \
+ ../Src/HAL/HSERVO/../../MCAL/MGPIO/MGPIO_Int.h \
+ ../Src/HAL/HSERVO/../../MCAL/MGPIO/../../LIB/STD_TYPES.h \
+ ../Src/HAL/HSERVO/../../MCAL/MTIMER/MTIMER_Int.h \
+ ../Src/HAL/HSERVO/HSERVO_Config.h ../Src/HAL/HSERVO/HSERVO_Int.h \
+ ../Src/HAL/HSERVO/../../MCAl/MTIMER/MTIMER_Int.h
+
+../Src/HAL/HSERVO/../../MCAL/MRCC/MRCC_Int.h:
+
+../Src/HAL/HSERVO/../../MCAL/MGPIO/MGPIO_Int.h:
+
+../Src/HAL/HSERVO/../../MCAL/MGPIO/../../LIB/STD_TYPES.h:
+
+../Src/HAL/HSERVO/../../MCAL/MTIMER/MTIMER_Int.h:
+
+../Src/HAL/HSERVO/HSERVO_Config.h:
+
+../Src/HAL/HSERVO/HSERVO_Int.h:
+
+../Src/HAL/HSERVO/../../MCAl/MTIMER/MTIMER_Int.h:

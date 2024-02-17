@@ -1,0 +1,27 @@
+Src/HAL/HMOTOR/HMOTOR.o: ../Src/HAL/HMOTOR/HMOTOR.c \
+ ../Src/HAL/HMOTOR/../../LIB/BIT_MATH.h \
+ ../Src/HAL/HMOTOR/../../MCAL/MGPIO/MGPIO_Int.h \
+ ../Src/HAL/HMOTOR/../../MCAL/MGPIO/../../LIB/STD_TYPES.h \
+ ../Src/HAL/HMOTOR/../../MCAL/MGPIO/MGPIO_Config.h \
+ ../Src/HAL/HMOTOR/HMOTOR.h ../Src/HAL/HMOTOR/../../LIB/STD_TYPES.h \
+ ../Src/HAL/HMOTOR/../../MCAL/MTIMER/MTIMER_Int.h \
+ ../Src/HAL/HMOTOR/../../MCAL/MEXTI/MEXTI_int.h \
+ ../Src/HAL/HMOTOR/../../MCAL/MSTK/MSYSTICK_int.h
+
+../Src/HAL/HMOTOR/../../LIB/BIT_MATH.h:
+
+../Src/HAL/HMOTOR/../../MCAL/MGPIO/MGPIO_Int.h:
+
+../Src/HAL/HMOTOR/../../MCAL/MGPIO/../../LIB/STD_TYPES.h:
+
+../Src/HAL/HMOTOR/../../MCAL/MGPIO/MGPIO_Config.h:
+
+../Src/HAL/HMOTOR/HMOTOR.h:
+
+../Src/HAL/HMOTOR/../../LIB/STD_TYPES.h:
+
+../Src/HAL/HMOTOR/../../MCAL/MTIMER/MTIMER_Int.h:
+
+../Src/HAL/HMOTOR/../../MCAL/MEXTI/MEXTI_int.h:
+
+../Src/HAL/HMOTOR/../../MCAL/MSTK/MSYSTICK_int.h:

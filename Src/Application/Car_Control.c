@@ -15,9 +15,9 @@ void CAR_CONTROL_Move(f32 distance, s8 direction) {
 
     u8 speed = 0;
 
-    HAL_MOTOR_MOVE(direction, speed);
+    // HAL_MOTOR_MOVE(direction, speed);
 }
-
+ 
 void CAR_CONTROL_Steer(s8 angle) {
     // Steer the servo motor
 
@@ -40,7 +40,7 @@ void CAR_CONTROL_Steer(s8 angle) {
         for (u8 i = 5; i < angle; i+5)
         {
             angle = 85 + i;
-            HSERVO_vServoDeg(angle,angle,angle);
+            // HSERVO_vServoDeg(angle,angle,angle);
         }
    }
    else
@@ -52,8 +52,10 @@ void CAR_CONTROL_Steer(s8 angle) {
         for (u8 i = -5; i > angle; i-5)
         {
             angle = 85 + i;
-            HSERVO_vServoDeg(angle,angle,angle);
+            // HSERVO_vServoDeg(angle,angle,angle);
         }
    }
    
 }
+
+*/
