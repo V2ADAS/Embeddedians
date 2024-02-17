@@ -1,14 +1,19 @@
-/*
- * MSTK_Prog.c
- *
- *  Created on: Dec 3, 2023
- *      Author: Hardware
- */
-
+/*******************************************************************************************************/
+/* Author            : Amr Elmaghraby                                                                   */
+/* Version           : V0.0.0                                                                          */
+/* Data              : 5 nov 2023                                                                      */
+/* Description       : Driver Functions Implementation                                                 */
+/*******************************************************************************************************/
+/***************************************************************************/
+/*                           MCAL Components                               */
+/***************************************************************************/
 #include"MSYSTICK_Private.h"
 #include"MSYSTICK_Config.h"
 #include"MSYSTICK_Int.h"
 
+/***************************************************************************/
+/*                        Functions Implementations                        */
+/***************************************************************************/
 static void (*GLOBAL_SYSTICK_CallBack) (void)= STD_NULL;
 
 void MSYSTICK_vInit(void){
@@ -23,7 +28,7 @@ void MSYSTICK_vInit(void){
 	CLR_BIT(STK->CTRL,STK_EN);
 }
 
-void MSYSTICK_vTimeMS(u32 Copy_u32Delay){
+void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay){
 	//Cal Value in mills sec
 	Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
 	//Load Reload Value
@@ -37,11 +42,14 @@ void MSYSTICK_vTimeMS(u32 Copy_u32Delay){
 }
 
 void MSYSTICK_vDelayms(u32 Copy_u32Delay){
-
+	/* MAX Delay: ((1or8)/SYS_CLOCK)* 2^24  " 1.04sec for HSI " */
 	//Disable INT
 	CLR_BIT(STK->CTRL,STK_INT);
 	//Cal Value in mills sec
-	Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
+	if( (Copy_u32Delay*1000 * STK_CLOCK) >= MAX_LOAD_VALUE)
+		Copy_u32Delay = MAX_LOAD_VALUE;
+	else
+		Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
 	//Load Reload Value
 	STK->LOAD = Copy_u32Delay;
 	//CLR VAL Reg

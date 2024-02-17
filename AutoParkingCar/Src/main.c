@@ -32,6 +32,7 @@ int main (void){
 	MRCC_vEnableClock(USART2_EN);
 	MRCC_vEnableClock(USART6_EN);
 	MRCC_vEnableClock(TIM1_EN);
+	/**/
 
 
 	//*************************test*******************************

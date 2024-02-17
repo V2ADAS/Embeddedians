@@ -11,3 +11,12 @@ BlackPill_RC/
 !BlackPill_RC/Src/HAL/
 !BlackPill_RC/Src/LIB/
 
+
+# Ignore BlackPill_RC/ folder and its contents
+AutoParkingCar/
+
+# Exclude specific subfolders within BlackPill_RC/
+!AutoParkingCar/Src/MCAL/
+!AutoParkingCar/Src/HAL/
+!AutoParkingCar/Src/LIB/
+
