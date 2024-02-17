@@ -1,0 +1,135 @@
+01:45:34 **** Clean-only build of configuration Debug for project AutoParkingCar ****
+make -j8 clean 
+rm -rf *
+ 
+01:45:35 **** Build of configuration Debug for project AutoParkingCar ****
+make -j8 all 
+arm-none-eabi-gcc -mcpu=cortex-m4 -g3 -c -x assembler-with-cpp -MMD -MP -MF"Startup/startup_stm32f401rctx.d" -MT"Startup/startup_stm32f401rctx.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Startup/startup_stm32f401rctx.o" "../Startup/startup_stm32f401rctx.s"
+arm-none-eabi-gcc "../Src/MCAL/MUART/MUSART_Program.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MUART/MUSART_Program.d" -MT"Src/MCAL/MUART/MUSART_Program.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MUART/MUSART_Program.o"
+arm-none-eabi-gcc "../Src/MCAL/MTIMER/MTIMER_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MTIMER/MTIMER_Prog.d" -MT"Src/MCAL/MTIMER/MTIMER_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MTIMER/MTIMER_Prog.o"
+arm-none-eabi-gcc "../Src/MCAL/MSTK/MSYSTICK_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MSTK/MSYSTICK_Prog.d" -MT"Src/MCAL/MSTK/MSYSTICK_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MSTK/MSYSTICK_Prog.o"
+arm-none-eabi-gcc "../Src/MCAL/MSPI/MSPI_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MSPI/MSPI_Prog.d" -MT"Src/MCAL/MSPI/MSPI_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MSPI/MSPI_Prog.o"
+arm-none-eabi-gcc "../Src/MCAL/MRCC/MRCC_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MRCC/MRCC_Prog.d" -MT"Src/MCAL/MRCC/MRCC_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MRCC/MRCC_Prog.o"
+arm-none-eabi-gcc "../Src/MCAL/MNVIC/MNVIC_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MNVIC/MNVIC_Prog.d" -MT"Src/MCAL/MNVIC/MNVIC_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MNVIC/MNVIC_Prog.o"
+arm-none-eabi-gcc "../Src/MCAL/MIWDT/MIWDT_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MIWDT/MIWDT_Prog.d" -MT"Src/MCAL/MIWDT/MIWDT_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MIWDT/MIWDT_Prog.o"
+../Src/MCAL/MTIMER/MTIMER_Prog.c: In function 'GET_TIMER':
+../Src/MCAL/MTIMER/MTIMER_Prog.c:19:26: warning: initialization makes pointer from integer without a cast [-Wint-conversion]
+  TIM2_5_MemMap_t* TIMx = (u32)TIM2 + Timer_Offset[Copy_u8TimerNum-1];
+                          ^
+arm-none-eabi-gcc "../Src/MCAL/MI2C/MI2C_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MI2C/MI2C_Prog.d" -MT"Src/MCAL/MI2C/MI2C_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MI2C/MI2C_Prog.o"
+arm-none-eabi-gcc "../Src/MCAL/MGPIO/MGPIO_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MGPIO/MGPIO_Prog.d" -MT"Src/MCAL/MGPIO/MGPIO_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MGPIO/MGPIO_Prog.o"
+arm-none-eabi-gcc "../Src/MCAL/MEXTI/MEXTI_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/MCAL/MEXTI/MEXTI_Prog.d" -MT"Src/MCAL/MEXTI/MEXTI_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/MCAL/MEXTI/MEXTI_Prog.o"
+arm-none-eabi-gcc "../Src/HAL/HULTRA_SONIC/HULTRA_SONIC_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/HAL/HULTRA_SONIC/HULTRA_SONIC_Prog.d" -MT"Src/HAL/HULTRA_SONIC/HULTRA_SONIC_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/HAL/HULTRA_SONIC/HULTRA_SONIC_Prog.o"
+arm-none-eabi-gcc "../Src/HAL/HSERVO/HSERVO_Prog.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/HAL/HSERVO/HSERVO_Prog.d" -MT"Src/HAL/HSERVO/HSERVO_Prog.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/HAL/HSERVO/HSERVO_Prog.o"
+arm-none-eabi-gcc "../Src/HAL/HMOTOR/HMOTOR.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/HAL/HMOTOR/HMOTOR.d" -MT"Src/HAL/HMOTOR/HMOTOR.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/HAL/HMOTOR/HMOTOR.o"
+arm-none-eabi-gcc "../Src/HAL/HCOMPASS/HAL_COMPASS.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/HAL/HCOMPASS/HAL_COMPASS.d" -MT"Src/HAL/HCOMPASS/HAL_COMPASS.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/HAL/HCOMPASS/HAL_COMPASS.o"
+arm-none-eabi-gcc "../Src/Application/Car_Control.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/Application/Car_Control.d" -MT"Src/Application/Car_Control.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/Application/Car_Control.o"
+../Src/HAL/HMOTOR/HMOTOR.c: In function 'HAL_MOTOR_Init':
+../Src/HAL/HMOTOR/HMOTOR.c:42:2: warning: implicit declaration of function 'MNVIC_vEnableInterrupt'; did you mean 'MEXTI_vEnableInterrupt'? [-Wimplicit-function-declaration]
+  MNVIC_vEnableInterrupt(NVIC_EXTIx);
+  ^~~~~~~~~~~~~~~~~~~~~~
+  MEXTI_vEnableInterrupt
+arm-none-eabi-gcc "../Src/Application/Collision_Avoidance.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/Application/Collision_Avoidance.d" -MT"Src/Application/Collision_Avoidance.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/Application/Collision_Avoidance.o"
+arm-none-eabi-gcc "../Src/Application/Motion_Planing.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/Application/Motion_Planing.d" -MT"Src/Application/Motion_Planing.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/Application/Motion_Planing.o"
+In file included from ../Src/Application/Inc/CAR_CONTROL.h:5:0,
+                 from ../Src/Application/Car_Control.c:1:
+../Src/Application/Inc/../../HAL/HSERVO/HSERVO_Int.h:51:55: error: unknown type name 'Enum_TIMER_NUM'; did you mean 'Enum_SERVO_NUM'?
+ void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8TimerNum,u8 Copy_u8ChannelNum);
+                                                       ^~~~~~~~~~~~~~
+                                                       Enum_SERVO_NUM
+../Src/Application/Car_Control.c: In function 'CAR_CONTROL_Move':
+../Src/Application/Car_Control.c:18:6: error: too few arguments to function 'HAL_MOTOR_MOVE'
+      HAL_MOTOR_MOVE(direction, speed);
+      ^~~~~~~~~~~~~~
+In file included from ../Src/Application/Inc/CAR_CONTROL.h:4:0,
+                 from ../Src/Application/Car_Control.c:1:
+../Src/Application/Inc/../../HAL/HMOTOR/HMOTOR.h:18:6: note: declared here
+ void HAL_MOTOR_MOVE(u8 DIRCTION ,u8 SPEED ,f32 DISTANCE_cm_);
+      ^~~~~~~~~~~~~~
+../Src/Application/Car_Control.c: In function 'CAR_CONTROL_Steer':
+../Src/Application/Car_Control.c:40:36: warning: statement with no effect [-Wunused-value]
+         for (u8 i = 5; i < angle; i+5)
+                                   ~^~
+../Src/Application/Car_Control.c:43:14: error: too many arguments to function 'HSERVO_vServoDeg'
+              HSERVO_vServoDeg(angle,angle,angle);
+              ^~~~~~~~~~~~~~~~
+In file included from ../Src/Application/Inc/CAR_CONTROL.h:5:0,
+                 from ../Src/Application/Car_Control.c:1:
+../Src/Application/Inc/../../HAL/HSERVO/HSERVO_Int.h:71:6: note: declared here
+ void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum,s8 Copy_s8Deg);
+      ^~~~~~~~~~~~~~~~
+../Src/Application/Car_Control.c:52:37: warning: statement with no effect [-Wunused-value]
+         for (u8 i = -5; i > angle; i-5)
+                                    ~^~
+../Src/Application/Car_Control.c:55:14: error: too many arguments to function 'HSERVO_vServoDeg'
+              HSERVO_vServoDeg(angle,angle,angle);
+              ^~~~~~~~~~~~~~~~
+In file included from ../Src/Application/Inc/CAR_CONTROL.h:5:0,
+                 from ../Src/Application/Car_Control.c:1:
+../Src/Application/Inc/../../HAL/HSERVO/HSERVO_Int.h:71:6: note: declared here
+ void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum,s8 Copy_s8Deg);
+      ^~~~~~~~~~~~~~~~
+arm-none-eabi-gcc "../Src/Application/Path_Tracking.c" -mcpu=cortex-m4 -std=gnu11 -g3 -DSTM32 -DSTM32F4 -DSTM32F401RCTx -DDEBUG -c -I../Inc -I../Inc/STM32F4xx_HAL_Driver/Inc/Legacy -I../Inc/STM32F4xx_HAL_Driver/Inc -I../Inc/CMSIS/Device/ST/STM32F4xx/Include -I../Inc/CMSIS/Include -O0 -ffunction-sections -fdata-sections -Wall -mcpu=cortex-m4 -mfpu=fpv4-sp-d16 -mfloat-abi=hard -fstack-usage -MMD -MP -MF"Src/Application/Path_Tracking.d" -MT"Src/Application/Path_Tracking.o" --specs=nano.specs -mfpu=fpv4-sp-d16 -mfloat-abi=hard -mthumb -o "Src/Application/Path_Tracking.o"
+make: *** [Src/Application/subdir.mk:30: Src/Application/Car_Control.o] Error 1
+make: *** Waiting for unfinished jobs....
+../Src/Application/Motion_Planing.c: In function 'Scan_Process':
+../Src/Application/Motion_Planing.c:74:23: error: incompatible type for argument 1 of 'HULTRA_vGetDistance'
+   HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
+                       ^
+In file included from ../Src/Application/Motion_Planing.c:5:0:
+../Src/Application/../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h:102:6: note: expected 'Enum_ULTRA_SONIC_NUM {aka enum <anonymous>}' but argument is of type 'f64 * {aka double *}'
+ void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance);
+      ^~~~~~~~~~~~~~~~~~~
+../Src/Application/Motion_Planing.c:74:35: warning: passing argument 2 of 'HULTRA_vGetDistance' makes pointer from integer without a cast [-Wint-conversion]
+   HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
+                                   ^~~~~~
+In file included from ../Src/Application/Motion_Planing.c:5:0:
+../Src/Application/../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h:102:6: note: expected 'f64 * {aka double *}' but argument is of type 'int'
+ void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance);
+      ^~~~~~~~~~~~~~~~~~~
+../Src/Application/Motion_Planing.c:74:3: error: too many arguments to function 'HULTRA_vGetDistance'
+   HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
+   ^~~~~~~~~~~~~~~~~~~
+In file included from ../Src/Application/Motion_Planing.c:5:0:
+../Src/Application/../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h:102:6: note: declared here
+ void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance);
+      ^~~~~~~~~~~~~~~~~~~
+../Src/Application/Motion_Planing.c: In function 'Scan':
+../Src/Application/Motion_Planing.c:107:23: error: incompatible type for argument 1 of 'HULTRA_vGetDistance'
+   HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
+                       ^
+In file included from ../Src/Application/Motion_Planing.c:5:0:
+../Src/Application/../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h:102:6: note: expected 'Enum_ULTRA_SONIC_NUM {aka enum <anonymous>}' but argument is of type 'f64 * {aka double *}'
+ void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance);
+      ^~~~~~~~~~~~~~~~~~~
+../Src/Application/Motion_Planing.c:107:35: warning: passing argument 2 of 'HULTRA_vGetDistance' makes pointer from integer without a cast [-Wint-conversion]
+   HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
+                                   ^~~~~~
+In file included from ../Src/Application/Motion_Planing.c:5:0:
+../Src/Application/../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h:102:6: note: expected 'f64 * {aka double *}' but argument is of type 'int'
+ void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance);
+      ^~~~~~~~~~~~~~~~~~~
+../Src/Application/Motion_Planing.c:107:3: error: too many arguments to function 'HULTRA_vGetDistance'
+   HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
+   ^~~~~~~~~~~~~~~~~~~
+In file included from ../Src/Application/Motion_Planing.c:5:0:
+../Src/Application/../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h:102:6: note: declared here
+ void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance);
+      ^~~~~~~~~~~~~~~~~~~
+make: *** [Src/Application/subdir.mk:34: Src/Application/Motion_Planing.o] Error 1
+../Src/Application/Path_Tracking.c: In function 'PT_TrackThePath':
+../Src/Application/Path_Tracking.c:52:10: warning: implicit declaration of function 'Get_Angle_of_slope'; did you mean 'LOC_GetAngleofslope'? [-Wimplicit-function-declaration]
+  angle = Get_Angle_of_slope(current_point, next_point);
+          ^~~~~~~~~~~~~~~~~~
+          LOC_GetAngleofslope
+../Src/Application/Path_Tracking.c:47:17: warning: variable 'angle' set but not used [-Wunused-but-set-variable]
+  f32 distance , angle ;
+                 ^~~~~
+../Src/Application/Path_Tracking.c:47:6: warning: variable 'distance' set but not used [-Wunused-but-set-variable]
+  f32 distance , angle ;
+      ^~~~~~~~
+At top level:
+../Src/Application/Path_Tracking.c:33:11: warning: 'LOC_GetAngleofslope' defined but not used [-Wunused-function]
+ static s8 LOC_GetAngleofslope(Point_t point1 ,Point_t point2){
+           ^~~~~~~~~~~~~~~~~~~
+"make -j8 all" terminated with exit code 2. Build might be incomplete.
