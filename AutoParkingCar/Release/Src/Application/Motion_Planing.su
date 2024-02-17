@@ -1,8 +1,0 @@
-Motion_Planing.c:23:6:Set_Param_A	0	static
-Motion_Planing.c:24:6:Set_Param_B	0	static
-Motion_Planing.c:30:5:PaB_Path	56	static
-Motion_Planing.c:56:5:PeB_Path	0	static
-Motion_Planing.c:62:5:PeF_Path	0	static
-Motion_Planing.c:67:6:Scan_Process	48	static
-Motion_Planing.c:102:6:Scan	16	static
-Motion_Planing.c:111:6:Process	72	static

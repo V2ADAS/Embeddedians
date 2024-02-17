@@ -1,8 +1,0 @@
-MSYSTICK_Prog.c:19:6:MSYSTICK_vInit	4	static
-MSYSTICK_Prog.c:31:6:MSYSTICK_vPeriodicMS	16	static
-MSYSTICK_Prog.c:44:6:MSYSTICK_vDelayms	16	static
-MSYSTICK_Prog.c:65:5:MSYSTICK_u32GetElapsedTime	16	static
-MSYSTICK_Prog.c:71:5:MSYSTICK_u32GetRemainingTime	4	static
-MSYSTICK_Prog.c:76:6:MSYSTICK_vStop	4	static
-MSYSTICK_Prog.c:81:6:MSYSTICK_vCallBack	16	static
-MSYSTICK_Prog.c:85:6:SysTick_Handler	8	static

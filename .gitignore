@@ -1,8 +1,6 @@
 # Ignore BlackPill_RC/ folder and its contents
-BlackPill/*
-.metadata/
-RemoteSystemsTempFiles/
-.gitignore
+BlackPill_RC/
+
 # Exclude specific subfolders within BlackPill_RC/
 !BlackPill/Src/MCAL/
 !BlackPill/Src/HAL/
