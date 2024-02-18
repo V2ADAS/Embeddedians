@@ -9,7 +9,7 @@
 
 f64 Distance1=0;
 u8 speed,Car_Length=50,Car_width=35;
-u8 vth,vth_pl,vth_pd,count=0;
+u8 vth,vth_pl,vth_pd,count2;
 u8 park_length, park_width;
 
 Point_t point_c;
