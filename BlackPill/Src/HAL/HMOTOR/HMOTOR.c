@@ -10,7 +10,6 @@
 #define WHEEL_AREA   26.4
 #define PULSES_PER_REVOLUTION 1024
 
-
 volatile MOTOR_PINS_t Motor_Pins ;
 volatile u32 encoder_pulses = 0 ;
 volatile u32 temp_pulses = 0 ;

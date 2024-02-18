@@ -8,7 +8,6 @@
 #include"MTIMER_Int.h"
 #include"MTIMER_Config.h"
 
-
 static void (*GLOBAL_Ptr[8])(void)={STD_NULL};
 
 void TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum);
