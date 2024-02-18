@@ -1,7 +1,0 @@
-MUSART_Program.c:26:6:MUART_Enable	24	static
-MUSART_Program.c:59:6:MUART_Disable	24	static
-MUSART_Program.c:65:6:MUART_Send_Byte	24	static
-MUSART_Program.c:72:6:MUART_Send_Data	24	static
-MUSART_Program.c:86:4:MUART_Receive_Byte	24	static
-MUSART_Program.c:97:6:MUART_Receive_Data	16	static
-MUSART_Program.c:102:11:Get_UART	24	static

@@ -1,13 +1,13 @@
-
-Src/main.c
-Src/syscalls.c
-Src/sysmem.c
-
 # Ignore BlackPill_RC/ folder and its contents
-BlackPill_RC/
+BlackPill/*
+.metadata/
+RemoteSystemsTempFiles/
+.gitignore
+
 
 # Exclude specific subfolders within BlackPill_RC/
-!BlackPill_RC/Src/MCAL/
-!BlackPill_RC/Src/HAL/
-!BlackPill_RC/Src/LIB/
+!BlackPill/Src/MCAL/
+!BlackPill/Src/HAL/
+!BlackPill/Src/LIB/
+!BlackPill/Src/APP/
 
