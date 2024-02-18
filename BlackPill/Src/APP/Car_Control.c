@@ -1,7 +1,7 @@
 #include "Inc/CAR_CONTROL.h"
 
+void CAR_CONTROL(u8 direction, f32 distance, s8 degree){
 
-void CAR_CONTROL_Move(f32 distance, s8 direction) {
     // Control the movement of the DC motor
 
     /*
@@ -13,13 +13,7 @@ void CAR_CONTROL_Move(f32 distance, s8 direction) {
         Also, specify the time for this speed, which can be easily calculated using the equation: distance / speed.
     */ 
 
-    u8 speed = 0;
-
-    // HAL_MOTOR_MOVE(direction, speed);
-}
- 
-void CAR_CONTROL_Steer(s8 angle) {
-    // Steer the servo motor
+   // Steer the servo motor
 
     /*
         Positive value: Rotate clockwise
@@ -30,31 +24,11 @@ void CAR_CONTROL_Steer(s8 angle) {
         So, Gradual adjustments are required for steering control.
     */
 
+    u8 speed = 50;
 
-   if (angle > 0)
-   {
-        if (angle > 45)
-        {
-            angle = 45;
-        }
-        for (u8 i = 5; i < angle; i+5)
-        {
-            angle = 85 + i;
-            // HSERVO_vServoDeg(angle,angle,angle);
-        }
-   }
-   else
-   {
-        if (angle < -45)
-        {
-            angle = -45;
-        }
-        for (u8 i = -5; i > angle; i-5)
-        {
-            angle = 85 + i;
-            // HSERVO_vServoDeg(angle,angle,angle);
-        }
-   }
-   
+
+    HSERVO_vServoDeg(SERVO1, degree);
+
+    HAL_MOTOR_MOVE(direction, speed, distance);
 }
 
