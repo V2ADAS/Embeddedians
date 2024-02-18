@@ -64,79 +64,61 @@ f32 PeF_Path(f32 x) {
   return -1;
 }
 
-void Scan_Process (u8 Scanned_Area[], u8 speed)
+void Parallel_Scan_Process ()
 {
-	vth_pl=Car_Length/speed; // parallel parking
-	vth_pd=Car_width/speed; // perpendicular parking
-	for (int i=0;i<100;i++)
+	vth_pl=Car_Length; // parallel parking
+	static int i=0;
+	static int count=0;
+	HULTRA_vSendTrigger(PORTB, PIN12);
+	HULTRA_vGetDistance(ULTRA_SONIC1,&Distance1);
+	Scanned_Area[i]=(u8)Distance1;
+	i++;
+	if (((u8)Distance1 > Car_width) )
 	{
-		HULTRA_vSendTrigger(PORTB, PIN12);
-		// TODO : fix this
-		//HULTRA_vGetDistance(&Distance1, TIMER1, CH2);
-		Scanned_Area[i]=(u8)Distance1;
-		if (((u8)Distance1 > Car_width) && ((u8)Distance1 < Car_Length) )
-		{
-			scenario =PaB;
-			vth=vth_pl;
-			count++;
-		}
-		else if (((u8)Distance1 > Car_Length))
-		{
-			scenario =PeB;
-			vth=vth_pd;
-			count++;
-		}
-		if (count > vth)
-		{
-			park_length = (u8)Distance1;
-			park_width = count * speed;
-			// WE FOUND A PARKING SPACE
-			// if the car moves 5cm per sec , then vth should be > 7 sec
-			// if we are parking parallel & vth > 10 if prependicular
-		}
-		//	MSYSTICK_vDelayms(1000);  // Wait for a second
+		count++;
 	}
-	point_c.y=park_length/2;
-	point_c.x=park_width/2;
+	if (count > vth_pl)
+	{
+		park_length = (u8)Distance1;
+		park_width = count ;
+		// WE FOUND A PARKING SPACE
+		point_c.y=park_length/2;
+		point_c.x=park_width/2;
+	}
+	//	MSYSTICK_vDelayms(1000);  // Wait for a second
+
 }
 
 void Scan(u8 Scanned_Area[])
 {
-	for (int i=0;i<100;i++)
-	{
-		HULTRA_vSendTrigger(PORTB, PIN12);
-		// TODO : fix this
-		HULTRA_vGetDistance(ULTRA_SONIC1,&Distance1);
-		Scanned_Area[i]=(u8)Distance1;
-	}
+	static int i=0;
+	HULTRA_vSendTrigger(PORTB, PIN12);
+	HULTRA_vGetDistance(ULTRA_SONIC1,&Distance1);
+	Scanned_Area[i]=(u8)Distance1;
+	i++;
 }
 void Process(u8 Scanned_Area[])
 {
+	vth_pl=Car_Length; // parallel parking
+	static int count2=0;
+
 	for (int i=0;i<100;i++)
 	{
-		if ((Scanned_Area[i] > Car_width) && (Scanned_Area[i] < Car_Length) )
+		if ((Scanned_Area[i] > Car_width))
 		{
-			scenario =PaB;
-			vth=vth_pl;
-			count++;
+			count2++;
 		}
-		else if ((Distance1 > Car_Length))
-		{
-			scenario =PeB;
-			vth=vth_pd;
-			count++;
-		}
-		if (count > vth)
+
+		if (count2 > vth)
 		{
 			park_length = Distance1;
-			park_width = count * speed;
+			park_width = count2 ;
 			// WE FOUND A PARKING SPACE
-			// if the car moves 5cm per sec , then vth should be > 7 sec
-			// if we are parking parallel & vth > 10 if prependicular
+			point_c.y=park_length/2;
+			point_c.x=park_width/2;
 		}
 	}
-	point_c.y=park_length/2;
-	point_c.x=park_width/2;
+
 }
 
 void Plot_The_Path(Scenario_t Scenario , .../*path */ );
