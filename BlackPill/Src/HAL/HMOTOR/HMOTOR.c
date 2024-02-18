@@ -17,6 +17,12 @@ volatile u32 temp_pulses = 0 ;
 void Increment_Pulse_CallBack(){
 	encoder_pulses++ ;
 	temp_pulses++ ;
+	static int j=1;
+	if (encoder_pulses >= 38*j)
+	{
+		Parallel_Scan_Process();
+		j++;
+	}
 }
 
 
