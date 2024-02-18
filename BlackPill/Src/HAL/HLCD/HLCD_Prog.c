@@ -10,7 +10,6 @@
 #include "../../MCAL/MSTK/MSYSTICK_Int.h"
 
 /** Put this in the src folder **/
-
 #include "HLCD_Int.h"
 
 void lcd_send_cmd (char cmd)
