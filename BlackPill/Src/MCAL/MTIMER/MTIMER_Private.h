@@ -67,6 +67,9 @@
 #define	CCxP	1
 #define CCxNE	2
 #define CCxNP	3
+/*SMCR REGISTER*/
+#define SMS0	0
+#define TS0		4
 
 typedef struct{
 	u32 CR1; //Control Reg 1

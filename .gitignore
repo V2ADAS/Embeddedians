@@ -1,5 +1,9 @@
 # Ignore BlackPill_RC/ folder and its contents
 BlackPill/*
+.metadata/
+RemoteSystemsTempFiles/
+.gitignore
+
 
 # Exclude specific subfolders within BlackPill_RC/
 !BlackPill/Src/MCAL/
