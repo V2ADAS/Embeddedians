@@ -1,14 +1,16 @@
 /*******************************************************************************************************/
 /* Author            : Amr ElMaghraby                                                            	   */
-/* Version           : V0.0.0                                                                          */
+/* Version           : V1.0.9                                                                          */
 /* Data              : 28 Jan 2024                                                                     */
 /* Description       : MTimer_Prog.c --> implementations                                               */
 /* Module  Features  :                                                                                 */
 /*      01- MTIMER_vPeriodicMS                                                                         */
-/*      02- MTIMER_vPWM                                                                                */
-/*      03- MTIMER_vICU                                                                                */
-/*      04- MTIMER_GET_ICU                                                                             */
-/*      05- MTIMER_CallBack                                                                            */
+/*		02- MTIMER_EXTCNTClock																		   */
+/*      03- MTIMER_vClearCNT																		   */
+/*      04- MTIMER_vPWM                                                                                */
+/*      05- MTIMER_vICU                                                                                */
+/*      06- MTIMER_GET_ICU                                                                             */
+/*      07- MTIMER_CallBack                                                                            */
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
@@ -21,7 +23,6 @@
 /*                                    Include files needed for MTIMER_Int.h 		                   */
 /*******************************************************************************************************/
 #include"../../LIB/STD_TYPES.h" //Standard Types Lib
-
 /*******************************************************************************************************/
 /*                                   enum for Timer numbers   					                       */
 /*						' TIMER 1, TIMER2, TIMER3, TIMER4, TIMER5,									   */
@@ -53,6 +54,104 @@ typedef enum{
 }Enum_TIMER_CHs;
 /*******************************************************************************************************/
 
+/*******************************************************************************************************/
+//   Timer and Channel Pin Mapping:
+/* Timer and Channel Pin Mapping:
+   TIMER1, CH1 -> Port A, Pin 8
+   TIMER1, CH2 -> Port A, Pin 9
+   TIMER1, CH3 -> Port A, Pin 10
+   TIMER1, CH4 -> Port A, Pin 11
+
+   TIMER2, CH1 -> Port A, Pin 15
+   TIMER2, CH2 -> Port B, Pin 3
+   TIMER2, CH3 -> Port A, Pin 2
+   TIMER2, CH4 -> Port A, Pin 3
+
+   TIMER3, CH1 -> Port A, Pin 6
+   TIMER3, CH2 -> Port A, Pin 7
+   TIMER3, CH3 -> Port B, Pin 0
+   TIMER3, CH4 -> Port B, Pin 1
+
+   TIMER4, CH1 -> Port B, Pin 6
+   TIMER4, CH2 -> Port B, Pin 7
+   TIMER4, CH3 -> Port B, Pin 8
+   TIMER4, CH4 -> Port B, Pin 9
+
+   TIMER5, CH1 -> Port A, Pin 0
+   TIMER5, CH2 -> Port A, Pin 1
+   TIMER5, CH3 -> Port A, Pin 2
+   TIMER5, CH4 -> Port A, Pin 3
+
+   TIMER9, CH1 -> Port A, Pin 2
+   TIMER9, CH2 -> Port A, Pin 3
+
+   TIMER10, CH1 -> Port B, Pin 8
+
+   TIMER11, CH1 -> Port B, Pin 9
+*/
+
+#include"../MGPIO/MGPIO_int.h"
+
+static u8 TIMER_PORT_MAP[TIMER11][CH4]=
+{
+		/*TIMER 1*/
+		{	PORTA,	PORTA,	PORTA,	PORTA	},
+
+		/* TIMER2 */
+		{	PORTA,	PORTB,	PORTA,	PORTA	},
+
+		/* TIMER3 */
+		{	PORTA,	PORTA,	PORTB,	PORTB	},
+
+		/* TIMER4 */
+		{	PORTB,	PORTB,	PORTB,	PORTB	},
+
+		/* TIMER5 */
+		{	PORTA,	PORTA,	PORTA,	PORTA	},
+
+		/* TIMER9 */
+		{	PORTA,	PORTA,	PORTA,	PORTA	},
+
+		/* TIMER10 */
+		{	PORTB,	PORTB,	PORTA,	PORTA	},
+
+		/* TIMER11 */
+		{	PORTB,	PORTB,	PORTA,	PORTA	},
+};
+
+static u8 TIMER_PIN_MAP[TIMER11][CH4]=
+{
+		/*TIMER 1*/
+		{	PIN8,	PIN9,	PIN10,	PIN11	},
+
+		/* TIMER2 */
+		{	PIN15,	PIN3,	PIN2,	PIN3	},
+
+		/* TIMER3 */
+		{	PIN6,	PIN7,	PIN0,	PIN1	},
+
+		/* TIMER4 */
+		{	PIN6,	PIN7,	PIN8,	PIN9	},
+
+		/* TIMER5 */
+		{	PIN0,	PIN1,	PIN2,	PIN3	},
+
+		/* TIMER9 */
+		{	PIN2,	PIN3,	PIN2,	PIN3	},
+
+		/* TIMER10 */
+		{	PIN8,	PIN8,	PIN8,	PIN8	},
+
+		/* TIMER11 */
+		{	PIN9,	PIN9,	PIN9,	PIN9	}
+};
+
+static u8 TIMER_AF[TIMER11]={
+		MGPIO_ALTFUNC_TIM12,MGPIO_ALTFUNC_TIM12,
+		MGPIO_ALTFUNC_TIM35,MGPIO_ALTFUNC_TIM35,MGPIO_ALTFUNC_TIM35,
+		MGPIO_ALTFUNC_TIM911,MGPIO_ALTFUNC_TIM911,MGPIO_ALTFUNC_TIM911		};
+/*******************************************************************************************************/
+
 
 
 /******************************************************************************************************/
@@ -76,7 +175,27 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay);
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      02- MTIMER_vClearCNT                                          */
+/*											02- MTIMER_vEXTCNTClock									  */
+/*----------------------------------------------------------------------------------------------------*/
+/**
+ * @brief Configures the specified TIMER channel to count external events on the rising edge of the input signal.
+ * @param Copy_u8TimerNum: The TIMER number to be configured.
+ *                         Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ *                           TIMER5, TIMER9 }.
+ * @param Copy_u8Channel: The channel on which external events will be counted.
+ *                        Expected to be Enum_TIMER_CHs ==> { CH1, CH2 }.
+ * @param Copy_u32Max_Value: The maximum value for the counter. When the counter reaches this value, it will reset.
+ * @return void
+ * NOTE: NO EXTERNAL CLOCK MODE FOR CH3 or CH4 for Any TIMER
+ * 			ALSO NO EXTERNAL MODE AT ALL FOR TIMER 10 or TIMER 11
+ */
+/*----------------------------------------------------------------------------------------------------*/
+void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel, u32 Copy_u32Max_Value);
+/******************************************************************************************************/
+
+
+/******************************************************************************************************/
+/*                                      03- MTIMER_vClearCNT                                          */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Clears the counter (CNT) of the specified TIMER.
@@ -89,7 +208,7 @@ void MTIMER_vClearCNT(Enum_TIMER_NUM Copy_u8TimerNum);
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      03- MTIMER_vPWM                                       		  */
+/*                                      04- MTIMER_vPWM                                       		  */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Configures the specified TIMER in PWM mode on a specific channel.
@@ -106,7 +225,7 @@ void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel, 
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      04- MTIMER_vICU                                       		  */
+/*                                      05- MTIMER_vICU                                       		  */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Configures the specified TIMER to work as an Input Capture Unit (ICU) on a specific channel.
@@ -121,7 +240,7 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel);
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      05- MTIMER_GET_ICU                                       	  */
+/*                                      06- MTIMER_GET_ICU                                       	  */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Retrieves the captured time value from an Input Capture event on the specified TIMER and channel.
@@ -136,7 +255,7 @@ u32 MTIMER_GET_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel
 /******************************************************************************************************/
 
 /******************************************************************************************************/
-/*                                      06- MTIMER_CallBack                                       	  */
+/*                                      07- MTIMER_CallBack                                       	  */
 /*----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Registers a callback function to be executed when the specified TIMER generates an interrupt.
