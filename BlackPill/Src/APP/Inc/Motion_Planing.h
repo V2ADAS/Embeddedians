@@ -13,8 +13,11 @@ typedef struct
 }Point_t;
 
 
-extern u8 Scanned_Area [100];
+#define Car_Length  50
+#define Car_Width   35
 
+#define Vth_Parallel (1.5*Car_Length)
+u8 Scanned_Area [100];
 /*
     Parameter setter functions.
     
@@ -53,7 +56,7 @@ f32 PeB_Path (f32 x);
 //perpendicular forward Path
 f32 PeF_Path (f32 x);
 
-void Scan_Process(u8 Scanned_Area[] , u8 speed);
+void MP_ParallelScanProcess();
 void Scan(u8 Scanned_Area[]);
 void Process(u8 Scanned_Area[]);
 
