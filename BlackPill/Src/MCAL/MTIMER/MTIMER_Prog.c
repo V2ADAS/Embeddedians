@@ -85,10 +85,10 @@ void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8C
 	//2. Configure the input filter duration by writing the IC2F[3:0] bits in the TIMx_CCMR1
 	//register (if no filter is needed, keep IC2F=0000).
 	//FILTERING
-	//SET_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF0 + ( ((Copy_u8Channel-1)%2)*8)));
-	//SET_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF1 + ( ((Copy_u8Channel-1)%2)*8)));
-	//CLR_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF2 + ( ((Copy_u8Channel-1)%2)*8)));
-	//CLR_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF3 + ( ((Copy_u8Channel-1)%2)*8)));
+	SET_BIT(TIMx->CCMR[0],( ICxF0 + ( ((Copy_u8Channel-1)%2)*8)));
+	SET_BIT(TIMx->CCMR[0],( ICxF1 + ( ((Copy_u8Channel-1)%2)*8)));
+	CLR_BIT(TIMx->CCMR[0],( ICxF2 + ( ((Copy_u8Channel-1)%2)*8)));
+	CLR_BIT(TIMx->CCMR[0],( ICxF3 + ( ((Copy_u8Channel-1)%2)*8)));
 	//3. Select rising edge polarity by writing CC2P=0 and CC2NP=0 in the TIMx_CCER register.
 	CLR_BIT(TIMx->CCER, (CCxP + (Copy_u8Channel-1)*4) );
 	//4. Configure the timer in external clock mode 1 by writing SMS=111 in the TIMx_SMCR register.

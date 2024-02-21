@@ -7,16 +7,7 @@
 // TODO: replace math.h with implementations as needed
 #include <math.h>
 
-f64 Distance1=0;
-u8 speed,Car_Length=50,Car_width=35;
-u8 vth,vth_pl,vth_pd,count2;
-u8 park_length, park_width;
-
-Point_t point_c;
-Scenario_t scenario;
-
-u8 Scanned_Area[100];
-
+Point_t point_c;   // Center point of the parking space
 f32 _param_a = 0;
 f32 _param_b = 0;
 
@@ -63,27 +54,31 @@ f32 PeF_Path(f32 x) {
   // TODO: implement this.
   return -1;
 }
-
-void Parallel_Scan_Process ()
+void MP_ParallelScanProcess ()
 {
-	vth_pl=Car_Length; // parallel parking
-	static int i=0;
+	f64 Local_Distance=0;
+	u8 Local_parkL, Local_parkW;
+//	static int i=0;
 	static int count=0;
 	HULTRA_vSendTrigger(PORTB, PIN12);
-	HULTRA_vGetDistance(ULTRA_SONIC1,&Distance1);
-	Scanned_Area[i]=(u8)Distance1;
-	i++;
-	if (((u8)Distance1 > Car_width) )
+	HULTRA_vGetDistance(ULTRA_SONIC1,&Local_Distance);
+//	Scanned_Area[i]=(u8)Local_Distance;
+//	i++;
+	if (((u8)Local_Distance > Car_Width) )
 	{
 		count++;
 	}
-	if (count > vth_pl)
+	else
 	{
-		park_length = (u8)Distance1;
-		park_width = count ;
+		count = 0;
+	}
+	if (count > Vth_Parallel)
+	{
+		Local_parkW = (u8)Local_Distance;
+		Local_parkL = count ;
 		// WE FOUND A PARKING SPACE
-		point_c.y=park_length/2;
-		point_c.x=park_width/2;
+		point_c.y=Local_parkL/2;
+		point_c.x=Local_parkW/2;
 	}
 	//	MSYSTICK_vDelayms(1000);  // Wait for a second
 
@@ -92,34 +87,39 @@ void Parallel_Scan_Process ()
 void Scan(u8 Scanned_Area[])
 {
 	static int i=0;
+	f64 Local_Distance=0;
 	HULTRA_vSendTrigger(PORTB, PIN12);
-	HULTRA_vGetDistance(ULTRA_SONIC1,&Distance1);
-	Scanned_Area[i]=(u8)Distance1;
+	HULTRA_vGetDistance(ULTRA_SONIC1,&Local_Distance);
+	Scanned_Area[i]=(u8)Local_Distance;
 	i++;
 }
 void Process(u8 Scanned_Area[])
 {
-	vth_pl=Car_Length; // parallel parking
-	static int count2=0;
-
+	u8 count=0;
+	u8 Local_parkL, Local_parkW;
 	for (int i=0;i<100;i++)
 	{
-		if ((Scanned_Area[i] > Car_width))
+		if ((Scanned_Area[i] > Car_Width))
 		{
-			count2++;
+			count++;
+		}
+		else
+		{
+			count=0;
 		}
 
-		if (count2 > vth)
+		if (count > Vth_Parallel)
 		{
-			park_length = Distance1;
-			park_width = count2 ;
+			Local_parkW = Scanned_Area[i];
+			Local_parkL = count ;
 			// WE FOUND A PARKING SPACE
-			point_c.y=park_length/2;
-			point_c.x=park_width/2;
+			point_c.y=Local_parkL/2;
+			point_c.x=Local_parkW/2;
 		}
 	}
 
 }
+
 
 void Plot_The_Path(Scenario_t Scenario , .../*path */ );
 

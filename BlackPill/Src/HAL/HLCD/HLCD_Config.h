@@ -1,13 +1,17 @@
-/*
- * HLCD_Config.h
- *
- *  Created on: Feb 15, 2024
- *      Author: Hardware
- */
+/*******************************************************************************************************/
+/* Author            : Amr ElMaghraby "ControllersTech"                                                */
+/* Version           : V1.0.3                                                                          */
+/* Data              : 17 Feb 2024                                                                     */
+/* Description       : HLCD_Config.h --> implementations                                               */
+/*******************************************************************************************************/
 
 #ifndef HAL_HLCD_HLCD_CONFIG_H_
 #define HAL_HLCD_HLCD_CONFIG_H_
 
-#define SLAVE_ADDRESS_LCD 0x27 // change this according to ur setup
+// Define the slave address for the LCD. Change this according to your setup.
+#define SLAVE_ADDRESS_LCD 0x27
+
+// Define the total length of the LCD. Adjust this according to the requirements.
+#define TOT_LCD_LENGTH 70
 
 #endif /* HAL_HLCD_HLCD_CONFIG_H_ */
