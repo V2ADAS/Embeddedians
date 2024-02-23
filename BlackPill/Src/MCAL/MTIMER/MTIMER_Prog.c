@@ -1,20 +1,22 @@
 /*******************************************************************************************************/
 /* Author            : Amr ElMaghraby                                                            	   */
-/* Version           : V1.0.9                                                                          */
+/* Version           : V1.1.0                                                                          */
 /* Data              : 28 Jan 2024                                                                     */
 /* Description       : MTimer_Prog.c --> implementations                                               */
 /* Module  Features  :                                                                                 */
 /*      01- MTIMER_vStartTime                                                                          */
-/*      02- MTIMER_f32ElapsedTime                                                                      */
-/*      03- MTIMER_vPeriodicMS                                                                         */
-/*		04- MTIMER_EXTCNTClock																		   */
-/*      05- MTIMER_vClearCNT																		   */
-/*      06- MTIMER_vPWM                                                                                */
-/*      07- MTIMER_vICU                                                                                */
-/*      08- MTIMER_GET_ICU                                                                             */
-/*      09- MTIMER_CallBack                                                                            */
+/*      02- MTIMER_vCntTimer                                                                          */
+/*      03- MTIMER_vDelayms                                                                            */
+/*      04- MTIMER_f32GetElapsedTime                                                                   */
+/*      05- MTIMER_vPeriodicMS                                                                         */
+/*		06- MTIMER_EXTCNTClock																		   */
+/*      07- MTIMER_vClearCNT																		   */
+/*      08- MTIMER_vPWM                                                                                */
+/*      09- MTIMER_vICU                                                                                */
+/*      10- MTIMER_GET_ICU                                                                             */
+/*      11- MTIMER_CallBack                                                                            */
 /*      Local functions:																			   */
-/* 		01-  LOC_GET_TIMER                                                                                 */
+/* 		01-  LOC_GET_TIMER                                                                             */
 /*      02-  LOC_TIMER_ICU                                                                             */
 /*******************************************************************************************************/
 #include"MTIMER_Private.h"
@@ -96,6 +98,72 @@ void MTIMER_vStartTime(Enum_TIMER_NUM Copy_u8TimerNum) {
     TIMx->CNT = 0xFFFFFFFF;
 }
 /*******************************************************************************************************/
+
+/*******************************************************************************************************/
+/**
+ * @brief Controls the continuation or stopping of the specified TIMER.
+ * @param Copy_u8TimerNum: The TIMER number to control.
+ *                          Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ *                              TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @param Copy_u8TimerCont: The desired action for the TIMER.
+ *                          Expected to be Enum_Timer_Cont ==> { StopTimer, ContinueTimer }
+ * @return void
+ */
+void MTIMER_vCntTimer(Enum_TIMER_NUM Copy_u8TimerNum, Enum_Timer_Cont Copy_u8TimerCont) {
+    // Get the base address of the specified timer
+    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+
+    // Check the desired action for the TIMER
+    switch (Copy_u8TimerCont) {
+        case StopTimer:
+            // Clear the Counter Enable bit to stop the timer
+            CLR_BIT(TIMx->CR1, CEN);
+            break;
+        case ContinueTimer:
+            // Set the Counter Enable bit to continue or start the timer
+            SET_BIT(TIMx->CR1, CEN);
+            break;
+    }
+}
+/*******************************************************************************************************/
+/**
+ * @brief Delays the program execution for the specified duration in milliseconds using the specified TIMER.
+ * @param Copy_u8TimerNum: The TIMER number to use for the delay.
+ *                          Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ *                              TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @param Copy_u32Delayms: The delay duration in milliseconds.
+ * @return void
+ */
+void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
+    // Get the base address of the specified timer
+    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+
+    // Reset Control Register 1 Value
+    TIMx->CR1 = 0;
+
+    // Set the prescaler value to achieve a 1ms time base
+    TIMx->PSC = SYS_CLOCK * 1000 - 1;
+
+    // Set the auto-reload value to MAX Value
+    TIMx->ARR = Copy_u32Delayms;
+
+    // Set the Counter Enable bit to start the timer
+    SET_BIT(TIMx->CR1, CEN);
+
+    // Ensure Starting CNT from 0 as of some problems with TIMER2 and TIMER 5 if "ARR >0x0020000"
+    TIMx->CNT = 0xFFFFFFFF;
+    // Wait for Update flag to be zero
+    while (!GET_BIT(TIMx->SR, 0));
+	// Clear the update interrupt flag of TIMx
+    CLR_BIT(TIMx->SR,0);
+    // Wait for the Timer to reach zero (polling)
+    while ( !GET_BIT(TIMx->SR, 0) );
+	// Clear the update interrupt flag of TIM1
+    CLR_BIT(TIMx->SR,0);
+    // Clear Enable bit to disable the timer
+    CLR_BIT(TIMx->CR1, CEN);
+
+}
 
 
 /*******************************************************************************************************/
