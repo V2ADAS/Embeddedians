@@ -1,90 +1,216 @@
-/*******************************************************************************************************/
-/* Author            : Amr Elmaghraby                                                                   */
-/* Version           : V0.0.0                                                                          */
-/* Data              : 5 nov 2023                                                                      */
-/* Description       : Driver Functions Implementation                                                 */
-/*******************************************************************************************************/
-/***************************************************************************/
-/*                           MCAL Components                               */
-/***************************************************************************/
+/*************************************************************************************************************/
+/* Author            : Amr Elmaghraby                                                               	     */
+/* Version           : V1.0.5                                                                       	     */
+/* Data              : 5 nov 2023                                                                  	         */
+/* Module  Features  :                                                                                       */
+/*      01- void MSYSTICK_vInit(void);                                                                       */
+/*      02- void MSYSTICK_vStartTime(void);                                                                  */
+/*      03- void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);                                                    */
+/*      04- void MSYSTICK_vDelayms(u32 Copy_u32Delay);                                                       */
+/*      05- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
+/*      06- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
+/*      07- void MSYSTICK_vStop(void);                                                                       */
+/*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/*                           				MCAL Components				                            	     */
+/*************************************************************************************************************/
 #include"MSYSTICK_Private.h"
 #include"MSYSTICK_Config.h"
 #include"MSYSTICK_Int.h"
 
-/***************************************************************************/
-/*                        Functions Implementations                        */
-/***************************************************************************/
+/*************************************************************************************************************/
+/*                        					Functions Implementations                                        */
+/*************************************************************************************************************/
+
+//Global Pointer to be used for SYSTICK IRQ Call back function
 static void (*GLOBAL_SYSTICK_CallBack) (void)= STD_NULL;
 
-void MSYSTICK_vInit(void){
+/*************************************************************************************************************/
+/**
+ * @Description Initializes the SysTick timer.
+ *
+ * @Note        This function configures the SysTick timer's clock source and clears its enable flag.
+ *
+ * @return void
+ */
+void MSYSTICK_vInit(void) {
+    // Configure the SysTick timer's clock source based on the selected CLK_SOURCE
+    #if CLK_SOURCE == MSYSTICK_AHB8
+        CLR_BIT(STK->CTRL, STK_CLK_SOURCE);
+    #elif CLK_SOURCE == MSYSTICK_AHB
+        SET_BIT(STK->CTRL, STK_CLK_SOURCE);
+    #endif
 
-	//Clock Source
-#if CLK_SOURCE == MSYSTICK_AHB8
-	CLR_BIT(STK->CTRL,STK_CLK_SOURCE);
-#elif CLK_SOURCE == MSYSTICK_AHB
-	SET_BIT(STK->CTRL,STK_CLK_SOURCE);
-#endif
-	//Clear Flag
-	CLR_BIT(STK->CTRL,STK_EN);
+    // Clear the SysTick timer enable flag
+    CLR_BIT(STK->CTRL, STK_EN);
+}
+/*************************************************************************************************************/
+
+
+/*************************************************************************************************************/
+/**
+ * @brief Starts or enables the SysTick timer for time keeping or other time-dependent operations.
+ *
+ * @note  This function loads the reload value, clears the current value register,
+ * 			 and enables the SysTick timer.
+ *
+ * @return void
+ */
+void MSYSTICK_vStartTime(void) {
+    // Load the reload value
+    STK->LOAD = MAX_LOAD_VALUE;
+
+    // Clear the current value register
+    STK->VAL = 0;
+
+    // Enable the SysTick timer
+    SET_BIT(STK->CTRL, STK_EN);
+}
+/*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/**
+ * @brief Configures the SysTick timer for generating periodic interrupts
+ * 			with a specified delay in milliseconds.
+ *
+ * @param Copy_u32Delay: The delay in milliseconds for the periodic interrupt.
+ *
+ * @note  This function calculates the reload value based on the provided delay, loads the reload value,
+ *        clears the current value register, sets the interrupt enable bit, and enables the SysTick timer.
+ *        The provided delay is adjusted to prevent exceeding the maximum load value.
+ *
+ * @return void
+ */
+void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay) {
+    // Calculate the reload value in milliseconds
+    if ((Copy_u32Delay * 1000 * STK_CLOCK) >= MAX_LOAD_VALUE) {
+        Copy_u32Delay = MAX_LOAD_VALUE;
+    } else {
+        Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
+    }
+
+    // Load the reload value
+    STK->LOAD = Copy_u32Delay - 1;
+
+    // Clear the current value register
+    STK->VAL = CLR;
+
+    // Set the interrupt enable bit
+    SET_BIT(STK->CTRL, STK_INT);
+
+    // Enable the SysTick timer
+    SET_BIT(STK->CTRL, STK_EN);
+}
+/*************************************************************************************************************/
+
+
+/*************************************************************************************************************/
+/**
+ * @brief Delays the program execution for the specified duration in milliseconds using the SysTick timer.
+ *
+ * @param Copy_u32Delay: The delay duration in milliseconds.
+ *
+ * @note  This function disables the SysTick interrupt, calculates the reload value based on
+ * 		  the provided delay,loads the reload value, clears the current value register,
+ *		  enables the SysTick timer, waits for the
+ *        SysTick timer to reach zero (polling), and finally disables the SysTick timer.
+ *        The provided delay is adjusted to prevent exceeding the maximum load value.
+ *
+ * @return void
+ */
+void MSYSTICK_vDelayms(u32 Copy_u32Delay) {
+    /* MAX Delay: ((1 or 8) / SYS_CLOCK) * 2^24 "1.04 sec for HSI" */
+
+    // Disable SysTick interrupt
+    CLR_BIT(STK->CTRL, STK_INT);
+
+    // Calculate the reload value in milliseconds
+    if ((Copy_u32Delay * 1000 * STK_CLOCK) >= MAX_LOAD_VALUE) {
+        Copy_u32Delay = MAX_LOAD_VALUE;
+    } else {
+        Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
+    }
+
+    // Load the reload value
+    STK->LOAD = Copy_u32Delay;
+
+    // Clear the current value register
+    STK->VAL = CLR;
+
+    // Enable the SysTick timer
+    SET_BIT(STK->CTRL, STK_EN);
+
+    // Wait for the SysTick timer to reach zero (polling)
+    while (!GET_BIT(STK->CTRL, COUNT_FLAG));
+
+    // Disable the SysTick timer
+    CLR_BIT(STK->CTRL, STK_EN);
+}
+/*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/**
+ * @brief Retrieves the elapsed time in milliseconds using the SysTick timer.
+ * @note  This function calculates the elapsed time based on the difference between the SysTick LOAD and VAL registers.
+ * @return f32: The elapsed time in milliseconds.
+ */
+f32 MSYSTICK_f32GetElapsedTime(void) {
+    // Return time in milliseconds
+    f32 Elapsed = (STK->LOAD - STK->VAL) * (1 / (STK_CLOCK * 1000.0));
+    return Elapsed;
+}
+/*************************************************************************************************************/
+
+
+/*************************************************************************************************************/
+/**
+ * @brief Retrieves the remaining time in milliseconds until the SysTick timer reaches zero.
+ * @note  This function calculates the remaining time based on the current value in the SysTick VAL register.
+ * @return f32: The remaining time in milliseconds.
+ */
+f32 MSYSTICK_f32GetRemainingTime(void) {
+    // Return time in milliseconds
+    return (STK->VAL) * (1 / (STK_CLOCK * 1000.0));
+}
+/*************************************************************************************************************/
+
+
+/*************************************************************************************************************/
+/**
+ * @brief Stops or disables the SysTick timer.
+ * @note  This function clears the SysTick timer enable bit, effectively stopping the timer.
+ * @return void
+ */
+void MSYSTICK_vStop(void) {
+    // Clear the SysTick timer enable bit to stop the timer
+    CLR_BIT(STK->CTRL, STK_EN);
+}
+/*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/**
+ * @brief Sets a callback function to be executed when the SysTick timer expires.
+ * @param ptr: Pointer to the callback function.
+ * @note  The callback function should have a void return type and no parameters.
+ * @return void
+ */
+void MSYSTICK_vCallBack(void (*ptr)(void)) {
+    // Set the provided callback function pointer
+    GLOBAL_SYSTICK_CallBack = ptr;
 }
 
-void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay){
-	//Cal Value in mills sec
-	Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
-	//Load Reload Value
-	STK->LOAD = Copy_u32Delay - 1;
-	//CLR VAL Reg
-	STK->VAL = CLR;
-	//SET INT
-	SET_BIT(STK->CTRL,STK_INT);
-	//Enable SYSTICK
-	SET_BIT(STK->CTRL,STK_EN);
+/*************************************************************************************************************/
+/**
+ * @brief SysTick Timer Interrupt Handler.
+ * @note  Calls the callback function if it has been set.
+ * @return void
+ */
+void SysTick_Handler(void) {
+    // Check if a callback function is set and call it
+    if (GLOBAL_SYSTICK_CallBack != STD_NULL) {
+        GLOBAL_SYSTICK_CallBack();
+    }
 }
-
-void MSYSTICK_vDelayms(u32 Copy_u32Delay){
-	/* MAX Delay: ((1or8)/SYS_CLOCK)* 2^24  " 1.04sec for HSI " */
-	//Disable INT
-	CLR_BIT(STK->CTRL,STK_INT);
-	//Cal Value in mills sec
-	if( (Copy_u32Delay*1000 * STK_CLOCK) >= MAX_LOAD_VALUE)
-		Copy_u32Delay = MAX_LOAD_VALUE;
-	else
-		Copy_u32Delay = Copy_u32Delay * 1000 * STK_CLOCK;
-	//Load Reload Value
-	STK->LOAD = Copy_u32Delay;
-	//CLR VAL Reg
-	STK->VAL = CLR;
-	//Enable SYSTICK
-	SET_BIT(STK->CTRL,STK_EN);
-	//Wait Flag polling
-	while(!GET_BIT(STK->CTRL,COUNT_FLAG));
-	//Disable SYSTICK
-	CLR_BIT(STK->CTRL,STK_EN);
-}
-
-f32 MSYSTICK_u32GetElapsedTime(void){
-	//Return Time in milli second
-	f32 Elapsed = (STK->LOAD - STK->VAL)*(1/(STK_CLOCK*1000)) ;
-	return Elapsed;
-}
-
-f32 MSYSTICK_u32GetRemainingTime(void){
-	//Return Time in milli second
-	return (STK->VAL)*(1/(STK_CLOCK*1000));
-}
-
-void MSYSTICK_vStop(void){
-	CLR_BIT(STK->CTRL,STK_EN);
-}
-
-
-void MSYSTICK_vCallBack(void(*ptr) (void)){
-	GLOBAL_SYSTICK_CallBack = ptr;
-}
-
-void SysTick_Handler(void){
-	if(GLOBAL_SYSTICK_CallBack != STD_NULL){
-		GLOBAL_SYSTICK_CallBack();
-	}
-}
+/*************************************************************************************************************/
 
