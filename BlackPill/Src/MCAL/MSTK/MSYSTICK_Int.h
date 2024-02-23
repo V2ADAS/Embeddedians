@@ -1,15 +1,17 @@
 /*************************************************************************************************************/
 /* Author            : Amr Elmaghraby                                                               	     */
-/* Version           : V1.0.5                                                                       	     */
+/* Version           : V1.0.6                                                                       	     */
 /* Data              : 5 nov 2023                                                                  	         */
 /* Module  Features  :                                                                                       */
 /*      01- void MSYSTICK_vInit(void);                                                                       */
 /*      02- void MSYSTICK_vStartTime(void);                                                                  */
-/*      03- void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);                                                    */
-/*      04- void MSYSTICK_vDelayms(u32 Copy_u32Delay);                                                       */
-/*      05- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
-/*      06- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
-/*      07- void MSYSTICK_vStop(void);                                                                       */
+/*      03- MSYSTICK_vCntTimer(Enum_Timer_Cont Copy_u8TimerCont)	                                         */
+/*      04- void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);                                                    */
+/*      05- void MSYSTICK_vDelayms(u32 Copy_u32Delay);                                                       */
+/*      06- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
+/*      07- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
+/*      08- void MSYSTICK_vStop(void);                                                                       */
+/*      09- MSYSTICK_vCallBack(void (*ptr)(void))															 */
 /*************************************************************************************************************/
 
     
@@ -18,6 +20,8 @@
 /*************************************************************************************************************/
 #ifndef MCAL_MSTK_MSYSTICK_INT_H_
 #define MCAL_MSTK_MSYSTICK_INT_H_
+
+#include"../MTIMER/MTIMER_Int.h" //Include timer 'mainly for Enum_Timer_Cont'
 
 /*************************************************************************************************************/
 /*                                      01- MSYSTICK_vInit                                                   */
@@ -40,9 +44,21 @@ void MSYSTICK_vInit(void);
 void MSYSTICK_vStartTime(void);
 /************************************************************************************************************/
 
+/************************************************************************************************************/
+/*                    			 		03- MSYSTICK_vCntTimer			                                    */
+/*----------------------------------------------------------------------------------------------------------*/
+/**
+ * @brief Controls the continuation or stopping of the SysTick timer.
+ * @param Copy_u8TimerCont: The desired action for the SysTick timer.
+ *                          Expected to be Enum_Timer_Cont ==> { StopTimer, ContinueTimer }
+ * @return void
+ */
+void MSYSTICK_vCntTimer(Enum_Timer_Cont Copy_u8TimerCont);
+/************************************************************************************************************/
+
 
 /*************************************************************************************************************/
-/*                                      03- MSYSTICK_vPeriodicMS                                             */
+/*                                      04- MSYSTICK_vPeriodicMS                                             */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function with millisecond delay using interrupt                                */
 /* 2- Function Input       -> @param Copy_u32Delay = desired delay in millisecond                            */                                                                                  
@@ -52,7 +68,7 @@ void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                                      04- MSYSTICK_vDelayms                                                */
+/*                                      05- MSYSTICK_vDelayms                                                */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function with millisecond delay using polling                                  */
 /* 2- Function Input       -> @param Copy_u32Delay = desired delay in millisecond                            */                                                                                   
@@ -62,7 +78,7 @@ void MSYSTICK_vDelayms(u32 Copy_u32Delay);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                                      05- MSYSTICK_f32GetElapsedTime                                                */
+/*                                      06- MSYSTICK_f32GetElapsedTime                                                */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function to get the time passed since the systick started                      */
 /* 2- Function Input       -> void                                                                           */                   
@@ -72,7 +88,7 @@ f32 MSYSTICK_f32GetElapsedTime(void);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                                      06- MSYSTICK_f32GetRemainingTime                                                */
+/*                                      07- MSYSTICK_f32GetRemainingTime                                                */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function to get the remaining time until the desired delay                     */
 /* 2- Function Input       -> void                                                                           */                   
@@ -82,7 +98,7 @@ f32 MSYSTICK_f32GetRemainingTime(void);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                                      07- MSYSTICK_vStop                                                   */
+/*                                      08- MSYSTICK_vStop                                                   */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function to stop systick                                                       */
 /* 2- Function Input       -> void                                                                           */                   
@@ -92,7 +108,7 @@ void MSYSTICK_vStop(void);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                          		   08- MSYSTICK_vCallBack Function                                       */
+/*                          		   09- MSYSTICK_vCallBack 		                                         */
 /*-----------------------------------------------------------------------------------------------------------*/
 /**
  * @Description Sets a callback function to be executed when the SysTick timer expires.

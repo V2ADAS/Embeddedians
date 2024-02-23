@@ -1,15 +1,17 @@
 /*************************************************************************************************************/
 /* Author            : Amr Elmaghraby                                                               	     */
-/* Version           : V1.0.5                                                                       	     */
+/* Version           : V1.0.6                                                                       	     */
 /* Data              : 5 nov 2023                                                                  	         */
 /* Module  Features  :                                                                                       */
 /*      01- void MSYSTICK_vInit(void);                                                                       */
 /*      02- void MSYSTICK_vStartTime(void);                                                                  */
-/*      03- void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);                                                    */
-/*      04- void MSYSTICK_vDelayms(u32 Copy_u32Delay);                                                       */
-/*      05- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
-/*      06- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
-/*      07- void MSYSTICK_vStop(void);                                                                       */
+/*      03- MSYSTICK_vCntTimer(Enum_Timer_Cont Copy_u8TimerCont)	                                         */
+/*      04- void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);                                                    */
+/*      05- void MSYSTICK_vDelayms(u32 Copy_u32Delay);                                                       */
+/*      06- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
+/*      07- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
+/*      08- void MSYSTICK_vStop(void);                                                                       */
+/*      09- MSYSTICK_vCallBack(void (*ptr)(void))															 */
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
@@ -68,8 +70,27 @@ void MSYSTICK_vStartTime(void) {
     SET_BIT(STK->CTRL, STK_EN);
 }
 /*************************************************************************************************************/
-
+/**
+ * @brief Controls the continuation or stopping of the SysTick timer.
+ * @param Copy_u8TimerCont: The desired action for the SysTick timer.
+ *                          Expected to be Enum_Timer_Cont ==> { StopTimer, ContinueTimer }
+ * @return void
+ */
+void MSYSTICK_vCntTimer(Enum_Timer_Cont Copy_u8TimerCont) {
+    // Check the desired action for the SysTick timer
+    switch (Copy_u8TimerCont) {
+        case StopTimer:
+            // Disable the SysTick timer
+            CLR_BIT(STK->CTRL, STK_EN);
+            break;
+        case ContinueTimer:
+            // Enable the SysTick timer
+            SET_BIT(STK->CTRL, STK_EN);
+            break;
+    }
+}
 /*************************************************************************************************************/
+
 /**
  * @brief Configures the SysTick timer for generating periodic interrupts
  * 			with a specified delay in milliseconds.
