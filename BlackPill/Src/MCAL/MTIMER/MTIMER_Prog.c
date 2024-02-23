@@ -1,26 +1,132 @@
-/*
- * MTIMER_Prog.c
- *
- *  Created on: Dec 19, 2023
- *      Author: Hardware
- */
+/*******************************************************************************************************/
+/* Author            : Amr ElMaghraby                                                            	   */
+/* Version           : V1.0.9                                                                          */
+/* Data              : 28 Jan 2024                                                                     */
+/* Description       : MTimer_Prog.c --> implementations                                               */
+/* Module  Features  :                                                                                 */
+/*      01- MTIMER_vStartTime                                                                          */
+/*      02- MTIMER_f32ElapsedTime                                                                      */
+/*      03- MTIMER_vPeriodicMS                                                                         */
+/*		04- MTIMER_EXTCNTClock																		   */
+/*      05- MTIMER_vClearCNT																		   */
+/*      06- MTIMER_vPWM                                                                                */
+/*      07- MTIMER_vICU                                                                                */
+/*      08- MTIMER_GET_ICU                                                                             */
+/*      09- MTIMER_CallBack                                                                            */
+/*      Local functions:																			   */
+/* 		01-  LOC_GET_TIMER                                                                                 */
+/*      02-  LOC_TIMER_ICU                                                                             */
+/*******************************************************************************************************/
 #include"MTIMER_Private.h"
 #include"MTIMER_Int.h"
 #include"MTIMER_Config.h"
 
 #include"../MGPIO/MGPIO_int.h"
 
+//Global Pointer to be used for TIMER IRQ Call Back Functions
 static void (*GLOBAL_Ptr[8])(void)={STD_NULL};
 
-void TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum);
+/*******************************************************************************************************/
+/*                                		 LOC_TIMER_ICU Function                                    */
+/*-----------------------------------------------------------------------------------------------------*/
+/**
+ * @Description 	Configures the specified TIMER for Input Capture Unit (ICU) functionality
+ * 					 on the specified channel, Used internally to calculate Pulse width get by ICU.
+ *
+ * @param 			Copy_u8TimerNum: The TIMER number to be configured.
+ *
+ * @param 			Copy_u8ChannelNum: The TIMER channel to be configured for Input Capture Unit (ICU).
+ * @return 			void
+ */
+void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8ChannelNum);
+/*******************************************************************************************************/
+
+//Global Array to Store each CH Captured Pulse width value
 u32 Time[29]={0};
 
-TIM2_5_MemMap_t* GET_TIMER(u32 Copy_u8TimerNum){
-	u32 Timer_Offset[8] = TIMERS_OFFSET;
-	TIM2_5_MemMap_t* TIMx = (TIM2_5_MemMap_t*)((u32)TIM2 + Timer_Offset[Copy_u8TimerNum-1]);
-	return TIMx;
-}
+/*******************************************************************************************************/
+/*                                      LOC_GET_TIMER Function                                         */
+/*-----------------------------------------------------------------------------------------------------*/
+/**
+ * @Description	 Local function retrieves the memory-mapped structure for the specified TIMER based
+ * 				  on its number.
+ * @param 		 Copy_u8TimerNum: The TIMER number to retrieve the memory-mapped structure.
+ *                          Expected to be a value from {1 to 8, 9 to 11} representing different Timers.
+ * @return 		 TIM2_5_MemMap_t*: Pointer to the memory-mapped structure of the specified TIMER.
+ * @note 		 using TIM2_5_MemMap_t struct to be used for all timers
+ */
+TIM2_5_MemMap_t* LOC_GET_TIMER(u32 Copy_u8TimerNum) {
+    // Array containing the offsets of TIMER registers for different TIMers.
+    u32 Timer_Offset[8] = TIMERS_OFFSET;
 
+    // Calculate the base address of the specified TIMER using its offset.
+    TIM2_5_MemMap_t* TIMx = (TIM2_5_MemMap_t*)((u32)TIM2 + Timer_Offset[Copy_u8TimerNum - 1]);
+
+    // Return the pointer to the memory-mapped structure of the specified TIMER.
+    return TIMx;
+}
+/*******************************************************************************************************/
+
+
+/*******************************************************************************************************/
+/**
+ * @Description Starts or enables the specified TIMER for time keeping or other time-dependent operations.
+ * @param Copy_u8TimerNum: The TIMER number to be started.
+ *                          Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ *                              TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @return void
+ */
+void MTIMER_vStartTime(Enum_TIMER_NUM Copy_u8TimerNum) {
+    // Get the base address of the specified timer
+    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+
+    // Reset Control Register 1 Value
+    TIMx->CR1 = 0;
+
+    // Set the prescaler value to achieve a 1ms time base
+    TIMx->PSC = SYS_CLOCK * 1000 - 1;
+
+    // Set the auto-reload value to MAX Value
+    TIMx->ARR = 0xFFFFFFFF;
+
+    // Set the Counter Enable bit to start the timer
+    SET_BIT(TIMx->CR1, CEN);
+
+    // Ensure Starting CNT from 0 as of some problems with TIMER2 and TIMER 5 if "ARR >0x0020000"
+    TIMx->CNT = 0xFFFFFFFF;
+}
+/*******************************************************************************************************/
+
+
+/*******************************************************************************************************/
+/**
+ * @Description Retrieves the elapsed time on the specified TIMER in either seconds or milliseconds.
+ * @param Copy_u8TimerNum: The TIMER number to query.
+ *                          Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ *                              TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @param Copy_u8TimerUnit: The desired time unit for the elapsed time.
+ *                          Expected to be Enum_TIMER_Unit ==> { milli, sec }
+ * @return f32: The elapsed time in either seconds or milliseconds.
+ */
+f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Copy_u8TimerUnit) {
+    // Get the base address of the specified timer
+    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+
+    switch (Copy_u8TimerUnit) {
+        case milli:
+            return ((f32)(TIMx->CNT));
+            break;
+        case sec:
+            return (((f32)(TIMx->CNT)) / 1000.0);
+            break;
+        default:
+            return 0;
+    }
+}
+/*******************************************************************************************************/
+
+
+/*******************************************************************************************************/
 /**
  * @brief   Configure the specified timer for a periodic delay in milliseconds.
  *
@@ -30,11 +136,15 @@ TIM2_5_MemMap_t* GET_TIMER(u32 Copy_u8TimerNum){
  * @note    This function configures the timer with the specified number for a periodic delay.
  *          The timer is set up to generate an interrupt after the specified delay.
  *          for TIMERS 1,3,4,9,10,11 MAXIMUM Allowable Delay is 65.536 sec
- *          for TIMER  2,5 MAXIMUM Allowable Delay is 49.71 DAY!!
+ *          for TIMERS  2,5 MAXIMUM Allowable Delay is 49.71 DAY!!
+ *          [This values calculated as Tick time is 1ms "Clock = 16MHZ , prescaler = 16000" ]
+ *          for same clock with max prescaler value 2^16:
+ *          for TIMERS 1,3,4,9,10,11 MAXIMUM Allowable Delay is 268.435 sec.
+ *          for TIMERS 2,5 MAXIMUM Allowable Delay is 203.61 DAY!!!!!.
  */
 void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay) {
 	// Get the base address of the specified timer
-	TIM2_5_MemMap_t* TIMx = GET_TIMER(Copy_u8TimerNum);
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 
 	// Reset Control Register 1 Value
 	TIMx->CR1 = 0;
@@ -50,8 +160,13 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay) {
 
 	// Set the Counter Enable bit to start the timer
 	SET_BIT(TIMx->CR1, CEN);
-}
 
+	// Ensure Starting CNT from 0 as of some problems with TIMER2 and TIMER 5 if "ARR >0x0020000"
+	TIMx->CNT = 0xFFFFFFFF;
+}
+/*******************************************************************************************************/
+
+/*******************************************************************************************************/
 /**
  * @brief Configures the specified TIMER channel to count external events on the rising edge of the input signal.
  * @param Copy_u8TimerNum: The TIMER number to be configured.
@@ -66,7 +181,7 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay) {
  */
 void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel,u32	Copy_u32Max_Value){
 	// Get the base address of the specified timer
-	TIM2_5_MemMap_t* TIMx = GET_TIMER(Copy_u8TimerNum);
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	// Configure GPIO pins and alternative functions based on the selected timer and channel
 	MGPIO_vSetPinMode(
 			TIMER_PORT_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1],
@@ -105,19 +220,21 @@ void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8C
 	SET_BIT( TIMx->CR1 , CEN );// Enable timer
 	//TIMx->CNT = 0xFFFFFFFF;
 }
+/*******************************************************************************************************/
 
-
+/*******************************************************************************************************/
 // Function to clear the counter (CNT) of the specified timer
 void MTIMER_vClearCNT(Enum_TIMER_NUM Copy_u8TimerNum) {
 	// Get the base address of the specified timer
-	TIM2_5_MemMap_t* TIMx = GET_TIMER(Copy_u8TimerNum);
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	// Clear the counter value (CNT) by setting it to 0x00
 	TIMx->CNT = 0x00;
 }
+/*******************************************************************************************************/
 
-
+/*******************************************************************************************************/
 void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel,u16 Copy_u16TotalTime_uSec,u16 Copy_u16PositiveDutyCycle_uSec){
-	TIM2_5_MemMap_t* TIMx = GET_TIMER(Copy_u8TimerNum);
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	SET_BIT( TIMx->CR1 , ARPE );    // Enable auto-reload preload
 	CLR_BIT( TIMx->CR1 , DIR); 	// UP COUNT
 	CLR_BIT( TIMx->CR1 , CMS0); 	// 00: Edge-aligned mode. The counter counts up
@@ -148,10 +265,12 @@ void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel,u1
 	SET_BIT( TIMx->CR1 , CEN );// Enable timer
 	TIMx->CNT = 0xFFFFFFFF;
 }
+/*******************************************************************************************************/
 
 
+/*******************************************************************************************************/
 void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
-	TIM2_5_MemMap_t* TIMx = GET_TIMER(Copy_u8TimerNum);
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	SET_BIT( TIMx->CR1 , ARPE );    // Enable auto-reload preload
 	CLR_BIT( TIMx->CR1 , DIR ); 	// UP COUNT
 	CLR_BIT( TIMx->CR1 , CMS0 ); 	// 00: Edge-aligned mode. The counter counts up
@@ -180,7 +299,9 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
 	TIMx-> CNT = 0xFFFFFFFF;
 
 }
+/*******************************************************************************************************/
 
+/*******************************************************************************************************/
 /**
  * @brief  Input Capture Unit (ICU) function.
  * @note   This function captures the time difference between rising and falling edges
@@ -188,11 +309,11 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
  *         timer to capture the rising edge first, then the falling edge.
  * @return None
  */
-void TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum) {
+void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum) {
 	static u8 captureState[29] = {0};
 	static u32 captureValue1[29] = {0};
 	static u32 captureValue2[29] = {0};
-	TIM2_5_MemMap_t* TIMx = GET_TIMER(Copy_u8TimerNum+1);
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum+1);
 	if (captureState[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] == 0) {
 		// Capture the time on the rising edge
 		captureValue1[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = TIMx->CCR[Copy_u8ChannelNum];
@@ -216,9 +337,9 @@ void TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum) 
 		captureState[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = 0;
 	}
 }
+/*******************************************************************************************************/
 
-
-
+/*******************************************************************************************************/
 /**
  * @brief   Get the ICU (Input Capture Unit) value for a specific timer and channel.
  *
@@ -231,8 +352,10 @@ void TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum) 
 u32 MTIMER_GET_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel) {
 	return Time[(4 * (Copy_u8TimerNum - 1) + (Copy_u8Channel - 1))];
 }
+/*******************************************************************************************************/
 
 
+/*******************************************************************************************************/
 /**
  * @brief   Set a callback function for a specific timer.
  *
@@ -247,8 +370,10 @@ void MTIMER_CallBack(Enum_TIMER_NUM Copy_u8TimerNum, void (*ptr)(void)) {
 	// Set the callback function pointer in the GLOBAL_Ptr array
 	GLOBAL_Ptr[Copy_u8TimerNum - 1] = ptr;
 }
+/*******************************************************************************************************/
 
 
+/*******************************************************************************************************/
 /**
  * @brief   Interrupt handler for TIM1 and TIM10 interrupts.
  *
@@ -271,8 +396,8 @@ void TIM1_UP_TIM10_IRQHandler(void) {
 		// Check if the capture/compare interrupt flag for CH1 of TIM10 is set
 		if (GET_BIT(TIM10->SR, 1)) {
 
-			// Call the TIMER_ICU function for handling CH1 interrupt of TIM10
-			TIMER_ICU(TIMER10 - 1, CH1 - 1);
+			// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM10
+			LOC_TIMER_ICU(TIMER10 - 1, CH1 - 1);
 
 			// Clear the capture/compare interrupt flag for CH1 of TIM10
 			CLR_BIT(TIM10->SR, CH1);
@@ -296,8 +421,10 @@ void TIM1_UP_TIM10_IRQHandler(void) {
 		}
 	}
 }
+/*******************************************************************************************************/
 
 
+/*******************************************************************************************************/
 /**
  * @brief   Interrupt handler for TIM1 trigger/completion and TIM11 interrupts.
  *
@@ -314,8 +441,8 @@ void TIM1_TRG_COM_TIM11_IRQHandler(void) {
 		// Check if the capture/compare interrupt flag for CH1 of TIM11 is set
 		if (GET_BIT(TIM11->SR, 1)) {
 
-			// Call the TIMER_ICU function for handling CH1 interrupt of TIM11
-			TIMER_ICU(TIMER11 - 1, CH1 - 1);
+			// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM11
+			LOC_TIMER_ICU(TIMER11 - 1, CH1 - 1);
 
 			// Clear the capture/compare interrupt flag for CH1 of TIM11
 			CLR_BIT(TIM11->SR, CH1);
@@ -339,8 +466,9 @@ void TIM1_TRG_COM_TIM11_IRQHandler(void) {
 		}
 	}
 }
+/*******************************************************************************************************/
 
-
+/*******************************************************************************************************/
 /**
  * @brief   Interrupt handler for TIM1 break and TIM9 interrupts.
  *
@@ -357,15 +485,15 @@ void TIM1_BRK_TIM9_IRQHandler(void) {
 		// Check if the capture/compare interrupt flag for CH1 of TIM9 is set
 		if (GET_BIT(TIM9->SR, 1)) {
 
-			// Call the TIMER_ICU function for handling CH1 interrupt of TIM9
-			TIMER_ICU(TIMER9 - 1, CH1 - 1);
+			// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM9
+			LOC_TIMER_ICU(TIMER9 - 1, CH1 - 1);
 
 			// Clear the capture/compare interrupt flag for CH1 of TIM9
 			CLR_BIT(TIM9->SR, CH1);
 		}
 		else if (GET_BIT(TIM9->SR, 2)) {
-			// Call the TIMER_ICU function for handling CH2 interrupt of TIM9
-			TIMER_ICU(TIMER9 - 1, CH2 - 1);
+			// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM9
+			LOC_TIMER_ICU(TIMER9 - 1, CH2 - 1);
 
 			// Clear the capture/compare interrupt flag for CH2 of TIM9
 			CLR_BIT(TIM9->SR, CH2);
@@ -389,7 +517,9 @@ void TIM1_BRK_TIM9_IRQHandler(void) {
 		}
 	}
 }
+/*******************************************************************************************************/
 
+/*******************************************************************************************************/
 /**
  * @brief   Interrupt handler for TIM1 capture/compare interrupts.
  *
@@ -400,37 +530,39 @@ void TIM1_CC_IRQHandler(void) {
 	// Check if the capture/compare interrupt flag for CH1 of TIM1 is set
 	if (GET_BIT(TIM1->SR, 1)) {
 
-		// Call the TIMER_ICU function for handling CH1 interrupt of TIM1
-		TIMER_ICU(TIMER1 - 1, CH1 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM1
+		LOC_TIMER_ICU(TIMER1 - 1, CH1 - 1);
 
 		// Clear the capture/compare interrupt flag for CH1 of TIM1
 		CLR_BIT(TIM1->SR, CH1);
 	}
 	else if (GET_BIT(TIM1->SR, 2)) {
 
-		// Call the TIMER_ICU function for handling CH2 interrupt of TIM1
-		TIMER_ICU(TIMER1 - 1, CH2 - 1);
+		// Call the LOC_LOC_TIMER_ICU function for handling CH2 interrupt of TIM1
+		LOC_TIMER_ICU(TIMER1 - 1, CH2 - 1);
 
 		// Clear the capture/compare interrupt flag for CH2 of TIM1
 		CLR_BIT(TIM1->SR, CH2);
 	}
 	else if (GET_BIT(TIM1->SR, 3)) {
 
-		// Call the TIMER_ICU function for handling CH3 interrupt of TIM1
-		TIMER_ICU(TIMER1 - 1, CH3 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM1
+		LOC_TIMER_ICU(TIMER1 - 1, CH3 - 1);
 
 		// Clear the capture/compare interrupt flag for CH3 of TIM1
 		CLR_BIT(TIM1->SR, CH3);
 	}
 	else {
-		// Call the TIMER_ICU function for handling CH4 interrupt of TIM1
-		TIMER_ICU(TIMER1 - 1, CH4 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM1
+		LOC_TIMER_ICU(TIMER1 - 1, CH4 - 1);
 
 		// Clear the capture/compare interrupt flag for CH4 of TIM1
 		CLR_BIT(TIM1->SR, CH4);
 	}
 }
+/*******************************************************************************************************/
 
+/*******************************************************************************************************/
 /**
  * @brief   Interrupt handler for TIM2 capture/compare and update interrupts.
  *
@@ -440,29 +572,29 @@ void TIM1_CC_IRQHandler(void) {
 void TIM2_IRQHandler(void) {
 	// Check if the capture/compare interrupt flag for CH1 of TIM2 is set
 	if (GET_BIT(TIM2->SR, 1)) {
-		// Call the TIMER_ICU function for handling CH1 interrupt of TIM2
-		TIMER_ICU(TIMER2 - 1, CH1 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM2
+		LOC_TIMER_ICU(TIMER2 - 1, CH1 - 1);
 
 		// Clear the capture/compare interrupt flag for CH1 of TIM2
 		CLR_BIT(TIM2->SR, CH1);
 	}
 	else if (GET_BIT(TIM2->SR, 2)) {
-		// Call the TIMER_ICU function for handling CH2 interrupt of TIM2
-		TIMER_ICU(TIMER2 - 1, CH2 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM2
+		LOC_TIMER_ICU(TIMER2 - 1, CH2 - 1);
 
 		// Clear the capture/compare interrupt flag for CH2 of TIM2
 		CLR_BIT(TIM2->SR, CH2);
 	}
 	else if (GET_BIT(TIM2->SR, 3)) {
-		// Call the TIMER_ICU function for handling CH3 interrupt of TIM2
-		TIMER_ICU(TIMER2 - 1, CH3 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM2
+		LOC_TIMER_ICU(TIMER2 - 1, CH3 - 1);
 
 		// Clear the capture/compare interrupt flag for CH3 of TIM2
 		CLR_BIT(TIM2->SR, CH3);
 	}
 	else if (GET_BIT(TIM2->SR, 4)) {
-		// Call the TIMER_ICU function for handling CH4 interrupt of TIM2
-		TIMER_ICU(TIMER2 - 1, CH4 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM2
+		LOC_TIMER_ICU(TIMER2 - 1, CH4 - 1);
 
 		// Clear the capture/compare interrupt flag for CH4 of TIM2
 		CLR_BIT(TIM2->SR, CH4);
@@ -485,8 +617,10 @@ void TIM2_IRQHandler(void) {
 		}
 	}
 }
+/*******************************************************************************************************/
 
 
+/*******************************************************************************************************/
 /**
  * @brief   Interrupt handler for TIM3 capture/compare and update interrupts.
  *
@@ -496,29 +630,29 @@ void TIM2_IRQHandler(void) {
 void TIM3_IRQHandler(void) {
 	// Check if the capture/compare interrupt flag for CH1 of TIM3 is set
 	if (GET_BIT(TIM3->SR, 1)) {
-		// Call the TIMER_ICU function for handling CH1 interrupt of TIM3
-		TIMER_ICU(TIMER3 - 1, CH1 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM3
+		LOC_TIMER_ICU(TIMER3 - 1, CH1 - 1);
 
 		// Clear the capture/compare interrupt flag for CH1 of TIM3
 		CLR_BIT(TIM3->SR, CH1);
 	}
 	else if (GET_BIT(TIM3->SR, 2)) {
-		// Call the TIMER_ICU function for handling CH2 interrupt of TIM3
-		TIMER_ICU(TIMER3 - 1, CH2 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM3
+		LOC_TIMER_ICU(TIMER3 - 1, CH2 - 1);
 
 		// Clear the capture/compare interrupt flag for CH2 of TIM3
 		CLR_BIT(TIM3->SR, CH2);
 	}
 	else if (GET_BIT(TIM3->SR, 3)) {
-		// Call the TIMER_ICU function for handling CH3 interrupt of TIM3
-		TIMER_ICU(TIMER3 - 1, CH3 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM3
+		LOC_TIMER_ICU(TIMER3 - 1, CH3 - 1);
 
 		// Clear the capture/compare interrupt flag for CH3 of TIM3
 		CLR_BIT(TIM3->SR, CH3);
 	}
 	else if (GET_BIT(TIM3->SR, 4)) {
-		// Call the TIMER_ICU function for handling CH4 interrupt of TIM3
-		TIMER_ICU(TIMER3 - 1, CH4 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM3
+		LOC_TIMER_ICU(TIMER3 - 1, CH4 - 1);
 
 		// Clear the capture/compare interrupt flag for CH4 of TIM3
 		CLR_BIT(TIM3->SR, CH4);
@@ -541,7 +675,9 @@ void TIM3_IRQHandler(void) {
 		}
 	}
 }
+/*******************************************************************************************************/
 
+/*******************************************************************************************************/
 /**
  * @brief   Interrupt handler for TIM4 capture/compare and update interrupts.
  *
@@ -552,29 +688,29 @@ void TIM4_IRQHandler(void) {
 	// Check if the capture/compare interrupt flag for CH1 of TIM4 is set
 	if (GET_BIT(TIM4->SR, 1)) {
 
-		// Call the TIMER_ICU function for handling CH1 interrupt of TIM4
-		TIMER_ICU(TIMER4 - 1, CH1 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM4
+		LOC_TIMER_ICU(TIMER4 - 1, CH1 - 1);
 
 		// Clear the capture/compare interrupt flag for CH1 of TIM4
 		CLR_BIT(TIM4->SR, CH1);
 	}
 	else if (GET_BIT(TIM4->SR, 2)) {
-		// Call the TIMER_ICU function for handling CH2 interrupt of TIM4
-		TIMER_ICU(TIMER4 - 1, CH2 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM4
+		LOC_TIMER_ICU(TIMER4 - 1, CH2 - 1);
 
 		// Clear the capture/compare interrupt flag for CH2 of TIM4
 		CLR_BIT(TIM4->SR, CH2);
 	}
 	else if (GET_BIT(TIM4->SR, 3)) {
-		// Call the TIMER_ICU function for handling CH3 interrupt of TIM4
-		TIMER_ICU(TIMER4 - 1, CH3 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM4
+		LOC_TIMER_ICU(TIMER4 - 1, CH3 - 1);
 
 		// Clear the capture/compare interrupt flag for CH3 of TIM4
 		CLR_BIT(TIM4->SR, CH3);
 	}
 	else if (GET_BIT(TIM4->SR, 4)) {
-		// Call the TIMER_ICU function for handling CH4 interrupt of TIM4
-		TIMER_ICU(TIMER4 - 1, CH4 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM4
+		LOC_TIMER_ICU(TIMER4 - 1, CH4 - 1);
 
 		// Clear the capture/compare interrupt flag for CH4 of TIM4
 		CLR_BIT(TIM4->SR, CH4);
@@ -597,7 +733,9 @@ void TIM4_IRQHandler(void) {
 		}
 	}
 }
+/*******************************************************************************************************/
 
+/*******************************************************************************************************/
 /**
  * @brief   Interrupt handler for TIM5 capture/compare and update interrupts.
  *
@@ -607,29 +745,29 @@ void TIM4_IRQHandler(void) {
 void TIM5_IRQHandler(void) {
 	// Check if the capture/compare interrupt flag for CH1 of TIM5 is set
 	if (GET_BIT(TIM5->SR, 1)) {
-		// Call the TIMER_ICU function for handling CH1 interrupt of TIM5
-		TIMER_ICU(TIMER5 - 1, CH1 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM5
+		LOC_TIMER_ICU(TIMER5 - 1, CH1 - 1);
 
 		// Clear the capture/compare interrupt flag for CH1 of TIM5
 		CLR_BIT(TIM5->SR, CH1);
 	}
 	else if (GET_BIT(TIM5->SR, 2)) {
-		// Call the TIMER_ICU function for handling CH2 interrupt of TIM5
-		TIMER_ICU(TIMER5 - 1, CH2 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM5
+		LOC_TIMER_ICU(TIMER5 - 1, CH2 - 1);
 
 		// Clear the capture/compare interrupt flag for CH2 of TIM5
 		CLR_BIT(TIM5->SR, CH2);
 	}
 	else if (GET_BIT(TIM5->SR, 3)) {
-		// Call the TIMER_ICU function for handling CH3 interrupt of TIM5
-		TIMER_ICU(TIMER5 - 1, CH3 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM5
+		LOC_TIMER_ICU(TIMER5 - 1, CH3 - 1);
 
 		// Clear the capture/compare interrupt flag for CH3 of TIM5
 		CLR_BIT(TIM5->SR, CH3);
 	}
 	else if (GET_BIT(TIM5->SR, 4)) {
-		// Call the TIMER_ICU function for handling CH4 interrupt of TIM5
-		TIMER_ICU(TIMER5 - 1, CH4 - 1);
+		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM5
+		LOC_TIMER_ICU(TIMER5 - 1, CH4 - 1);
 
 		// Clear the capture/compare interrupt flag for CH4 of TIM5
 		CLR_BIT(TIM5->SR, CH4);
@@ -652,5 +790,5 @@ void TIM5_IRQHandler(void) {
 		}
 	}
 }
-
+/*******************************************************************************************************/
 
