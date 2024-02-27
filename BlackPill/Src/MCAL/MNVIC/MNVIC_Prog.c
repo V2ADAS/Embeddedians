@@ -1,13 +1,19 @@
-/*
- * MNVIC_Prog.c
- *
- *  Created on: Oct 31, 2023
- *      Author: Omar
- */
+/***************************************************************************/
+/* Author       : Omar Wael                                                */
+/* Version      : V0.0.0                                                   */
+/*  Date        : Oct 31, 2023                                             */
+/*  Description : Driver Functions Implementation                          */
+/***************************************************************************/
 
+/***************************************************************************/
+/*                        Standard Types LIB                               */
+/***************************************************************************/
 #include "../../LIB/BIT_MATH.h"
 #include "../../LIB/STD_TYPES.h"
 
+/***************************************************************************/
+/*                           MCAL Components                               */
+/***************************************************************************/
 #include"MNVIC_Config.h"
 #include"MNVIC_Private.h"
 #include"MNVIC_int.h"
@@ -15,6 +21,9 @@
 
 static MNVIC_Priority_GP Global_u8GPMode  ;
 
+/***************************************************************************/
+/*                        Functions Implementations                        */
+/***************************************************************************/
 void MNVIC_vEnableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo){
 
 	/* note : writing 0 to any bit has no effect so we can u atomic instruction like BSSR */
