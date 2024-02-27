@@ -54,7 +54,7 @@ f32 PeF_Path(f32 x) {
   // TODO: implement this.
   return -1;
 }
-void MP_ParallelScanProcess ()
+void MP_PaB_Scan ()
 {
 	f64 Local_Distance=0;
 	u8 Local_parkL, Local_parkW;
