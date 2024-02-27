@@ -1,18 +1,33 @@
-/*
- * MNVIC_Private.h
- *
- *  Created on: Oct 31, 2023
- *      Author: Omar
- */
+/***************************************************************************/
+/* Author       : Omar Wael                                                */
+/* Version      : V0.0.0                                                   */
+/*  Date        : Oct 31, 2023                                             */
+/*  Description : Driver Functions Implementation                          */
+/*  Features    : Register Definition                                      */
+/***************************************************************************/
 
+/***************************************************************************/
+/*                  File Guard Will Call On Time in .c File                */
+/***************************************************************************/
 #ifndef MCAL_MNVIC_MNVIC_PRIVATE_H_
 #define MCAL_MNVIC_MNVIC_PRIVATE_H_
 
 /*********************************** REGISTERS AND ADDRESSES ************************************/
 
-/*************** NVIC BASE ADDRES ***************/
+/***************************************************************************/
+/*                      Base Address Of NVIC Register                      */
+/***************************************************************************/
 #define MNVIC_BASE_ADDR					 (0xE000E100)
 
+
+/**************************************************************************/
+/* Register Definition :-                                                 */
+/* Features    : Private File Can`t Be Edit By User                       */
+/* Description :-                                                         */
+/*               - #define :      YES                                     */
+/*               - union   :      NO                                      */
+/*               - struct  :      YES                                     */
+/**************************************************************************/
 
 /********************** NVIC REGISTERS ***************************/
 typedef struct {
