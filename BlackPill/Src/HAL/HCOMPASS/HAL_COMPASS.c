@@ -12,6 +12,7 @@
 #include"math.h"
 
 #include"../../MCAL/MSTK/MSYSTICK_Int.h"
+#include"../../MCAL/MTIMER/MTIMER_Int.h"
 #include"../../MCAL/MGPIO/MGPIO_int.h"
 
 struct Compass_struct {
@@ -38,14 +39,21 @@ void HCOMPASS_Calibrate(unsigned long calibrationDuration) {
 	MSYSTICK_vInit();
 	HCOMPASS_ClearCalibration();
 	s16 raw[3];
-	s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {32767, -32768}};
 
+	//s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {32767, -32768}};
+	s16 calibrationData[3][2] = {{-1000, 600}, {-1100, 1000}, {-850, 1000}};
 	//unsigned long startTime = millis();
 	MSYSTICK_vPeriodicMS(8300);
+	//MTIMER_vStartTime(TIMER2);
 	MGPIO_vSetPinMode(PORTA,PIN10, OUTPUT);
 	MGPIO_vSetPinValue(PORTA, PIN10, HIGH);
+	u8 Exit_flag = 2;
+	while (Exit_flag) {
 
-	while ((MSYSTICK_u32GetElapsedTime()) < calibrationDuration) {
+		if(MSYSTICK_f32GetElapsedTime() > calibrationDuration){
+			MSYSTICK_vPeriodicMS(8300);
+			Exit_flag--;
+		}
 		HCOMPASS_vSetRowData();
 		HCOMPASS_vReadRowData(raw);
 
@@ -59,6 +67,7 @@ void HCOMPASS_Calibrate(unsigned long calibrationDuration) {
 		}
 	}
 
+	//MTIMER_vCntTimer(TIMER2, StopTimer);
 	MSYSTICK_vStop();
 	MGPIO_vSetPinValue(PORTA, PIN10, LOW);
 	HCOMPASS_SetCalibration(
@@ -149,9 +158,10 @@ f32 HCOMPASS_f32GetRoll() {
 f32 HCOMPASS_f32GetHeading() {
 	// Calculate the heading angle using atan2 and convert to degrees
 	f32 Heading = atan2((f32)CompassData.Y, (f32)CompassData.X) * (180.0 / M_PI);
-
+	Heading = Heading * (-1) ;
 	// Ensure the heading is in the range [0, 360) degrees
 	Heading = (Heading < 0) ? (360.0 + Heading) : Heading;
+
 
 	return Heading;
 }
