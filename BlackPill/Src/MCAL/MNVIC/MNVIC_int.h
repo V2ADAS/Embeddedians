@@ -1,6 +1,6 @@
 /* Author            : Omar Wael                                                                       */
 /* Version           : V0.0.0                                                                          */
-/* Data              : 31 Oct 2023                                                                     */
+/* Date              : 31 Oct 2023                                                                     */
 /* Description       : MNVIC_int.h --> Functions Definitions                                           */
 /* Module  Features  :                                                                                 */
 /*      01- MNVIC_EnableInterrupt                                                                      */
