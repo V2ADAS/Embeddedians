@@ -1,7 +1,7 @@
 /*/
 /* Author            : Omar                                                                            */
 /* Version           : V0.0.0                                                                          */
-/* Data              : 31 Oct 2023                                                                     */
+/* Date              : 31 Oct 2023                                                                     */
 /* Description       : MNVIC_Config.                                                                   */
 /*/
 
