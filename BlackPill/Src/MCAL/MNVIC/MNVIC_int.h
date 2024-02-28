@@ -163,6 +163,7 @@ void MNVIC_vClearPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 /******************************************************************************************************/
 u8 MNVIC_u8ReadActiveFlag( Enum_MNVIC_NUM_t Copy_u8InterruptNo );
 
+
 /******************************************************************************************************/
 /*                                      06- MNVIC_vInitGrouping                                       */
 /*----------------------------------------------------------------------------------------------------*/
@@ -194,6 +195,7 @@ void MNVIC_vSetIntPriority( Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Optio
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
 void MNVIC_vTrigSoftwareInt( Enum_MNVIC_NUM_t Copy_u8InterruptNo );
+
 
 
 #endif /* MCAL_MNVIC_MNVIC_INT_H_ */
