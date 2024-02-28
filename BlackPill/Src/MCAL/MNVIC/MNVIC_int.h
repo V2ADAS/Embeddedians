@@ -98,20 +98,20 @@ typedef enum {
 
 
 
-void MNVIC_vEnableInterrupt(u8 Copy_u8InterruptNo);
+void MNVIC_vEnableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 
-void MNVIC_vDisableInterrupt(u8 Copy_u8InterruptNo);
+void MNVIC_vDisableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 
-void MNVIC_vSetPendingFlag (u8 Copy_u8InterruptNo);
+void MNVIC_vSetPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 
-void MNVIC_vClearPendingFlag (u8 Copy_u8InterruptNo);
+void MNVIC_vClearPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 
-u8 MNVIC_u8ReadActiveFlag( u8 Copy_u8InterruptNo );
+u8 MNVIC_u8ReadActiveFlag(Enum_MNVIC_NUM_t Copy_u8InterruptNo );
 
 void MNVIC_vInitGrouping(MNVIC_Priority_GP Copy_u8Grouping);
 
-void MNVIC_vSetIntPriority( u8 Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB );
+void MNVIC_vSetIntPriority(Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB );
 
-void MNVIC_vTrigSoftwareInt( u8 Copy_u8InterruptNo );
+void MNVIC_vTrigSoftwareInt(Enum_MNVIC_NUM_t Copy_u8InterruptNo );
 
 #endif /* MCAL_MNVIC_MNVIC_INT_H_ */
