@@ -57,7 +57,7 @@ f32 PeB_Path (f32 x);
 //perpendicular forward Path
 f32 PeF_Path (f32 x);
 
-void MP_ParallelScanProcess();
+void MP_PaB_Scan();
 void Scan(u8 Scanned_Area[]);
 void Process(u8 Scanned_Area[]);
 

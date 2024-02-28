@@ -1,4 +1,3 @@
-/*******************************************************************************************************/
 /* Author            : Omar Wael                                                                       */
 /* Version           : V0.0.0                                                                          */
 /* Date              : 31 Oct 2023                                                                     */
@@ -14,9 +13,9 @@
 /*      08- MNVIC_TrigSoftwareInt																	   */
 /*******************************************************************************************************/
 
-/*******************************************************************************************************/
-/*                 						 File Guard Will Call On Time in .c File                       */
-/*******************************************************************************************************/
+/***************************************************************************/
+/*                  File Guard Will Call On Time in .c File                */
+/***************************************************************************/
 #ifndef MCAL_MNVIC_MNVIC_INT_H_
 #define MCAL_MNVIC_MNVIC_INT_H_
 
@@ -29,7 +28,7 @@
 } Enum_IntNames_t;*/
 
 /*----------------------------------------------------------------------------------------------------*/
-/*                                   	  NVIC Grouping Options                                       */
+/*                                      NVIC Grouping Options                                         */
 /*----------------------------------------------------------------------------------------------------*/
 typedef enum {
 
@@ -41,7 +40,7 @@ typedef enum {
 } MNVIC_Priority_GP;
 
 /*----------------------------------------------------------------------------------------------------*/
-/*                                     	 	 NVIC_Number                                    	      */
+/*                                      NVIC_Number                                                    */
 /*----------------------------------------------------------------------------------------------------*/
 typedef enum{
 	NVIC_WWDG=0,
@@ -103,7 +102,7 @@ typedef enum{
 }Enum_MNVIC_NUM_t;
 
 /*----------------------------------------------------------------------------------------------------*/
-/*                                      NVIC_Groups                                                   */
+/*                                      NVIC_Groups                                                    */
 /*----------------------------------------------------------------------------------------------------*/
 typedef enum {
 	GP0,GP1,GP2,GP3,GP4,GP5,GP6,GP7,GP8,GP9,GP10,GP11,GP12,GP13,GP14,GP15
@@ -124,7 +123,7 @@ typedef enum {
 /* 2- Function Input       -> @param Copy_u8InterruptNo : from Enum_MNVIC_NUM_t enum                  */                   
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
-void MNVIC_vEnableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo);
+void MNVIC_vEnableInterrupt(u8 Copy_u8InterruptNo);
 
 /******************************************************************************************************/
 /*                                      02- MNVIC_vDisableInterrupt                                   */
@@ -133,7 +132,7 @@ void MNVIC_vEnableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 /* 2- Function Input       -> @param Copy_u8InterruptNo : from Enum_MNVIC_NUM_t enum                  */                   
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
-void MNVIC_vDisableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo);
+void MNVIC_vDisableInterrupt(u8 Copy_u8InterruptNo);
 
 /******************************************************************************************************/
 /*                                      03- MNVIC_vSetPendingFlag                                     */
@@ -142,7 +141,7 @@ void MNVIC_vDisableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 /* 2- Function Input       -> @param Copy_u8InterruptNo : from Enum_MNVIC_NUM_t enum                  */                   
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
-void MNVIC_vSetPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo);
+void MNVIC_vSetPendingFlag (u8 Copy_u8InterruptNo);
 
 /******************************************************************************************************/
 /*                                      04- MNVIC_vClearPendingFlag                                   */
@@ -151,7 +150,7 @@ void MNVIC_vSetPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 /* 2- Function Input       -> @param Copy_u8InterruptNo : from Enum_MNVIC_NUM_t enum                  */                   
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
-void MNVIC_vClearPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo);
+void MNVIC_vClearPendingFlag (u8 Copy_u8InterruptNo);
 
 /******************************************************************************************************/
 /*                                      05- MNVIC_u8ReadActiveFlag                                    */
@@ -160,7 +159,8 @@ void MNVIC_vClearPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo);
 /* 2- Function Input       -> @param Copy_u8InterruptNo : from Enum_MNVIC_NUM_t enum                  */                   
 /* 3- Function Return      -> u8 (the active flag status of the specified interrupt.)                 */
 /******************************************************************************************************/
-u8 MNVIC_u8ReadActiveFlag( Enum_MNVIC_NUM_t Copy_u8InterruptNo );
+u8 MNVIC_u8ReadActiveFlag( u8 Copy_u8InterruptNo );
+
 
 /******************************************************************************************************/
 /*                                      06- MNVIC_vInitGrouping                                       */
@@ -180,7 +180,7 @@ void MNVIC_vInitGrouping(MNVIC_Priority_GP Copy_u8Grouping);
 /*                         -> @param Copy_u8SUB = SUB0,SUB1,SUB2,SUB3,SUB4,SUB5,SUB6,SUB7,SUB8,SUB9,SUB10,SUB11,SUB12,SUB13,SUB14,SUB15 */
 /* 3- Function Return      -> void                 */
 /******************************************************************************************************/
-void MNVIC_vSetIntPriority( Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB );
+void MNVIC_vSetIntPriority( u8 Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB );
 
 /******************************************************************************************************/
 /*                                      08- MNVIC_vTrigSoftwareInt                                    */
@@ -189,6 +189,7 @@ void MNVIC_vSetIntPriority( Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Optio
 /* 2- Function Input       -> @param Copy_u8InterruptNo : from Enum_MNVIC_NUM_t enum                  */                   
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
-void MNVIC_vTrigSoftwareInt( Enum_MNVIC_NUM_t Copy_u8InterruptNo );
+void MNVIC_vTrigSoftwareInt( u8 Copy_u8InterruptNo );
+
 
 #endif /* MCAL_MNVIC_MNVIC_INT_H_ */
