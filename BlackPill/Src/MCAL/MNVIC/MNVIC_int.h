@@ -17,6 +17,7 @@
 /*******************************************************************************************************/
 /*                 						 File Guard Will Call On Time in .c File                       */
 /*******************************************************************************************************/
+
 #ifndef MCAL_MNVIC_MNVIC_INT_H_
 #define MCAL_MNVIC_MNVIC_INT_H_
 
@@ -120,7 +121,7 @@ typedef enum {
 /******************************************************************************************************/
 /*                                      01- MNVIC_vEnableInterrupt                                    */
 /*----------------------------------------------------------------------------------------------------*/
-/* 1- Function Description -> Function Enable NVIC Interrupt                                                    */
+/* 1- Function Description -> Function Enable NVIC Interrupt                                          */
 /* 2- Function Input       -> @param Copy_u8InterruptNo : from Enum_MNVIC_NUM_t enum                  */                   
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
@@ -165,7 +166,8 @@ u8 MNVIC_u8ReadActiveFlag( Enum_MNVIC_NUM_t Copy_u8InterruptNo );
 /******************************************************************************************************/
 /*                                      06- MNVIC_vInitGrouping                                       */
 /*----------------------------------------------------------------------------------------------------*/
-/* 1- Function Description -> Function initializes the grouping and sub-priority configuration for the NVIC                                         */
+/* 1- Function Description -> Function initializes the grouping and sub-priority					  */
+/*									configuration for the NVIC  									  */
 /* 2- Function Input       -> @param Copy_u8Grouping = GP16SUB0,GP8SUB2,GP4SUB4,GP2SUB8,GP0SUB16      */                   
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
@@ -176,9 +178,11 @@ void MNVIC_vInitGrouping(MNVIC_Priority_GP Copy_u8Grouping);
 /*----------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function MNVIC_vSetIntPriority                                          */
 /* 2- Function Input       -> @param Copy_u8InterruptNo : from Enum_MNVIC_NUM_t enum                  */ 
-/*                         -> @param Copy_u8GP = GP0,GP1,GP2,GP3,GP4,GP5,GP6,GP7,GP8,GP9,GP10,GP11,GP12,GP13,GP14,GP15 */                  
-/*                         -> @param Copy_u8SUB = SUB0,SUB1,SUB2,SUB3,SUB4,SUB5,SUB6,SUB7,SUB8,SUB9,SUB10,SUB11,SUB12,SUB13,SUB14,SUB15 */
-/* 3- Function Return      -> void                 */
+/*                         -> @param Copy_u8GP = GP0,GP1,GP2,GP3,GP4,GP5,GP6,GP7,GP8,GP9,			  */
+/*													GP10,GP11,GP12,GP13,GP14,GP15 					  */                  
+/*                         -> @param Copy_u8SUB = SUB0,SUB1,SUB2,SUB3,SUB4,SUB5,SUB6,SUB7,SUB8,		  */
+/*													SUB9,SUB10,SUB11,SUB12,SUB13,SUB14,SUB15 		  */
+/* 3- Function Return      -> void                													  */
 /******************************************************************************************************/
 void MNVIC_vSetIntPriority( Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB );
 
@@ -190,5 +194,6 @@ void MNVIC_vSetIntPriority( Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Optio
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
 void MNVIC_vTrigSoftwareInt( Enum_MNVIC_NUM_t Copy_u8InterruptNo );
+
 
 #endif /* MCAL_MNVIC_MNVIC_INT_H_ */
