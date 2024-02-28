@@ -1,10 +1,13 @@
-/*
- * MNVIC_Config.h
- *
- *  Created on: Oct 31, 2023
- *      Author: Omar
- */
+/*/
+/* Author            : Omar                                                                            */
+/* Version           : V0.0.0                                                                          */
+/* Date              : 31 Oct 2023                                                                     */
+/* Description       : MNVIC_Config.                                                                   */
+/*/
 
+/*******************************************************************************************************/
+/*                                   guard of file will call on time in .c                             */
+/*******************************************************************************************************/
 #ifndef MCAL_MNVIC_MNVIC_CONFIG_H_
 #define MCAL_MNVIC_MNVIC_CONFIG_H_
 

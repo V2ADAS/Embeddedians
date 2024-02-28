@@ -18,7 +18,7 @@ void Increment_Pulse_CallBack(){
 	temp_pulses++ ;
 	if (!(encoder_pulses % 38))
 	{
-		MP_ParallelScanProcess();
+		MP_PaB_Scan();
 	}
 }
 
