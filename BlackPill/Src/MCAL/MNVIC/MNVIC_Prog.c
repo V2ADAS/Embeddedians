@@ -63,7 +63,7 @@ void MNVIC_vInitGrouping(MNVIC_Priority_GP Copy_u8Grouping){
 	Global_u8GPMode= Copy_u8Grouping;
 }
 
-void MNVIC_vSetIntPriority(Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB ){
+void MNVIC_vSetIntPriority( Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB ){
 
 	switch(Global_u8GPMode){
 	case GP0SUB16 :
@@ -92,7 +92,7 @@ void MNVIC_vSetIntPriority(Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Option
 
 }
 
-void MNVIC_vTrigSoftwareInt(Enum_MNVIC_NUM_t Copy_u8InterruptNo ){
+void MNVIC_vTrigSoftwareInt( Enum_MNVIC_NUM_t Copy_u8InterruptNo ){
 
 	NVIC -> STIR |= Copy_u8InterruptNo ;
 
