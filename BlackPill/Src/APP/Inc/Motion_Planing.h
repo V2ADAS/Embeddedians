@@ -15,7 +15,7 @@ typedef struct
 
 #define Car_Length  50
 #define Car_Width   35
-
+#define Safety_Margin 5
 #define Vth_Parallel (1.5*Car_Length)
 #define Array_Length  100
 u8 Scanned_Area [Array_Length];
