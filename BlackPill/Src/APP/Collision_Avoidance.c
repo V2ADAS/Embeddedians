@@ -10,7 +10,7 @@
 static collisionAvoidanceFlag CA_Flag;
 
 collisionAvoidanceFlag InitCollisionAvoidance(ULTRASONIC_ID_t ultrasonic_ID){
-    u8 prevDirection = *(getPrevDirection());
+        u8 prevDirection = *(getPrevDirection());
 	u8 prevAngle = *(getprevDegree());
 	CA_Flag = STD_HIGH;
 	HAL_MOTOR_STOP();
