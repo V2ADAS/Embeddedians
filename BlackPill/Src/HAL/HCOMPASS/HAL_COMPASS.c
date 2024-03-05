@@ -22,6 +22,7 @@ struct Compass_struct {
 } CompassData;
 
 // Calibration variables
+
 f32 _offset[3] = {0.0, 0.0, 0.0};
 f32 _scale[3] = {1.0, 1.0, 1.0};
 
@@ -40,7 +41,8 @@ void HCOMPASS_Calibrate(unsigned long calibrationDuration) {
 	HCOMPASS_ClearCalibration();
 	s16 raw[3];
 
-	s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {32767, -32768}};
+	//s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {32767, -32768}};
+	s16 calibrationData[3][2] = {{-1043, 643}, {-1135, 326}, {0, 706}};
 	//s16 calibrationData[3][2] = {{-1000, 600}, {-1100, 1000}, {-850, 1000}};
 	//unsigned long startTime = millis();
 	MSYSTICK_vPeriodicMS(8300);
@@ -95,12 +97,17 @@ void HCOMPASS_vInit(){
 	Local_TxData[1]=0x1D;
 	MI2C_vMasterTx(COMPASS_I2C,COMPASS_ADDRESS,Local_TxData,2,WithStop);
 
-	HCOMPASS_Calibrate(8000);
+	//HCOMPASS_Calibrate(8000);
 
 
 
 }
 void HCOMPASS_vSetRowData(){
+
+	MGPIO_vSetPinMode(PORTA,PIN10, OUTPUT);
+	MGPIO_vSetPinMode(PORTA,PIN9, OUTPUT);
+	static u8 data_Flag=0;
+	static u8 cal_Flag=0;
 
 	/* Read data register 00H ~ 05H. */
 	/* Send Register Position 00H */
@@ -115,6 +122,34 @@ void HCOMPASS_vSetRowData(){
 	RowData[0] =  (s16)(Local_RxData[X_MSB]<<8) | Local_RxData[X_LSB] ;
 	RowData[1] =  (s16)(Local_RxData[Y_MSB]<<8) | Local_RxData[Y_LSB] ;
 	RowData[2] =  (s16)(Local_RxData[Z_MSB]<<8) | Local_RxData[Z_LSB] ;
+
+	//s16 calibrationData[3][2] = {{-1043, 643}, {-1135, 326}, {0, 706}};
+	static s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {0, 706}};
+	u8 Calibration_Flag=0;
+	for (u8 i = 0; i < 2; ++i) {
+		if (RowData[i] < calibrationData[i][0]) {
+			calibrationData[i][0] = RowData[i];
+			Calibration_Flag=1;
+			data_Flag^=1;
+			MGPIO_vSetPinValue(PORTA, PIN10, data_Flag);
+		}
+		if (RowData[i] > calibrationData[i][1]) {
+			calibrationData[i][1] = RowData[i];
+			Calibration_Flag=1;
+			data_Flag^=1;
+			MGPIO_vSetPinValue(PORTA, PIN10, data_Flag);
+		}
+	}
+	if(Calibration_Flag==1){
+		cal_Flag^=1;
+		MGPIO_vSetPinValue(PORTA, PIN9, cal_Flag);
+		HCOMPASS_SetCalibration(
+				calibrationData[0][0], calibrationData[0][1],
+				calibrationData[1][0], calibrationData[1][1],
+				calibrationData[2][0], calibrationData[2][1]
+		);
+	}
+
 
 	f32 CalibratedData[3]={0};
 	HCOMPASS_ApplyCalibration(RowData, CalibratedData);
