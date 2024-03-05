@@ -40,8 +40,8 @@ void HCOMPASS_Calibrate(unsigned long calibrationDuration) {
 	HCOMPASS_ClearCalibration();
 	s16 raw[3];
 
-	//s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {32767, -32768}};
-	s16 calibrationData[3][2] = {{-1000, 600}, {-1100, 1000}, {-850, 1000}};
+	s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {32767, -32768}};
+	//s16 calibrationData[3][2] = {{-1000, 600}, {-1100, 1000}, {-850, 1000}};
 	//unsigned long startTime = millis();
 	MSYSTICK_vPeriodicMS(8300);
 	//MTIMER_vStartTime(TIMER2);

@@ -193,6 +193,9 @@ u8 MI2C_u8MasterRx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress, u8* RxData ,
 	/* send Slave address with read */
 	MI2C_vSendSlaveADDR(I2Cx, Copy_u8SlaveAddress, WithRead);
 
+	if(GET_BIT(I2Cx->SR1,SR1_AF))
+			return ADDRFAIL;
+
 	/* if receiving only one byte disable ack before clearing ADDR Flag */
 	if(DataLen==1)
 		CLR_BIT(I2Cx->CR1,CR1_ACK);
@@ -229,7 +232,7 @@ u8 MI2C_u8MasterRx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress, u8* RxData ,
 	Count++;
 	RxData[Count]=MI2C_vReadDataByte(I2Cx);
 
-	return 0 ;
+	return NoError ;
 }
 
 void MI2C_vSlaveInit(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveOwnAddress){
