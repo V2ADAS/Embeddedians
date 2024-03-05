@@ -15,7 +15,7 @@ typedef struct
 
 #define Car_Length  50
 #define Car_Width   35
-
+#define Safety_Margin 5
 #define Vth_Parallel (1.5*Car_Length)
 #define Array_Length  100
 u8 Scanned_Area [Array_Length];
@@ -57,7 +57,7 @@ f32 PeB_Path (f32 x);
 //perpendicular forward Path
 f32 PeF_Path (f32 x);
 
-void MP_ParallelScanProcess();
+void MP_PaB_Scan();
 void Scan(u8 Scanned_Area[]);
 void Process(u8 Scanned_Area[]);
 

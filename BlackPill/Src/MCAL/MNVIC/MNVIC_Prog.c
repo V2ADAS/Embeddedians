@@ -1,13 +1,19 @@
-/*
- * MNVIC_Prog.c
- *
- *  Created on: Oct 31, 2023
- *      Author: Omar
- */
+/***************************************************************************/
+/* Author       : Omar Wael                                                */
+/* Version      : V0.0.0                                                   */
+/*  Date        : Oct 31, 2023                                             */
+/*  Description : Driver Functions Implementation                          */
+/***************************************************************************/
 
+/***************************************************************************/
+/*                        Standard Types LIB                               */
+/***************************************************************************/
 #include "../../LIB/BIT_MATH.h"
 #include "../../LIB/STD_TYPES.h"
 
+/***************************************************************************/
+/*                           MCAL Components                               */
+/***************************************************************************/
 #include"MNVIC_Config.h"
 #include"MNVIC_Private.h"
 #include"MNVIC_int.h"
@@ -15,32 +21,35 @@
 
 static MNVIC_Priority_GP Global_u8GPMode  ;
 
+/***************************************************************************/
+/*                        Functions Implementations                        */
+/***************************************************************************/
 void MNVIC_vEnableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo){
 
 	/* note : writing 0 to any bit has no effect so we can u atomic instruction like BSSR */
 	SET_BIT_FAST( NVIC->ISER[ (Copy_u8InterruptNo/32) ] , (Copy_u8InterruptNo % 32)  );
 }
 
-void MNVIC_vDisableInterrupt(u8 Copy_u8InterruptNo){
+void MNVIC_vDisableInterrupt(Enum_MNVIC_NUM_t Copy_u8InterruptNo){
 
 	/* note : writing 0 to any bit has no effect so we can u atomic instruction like BSSR */
 		SET_BIT_FAST( NVIC->ICER[ (Copy_u8InterruptNo/32) ] , (Copy_u8InterruptNo % 32)  );
 
 }
 
-void MNVIC_vSetPendingFlag (u8 Copy_u8InterruptNo){
+void MNVIC_vSetPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo){
 
 	/* note : writing 0 to any bit has no effect so we can u atomic instruction like BSSR */
 	SET_BIT_FAST( NVIC->ISPR[ (Copy_u8InterruptNo/32) ] , (Copy_u8InterruptNo % 32)  );
 }
 
-void MNVIC_vClearPendingFlag (u8 Copy_u8InterruptNo){
+void MNVIC_vClearPendingFlag (Enum_MNVIC_NUM_t Copy_u8InterruptNo){
 
 			/* note : writing 0 to any bit has no effect so we can u atomic instruction like BSSR */
 			SET_BIT_FAST( NVIC->ICPR[ (Copy_u8InterruptNo/32) ] , (Copy_u8InterruptNo % 32)  );
 }
 
-u8 MNVIC_u8ReadActiveFlag( u8 Copy_u8InterruptNo ){
+u8 MNVIC_u8ReadActiveFlag( Enum_MNVIC_NUM_t Copy_u8InterruptNo ){
 
 	 u8 Local_u8Flag = 0 ;
 	 Local_u8Flag = GET_BIT( NVIC->IABR[ (Copy_u8InterruptNo/32) ] , (Copy_u8InterruptNo % 32)  );
@@ -54,7 +63,7 @@ void MNVIC_vInitGrouping(MNVIC_Priority_GP Copy_u8Grouping){
 	Global_u8GPMode= Copy_u8Grouping;
 }
 
-void MNVIC_vSetIntPriority( u8 Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB ){
+void MNVIC_vSetIntPriority( Enum_MNVIC_NUM_t Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP , MNVIC_SUB_Options Copy_u8SUB ){
 
 	switch(Global_u8GPMode){
 	case GP0SUB16 :
@@ -83,7 +92,7 @@ void MNVIC_vSetIntPriority( u8 Copy_u8InterruptNo , MNVIC_GP_Options Copy_u8GP ,
 
 }
 
-void MNVIC_vTrigSoftwareInt( u8 Copy_u8InterruptNo ){
+void MNVIC_vTrigSoftwareInt( Enum_MNVIC_NUM_t Copy_u8InterruptNo ){
 
 	NVIC -> STIR |= Copy_u8InterruptNo ;
 
