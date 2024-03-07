@@ -18,7 +18,7 @@ void Increment_Pulse_CallBack(){
 	moved_distance_pulses++ ; 
 	if (!(encoder_pulses % 38))
 	{
-		MP_ParallelScanProcess();
+		MP_PaB_Scan();
 	}
 	if (target_distance_pulses <= moved_distance_pulses){
 		HAL_MOTOR_STOP();

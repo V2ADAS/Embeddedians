@@ -23,6 +23,7 @@
 /***************************************************************************/
 #include "../../LIB/BIT_MATH.h"
 #include "../../LIB/STD_TYPES.h"
+#include"../MGPIO/MGPIO_int.h"
 #include "MI2C_Config.h"
 #include "MI2C_Private.h"
 #include "MI2C_int.h"
@@ -46,16 +47,60 @@ The peripheral input clock frequency must be at least:
 • 4 MHz in Fm mode
  */
 
-void MI2C_vMasterInit(I2CNo_t Copy_I2CNumber){
+void MI2C_vMasterInit(I2CNo_t Copy_I2CNumber ){
 
+	u8 SDA_PIN,SCL_PIN,SDA_AF,SCL_PORT;
 	volatile I2C_Mem_Map_t* I2Cx = NULL_PTR;
 	switch(Copy_I2CNumber){
-	case I2C1: I2Cx=I2C1_REG; break;
-	case I2C2: I2Cx=I2C2_REG; break;
-	case I2C3: I2Cx=I2C3_REG; break;
+	case I2C1: I2Cx=I2C1_REG;
+	/* I2C 1 Initialization */
+		SDA_PIN = I2C1_SDA;
+		SCL_PIN = I2C1_SCL;
+		SDA_AF = MGPIO_ALTFUNC_I2C13;
+		SCL_PORT = PORTB ;
+		break;
+
+	case I2C2: I2Cx=I2C2_REG;
+		SDA_PIN = I2C2_SDA;
+		SCL_PIN = I2C2_SCL;
+		SDA_AF = MGPIO_ALTFUNC_I2C23;
+		SCL_PORT = PORTB ;
+		break;
+
+	case I2C3: I2Cx=I2C3_REG;
+		SDA_PIN = I2C3_SDA;
+		SCL_PIN = I2C3_SCL;
+		SDA_AF = MGPIO_ALTFUNC_I2C23;
+		SCL_PORT = PORTA ;
+		break;
 
 	}
 
+
+	MGPIO_vSetPinMode(SCL_PORT,SCL_PIN,ALTFUNC);
+	MGPIO_vSetPinMode(SDA_PORT,SDA_PIN,ALTFUNC);
+
+
+	MGPIO_vSetPinOutPutType(SCL_PORT, SCL_PIN, GPIO_OPEN_DRAIN);
+	MGPIO_vSetPinOutPutType(SDA_PORT, SDA_PIN, GPIO_OPEN_DRAIN);
+
+	MGPIO_vSetPinOutPutSpeed(SCL_PORT, SCL_PIN, MGPIO_SPEED_VHIGH);
+
+	MGPIO_vSetPinOutPutSpeed(SDA_PORT, SDA_PIN, MGPIO_SPEED_VHIGH);
+	MGPIO_vSetAlternativeFunction(SCL_PORT, SCL_PIN,SCL_AF);
+	MGPIO_vSetAlternativeFunction(SDA_PORT, SDA_PIN,SDA_AF);
+
+
+//		MGPIO_vSetPinMode(PORTB,PIN6,ALTFUNC);
+//		MGPIO_vSetPinMode(PORTB,PIN7,ALTFUNC);
+//
+//		MGPIO_vSetPinOutPutType(PORTB, PIN6, GPIO_OPEN_DRAIN);
+//		MGPIO_vSetPinOutPutType(PORTB, PIN7, GPIO_OPEN_DRAIN);
+//		MGPIO_vSetPinOutPutSpeed(PORTB, PIN6, MGPIO_SPEED_VHIGH);
+//		MGPIO_vSetPinOutPutSpeed(PORTB, PIN7, MGPIO_SPEED_VHIGH);
+//
+//			MGPIO_vSetAlternativeFunction(PORTB, PIN6,MGPIO_ALTFUNC_I2C13);
+//			MGPIO_vSetAlternativeFunction(PORTB, PIN7,MGPIO_ALTFUNC_I2C13);
 	/* disable peripheral for resting all regs */
 	CLR_BIT(I2Cx->CR1,CR1_PE);
 	/* reset the peripheral */
@@ -148,6 +193,9 @@ u8 MI2C_u8MasterRx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress, u8* RxData ,
 	/* send Slave address with read */
 	MI2C_vSendSlaveADDR(I2Cx, Copy_u8SlaveAddress, WithRead);
 
+	if(GET_BIT(I2Cx->SR1,SR1_AF))
+			return ADDRFAIL;
+
 	/* if receiving only one byte disable ack before clearing ADDR Flag */
 	if(DataLen==1)
 		CLR_BIT(I2Cx->CR1,CR1_ACK);
@@ -184,7 +232,7 @@ u8 MI2C_u8MasterRx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress, u8* RxData ,
 	Count++;
 	RxData[Count]=MI2C_vReadDataByte(I2Cx);
 
-	return 0 ;
+	return NoError ;
 }
 
 void MI2C_vSlaveInit(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveOwnAddress){
@@ -274,9 +322,9 @@ void MI2C_vSendSlaveADDR(volatile I2C_Mem_Map_t* I2Cx,u8 Copy_u8SlaveAddress,I2C
 
 	switch(Direction){
 	case(WithWrite):
-					I2Cx->DR=(Copy_u8SlaveAddress<<1); break;
+											I2Cx->DR=(Copy_u8SlaveAddress<<1); break;
 	case(WithRead):
-					Copy_u8SlaveAddress= Copy_u8SlaveAddress<<1;
+											Copy_u8SlaveAddress= Copy_u8SlaveAddress<<1;
 	Copy_u8SlaveAddress |= 1;
 	I2Cx -> DR = Copy_u8SlaveAddress ;
 	break;

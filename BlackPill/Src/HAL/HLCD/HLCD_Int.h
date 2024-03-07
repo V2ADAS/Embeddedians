@@ -2,7 +2,7 @@
 /* Author            : Amr ElMaghraby "ControllersTech"                                                */
 /* Version           : V1.0.3                                                                          */
 /* Data              : 17 Feb 2024                                                                     */
-/* Description       : HLCD_Int.h --> implementations                                                  */
+/* Description       : HLCD_Int.h --> implementations                                                 */
 /* Module  Features  :                                                                                 */
 /*      01- HLCD_vInit                                                                                 */
 /*      02- LOC_HLCD_vSendCMD                                                                          */
@@ -10,9 +10,10 @@
 /*      04- HLCD_vSendString                                                                           */
 /*      05- StringReverse                                                                              */
 /*      06- IntToString                                                                                */
-/*      07- HLCD_vSendNum                                                                              */
-/*      08- HLCD_vPutCur                                                                               */
-/*      09- HLCD_vClear                                                                                */
+/*      07- FloatToString 																			   */
+/*      08- HLCD_vSendNum                                                                              */
+/*      09- HLCD_vPutCur                                                                               */
+/*      10- HLCD_vClear                                                                                */
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
@@ -99,7 +100,7 @@ void HLCD_vSendString(u8 *Copy_u8StrPtr);
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-/*                                     05- StringReverse                				               */
+/*                                          05- StringReverse                				           */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Reverses a string in-place.
@@ -108,12 +109,12 @@ void HLCD_vSendString(u8 *Copy_u8StrPtr);
  *
  * @note This function modifies the input string in-place by reversing its characters.
  */
-static void StringReverse(u8 str[], s32 length);
+void StringReverse(u8 str[], s32 length);
 /******************************************************************************************************/
 
 
 /*******************************************************************************************************/
-/*                                      06- IntToString                            			           */
+/*                                       06- IntToString                          			           */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Converts an integer to a string representation.
@@ -126,12 +127,30 @@ static void StringReverse(u8 str[], s32 length);
  *       The resulting string is stored in the provided buffer. Ensure that the buffer is large enough to
  *       accommodate the string representation and the null terminator.
  */
-static u8* IntToString(s32 num, u8 str[], s32 base);
-/******************************************************************************************************/
+u8* IntToString(s32 num, u8 str[], s32 base);
+/*******************************************************************************************************/
+
+/*******************************************************************************************************/
+/*                					    07- FloatToString 		                                       */
+/*-----------------------------------------------------------------------------------------------------*/
+/**
+ * @brief Converts a floating-point number to a string with a specified precision.
+ *
+ * @param num: The floating-point number to convert.
+ * @param str: The array to store the resulting string.
+ * @param precision: The number of decimal places to include in the string.
+ * @return u8*: Pointer to the resulting string.
+ *
+ * @note This function handles negative numbers, converts the integer part to a string using the
+ * IntToString function, and then converts the fractional part to a string. The resulting string
+ * includes the specified precision and is null-terminated.
+ */
+u8* FloatToString(f32 num, u8 str[], u8 precision);
+/*******************************************************************************************************/
 
 
 /*******************************************************************************************************/
-/*                                      07- HLCD_vSendNum                                              */
+/*                                          08- HLCD_vSendNum                                          */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Sends a 32-bit unsigned integer to an LCD display for output.
@@ -141,11 +160,11 @@ static u8* IntToString(s32 num, u8 str[], s32 base);
  *       for output. The exact implementation details, such as formatting and communication with the LCD,
  *       should be provided in the function definition or documentation.
  */
-void HLCD_vSendNum(u32 Copy_u32Number);
+void HLCD_vSendNum(f32 Copy_u32Number);
 /******************************************************************************************************/
 
 /*******************************************************************************************************/
-/*                              		  	08-HLCD_vPutCur                                			   */
+/*                              		  	09-HLCD_vPutCur                                			   */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @brief Puts the cursor at the specified position on the LCD.
@@ -163,7 +182,7 @@ void HLCD_vPutCur(u8 Copy_u8Row, u8 Copy_u8Column);
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-/*                              		  	09-HLCD_vClear                               			   */
+/*                              		  	10-HLCD_vClear                               			   */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @brief Clears the content on the LCD screen.

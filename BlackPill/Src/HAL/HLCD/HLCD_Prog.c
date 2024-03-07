@@ -10,9 +10,10 @@
 /*      04- HLCD_vSendString                                                                           */
 /*      05- StringReverse                                                                              */
 /*      06- IntToString                                                                                */
-/*      07- HLCD_vSendNum                                                                              */
-/*      08- HLCD_vPutCur                                                                               */
-/*      09- HLCD_vClear                                                                                */
+/*      07- FloatToString 																			   */
+/*      08- HLCD_vSendNum                                                                              */
+/*      09- HLCD_vPutCur                                                                               */
+/*      10- HLCD_vClear                                                                                */
 /*******************************************************************************************************/
 
 
@@ -129,7 +130,7 @@ void HLCD_vSendData(u8 Copy_u8Data)
 	u8 data_t[4];
 
 	// Extract upper and lower nibbles from the data
-	data_u = (Copy_u8Data & 0xF0);
+	data_u = ( Copy_u8Data & 0xF0);
 	data_l = ((Copy_u8Data << 4) & 0xF0);
 
 	// Form the data array with enable (EN) and register select (RS) signals
@@ -145,7 +146,7 @@ void HLCD_vSendData(u8 Copy_u8Data)
 
 
 /*******************************************************************************************************/
-/*                             HLCD_vSendString Function Implementation                               */
+/*                             HLCD_vSendString Function Implementation                                */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @brief Sends a string to the LCD.
@@ -168,6 +169,7 @@ void HLCD_vSendString(u8 *Copy_u8StrPtr)
 		HLCD_vSendData(*Copy_u8StrPtr++);
 	}
 }
+/*******************************************************************************************************/
 
 /*******************************************************************************************************/
 /*                                      StringReverse                				                   */
@@ -179,7 +181,7 @@ void HLCD_vSendString(u8 *Copy_u8StrPtr)
  *
  * @note This function modifies the input string in-place by reversing its characters.
  */
-static void StringReverse(u8 str[], s32 length) {
+void StringReverse(u8 str[], s32 length) {
     int start = 0;
     int end = length - 1;
 
@@ -192,7 +194,7 @@ static void StringReverse(u8 str[], s32 length) {
         end--;
     }
 }
-/******************************************************************************************************/
+/*******************************************************************************************************/
 
 
 /*******************************************************************************************************/
@@ -209,7 +211,7 @@ static void StringReverse(u8 str[], s32 length) {
  *       The resulting string is stored in the provided buffer. Ensure that the buffer is large enough to
  *       accommodate the string representation and the null terminator.
  */
-static u8* IntToString(s32 num, u8 str[], s32 base) {
+u8* IntToString(s32 num, u8 str[], s32 base) {
     s32 i = 0;
 
     // Handle 0 explicitly, as it will result in an empty string
@@ -229,28 +231,92 @@ static u8* IntToString(s32 num, u8 str[], s32 base) {
     str[i] = '\0'; // Null-terminate the string
 
     // Reverse the string
-    StringReverse(str, i);
+    StringReverse( str, i);
 
     return str;
 }
-/******************************************************************************************************/
+/*******************************************************************************************************/
 
 
-void HLCD_vSendNum(u32 Copy_u32Number)
-{
-	u8 Local_u8Str[10];
-	//itoa is a function to convert number to a string
-	//first par: represent number it is
-	//sec par: represent buffer to store string convention
-	//third par: represent number base 10==>Decimal   2==>Binary
+/*******************************************************************************************************/
+/*                  				      FloatToString 			                                   */
+/*-----------------------------------------------------------------------------------------------------*/
+/**
+ * @brief Converts a floating-point number to a string with a specified precision.
+ *
+ * @param num: The floating-point number to convert.
+ * @param str: The array to store the resulting string.
+ * @param precision: The number of decimal places to include in the string.
+ * @return u8*: Pointer to the resulting string.
+ *
+ * @note This function handles negative numbers, converts the integer part to a string using the
+ * IntToString function, and then converts the fractional part to a string. The resulting string
+ * includes the specified precision and is null-terminated.
+ */
+u8* FloatToString(f32 num, u8 str[], u8 precision) {
+    // Handle negative numbers
+    if (num < 0) {
+        num = -num;
+        str[0] = '-';
+        str++;
+    }
 
-	//OR:
-	//  sprintf(str, "%d", number); // Convert integer to string
-	IntToString(Copy_u32Number, Local_u8Str,10);
-	HLCD_vSendString(Local_u8Str);
+    // Convert the integer part
+    s32 intPart = (s32)num;
+    IntToString(intPart, str, 10);
 
+    // Find the length of the integer part
+    s32 intLen = 0;
+    while (str[intLen] != '\0') {
+        intLen++;
+    }
+
+    // Add the decimal point
+    str[intLen++] = '.';
+
+    // Convert the fractional part
+    f32 fracPart = num - intPart;
+    for (u8 i = 0; i < precision; i++) {
+        fracPart *= 10;
+        s32 digit = (s32)fracPart;
+        str[intLen++] = digit + '0';
+        fracPart -= digit;
+    }
+
+    // Null-terminate the string
+    str[intLen] = '\0';
+
+    return str;
 }
 /*******************************************************************************************************/
+
+
+
+/*******************************************************************************************************/
+/*                      				HLCD_vSendNum Function                                         */
+/*-----------------------------------------------------------------------------------------------------*/
+/**
+ * @brief Converts a floating-point number to a string and sends it to an LCD display.
+ *
+ * @param Copy_u32Number: The floating-point number to be converted and sent to the LCD.
+ * @return void
+ *
+ * @note This function uses the FloatToString function to convert the floating-point number to a string
+ * with a specified precision (LCD_FLOAT_PRECISION). The resulting string is then sent to the LCD
+ * using the HLCD_vSendString function.
+ */
+void HLCD_vSendNum(f32 Copy_u32Number)
+{
+    f32 Local_f32Str[5];  // Buffer to store the string representation of the floating-point number
+
+    // Convert the floating-point number to a string with specified precision
+    FloatToString(Copy_u32Number, Local_f32Str, LCD_FLOAT_PRECISION);
+
+    // Send the resulting string to the LCD
+    HLCD_vSendString(Local_f32Str);
+}
+/*******************************************************************************************************/
+
 
 
 /*******************************************************************************************************/

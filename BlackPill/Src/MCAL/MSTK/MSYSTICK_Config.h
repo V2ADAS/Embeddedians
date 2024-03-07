@@ -18,7 +18,7 @@
 #define CLOCK	16
 
 /*Initialize SysTick Clock Source*/
-#define CLK_SOURCE		MSYSTICK_AHB
+#define CLK_SOURCE		MSYSTICK_AHB8
 
 #define MAX_LOAD_VALUE		16777215 //2^24 - 1
 

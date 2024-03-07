@@ -8,94 +8,30 @@
 #include "Inc/Collision_Avoidance.h"
 
 static collisionAvoidanceFlag CA_Flag;
+
 collisionAvoidanceFlag InitCollisionAvoidance(ULTRASONIC_ID_t ultrasonic_ID){
-    CA_Flag = STD_HIGH;
+        u8 prevDirection = *(getPrevDirection());
+	u8 prevAngle = *(getprevDegree());
+	CA_Flag = STD_HIGH;
 	HAL_MOTOR_STOP();
 	switch(ultrasonic_ID){
-	case FR_US:
-		FR_CA_Scenario();
+	case F_US || FR_US || FL_US || B_US || BR_US || BL_US :
+	    CAR_CONTROL(!prevDirection,5,-prevAngle);
+	    CA_Flag = STD_LOW;
 		break;
-	case FL_US:
-		FL_CA_Scenario();
+	case R_US:
+		/*
+	     * Implementation of scenario to avoid the collision from Right direction
+	     */
+		CA_Flag = STD_LOW;
 		break;
-	case BR_US:
-		BR_CA_Scenario();
-		break;
-	case BL_US:
-		BL_CA_Scenario();
-		break;
-	case RF_US:
-		RF_CA_Scenario();
-		break;
-	case RB_US:
-		RB_CA_Scenario();
-		break;
-	case LF_US:
-		LF_CA_Scenario();
-		break;
-	case LB_US:
-		LB_CA_Scenario();
+	case L_US:
+		/*
+	     * Implementation of scenario to avoid the collision from Left direction
+	     */
+		CA_Flag = STD_LOW;
 		break;
 	}
 
     return CA_Flag;
-}
-
-void FR_CA_Scenario(){
-
-	/*
-	 * Implementation of scenario to avoid the collision from FR direction
-	 */
-	CA_Flag = STD_LOW;
-}
-
-void FL_CA_Scenario(){
-	/*
-	 * Implementation of scenario to avoid the collision from FL direction
-	 */
-	CA_Flag = STD_LOW;
-}
-
-void BR_CA_Scenario(){
-	/*
-	 * Implementation of scenario to avoid the collision from BR direction
-     */
-	CA_Flag = STD_LOW;
-
-}
-
-void BL_CA_Scenario(){
-	/*
-	 * Implementation of scenario to avoid the collision from BL direction
-	 */
-	CA_Flag = STD_LOW;
-}
-
-void RF_CA_Scenario(){
-	/*
-     * Implementation of scenario to avoid the collision from RF direction
-	 */
-	CA_Flag = STD_LOW;
-
-}
-
-void RB_CA_Scenario(){
-	/*
-	 * Implementation of scenario to avoid the collision from RB direction
-	 */
-	CA_Flag = STD_LOW;
-}
-
-void LF_CA_Scenario(){
-	/*
-	 * Implementation of scenario to avoid the collision from LF direction
-	 */
-	CA_Flag = STD_LOW;
-}
-
-void LB_CA_Scenario(){
-	/*
-	 * Implementation of scenario to avoid the collision from LB direction
-	 */
-	CA_Flag = STD_LOW;
 }
