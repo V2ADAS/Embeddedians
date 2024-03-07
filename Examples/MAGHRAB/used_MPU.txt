@@ -1,0 +1,193 @@
+
+#include "LIB/STD_TYPES.h"
+#include "LIB/BIT_MATH.h"
+#include "MCAL/MGPIO/MGPIO_Int.h"
+#include "MCAL/MRCC/MRCC_Int.h"
+#include"MCAL/MEXTI/MEXTI_Int.h"
+#include"MCAL/MNVIC/MNVIC_Int.h"
+#include"MCAL/MSTK/MSYSTICK_Int.h"
+#include"MCAL/MTIMER/MTIMER_Int.h"
+#include"HAL/HSERVO/HSERVO_Int.h"
+#include"HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h"
+#include"MCAL/MI2C/MI2C_int.h"
+#include"HAL/HLCD/HLCD_Int.h"
+
+#include"HAL/HMPU/MPU6050.h"
+#include<stdio.h>
+#include<stdint.h>
+#include "math.h"
+#define clk 8000000
+u8 Data1;
+char buf[5];
+u8 data[6];
+float Accel_X_RAW = 0;
+float Accel_Y_RAW = 0;
+float Accel_Z_RAW = 0;
+
+s16 Gyro_X_RAW = 0;
+s16 Gyro_Y_RAW = 0;
+s16 Gyro_Z_RAW = 0;
+
+float GxL, GyL, GzL, Gx, Gy, Gz;
+
+float elapsedTime=0.015, currentTime, previousTime;
+float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ,yaw,roll,pitch;
+
+void Led(void){
+	static u8 Tog = 1;
+	//Toggle Led
+	MGPIO_vSetPinValue(PORTC,PIN13,Tog);
+	Tog ^= 1;
+	if(Tog)
+		MRCC_vEnableClock(TIM1_EN);
+	else
+		MRCC_vDisableClock(TIM1_EN);
+	MTIMER_vClearCNT(TIMER1);
+}
+
+#define SCB_CPACR       (*((volatile u32 *)0xE000ED88))
+
+int main(){
+	SCB_CPACR |= ((3UL << 10 * 2) | (3UL << 11 * 2));
+	//Initialize RCC
+	MRCC_vInit();
+	//Enable GPIO Clock
+	MRCC_vEnableClock(GPIOA_EN);
+	MRCC_vEnableClock(GPIOB_EN);
+	MRCC_vEnableClock(GPIOC_EN);
+	//Enable SYSCFG
+	MRCC_vEnableClock(SYSCFG_EN);
+
+	//Initialize SYSTICK
+	MSYSTICK_vInit();
+
+	MGPIO_vSetPinMode(PORTA,PIN0,INPUT);
+	MGPIO_vSetPinInPutType(PORTA,PIN0,PULLUP);
+
+	//Initialize EXTI
+	MNVIC_vEnableInterrupt(NVIC_EXTI0);
+
+	SYSCFG_vConfigEXTI_Line(EXTI_PORTA,EXTI0);
+	MEXTI_vEnableInterrupt(EXTI0);
+	//Set EXTI0 to RISING
+	MEXTI_vInterruptTrigger(EXTI0, FALLING);
+	//Set Call Back Function
+	MEXTI_vCallBack(EXTI0,&Led);
+
+	//Set LED PIN as OUTPUT
+	MGPIO_vSetPinMode(PORTC,PIN13,OUTPUT);
+	//******************I2C**********************//
+	// ENABLE I2C1
+	MRCC_vEnableClock(I2C1_EN);
+	/* I2C 1 Initialization */
+	MGPIO_vSetPinMode(PORTB,PIN6,ALTFUNC);
+	MGPIO_vSetPinMode(PORTB,PIN7,ALTFUNC);
+
+	MGPIO_vSetPinOutPutType(PORTB, PIN6, GPIO_OPEN_DRAIN);
+	MGPIO_vSetPinOutPutType(PORTB, PIN7, GPIO_OPEN_DRAIN);
+	MGPIO_vSetPinOutPutSpeed(PORTB, PIN6, MGPIO_SPEED_VHIGH);
+	MGPIO_vSetPinOutPutSpeed(PORTB, PIN7, MGPIO_SPEED_VHIGH);
+
+	MGPIO_vSetAlternativeFunction(PORTB, PIN6,MGPIO_ALTFUNC_I2C13);
+	MGPIO_vSetAlternativeFunction(PORTB, PIN7,MGPIO_ALTFUNC_I2C13);
+
+	MI2C_vMasterInit(I2C1);
+	//**************TIMER1**************************//
+	MRCC_vEnableClock(TIM1_EN);
+	MRCC_vEnableClock(TIM2_EN);
+	MRCC_vEnableClock(TIM3_EN);
+	MRCC_vEnableClock(TIM4_EN);
+	MRCC_vEnableClock(TIM5_EN);
+
+	MRCC_vEnableClock(TIM9_EN);
+	MRCC_vEnableClock(TIM10_EN);
+	MRCC_vEnableClock(TIM11_EN);
+
+	MNVIC_vEnableInterrupt(NVIC_TIM1_BRK_TIM9);
+	MNVIC_vEnableInterrupt(NVIC_TIM1_UP_TIM10);
+	MNVIC_vEnableInterrupt(NVIC_TIM1_TRG_COM_TIM11);
+	MNVIC_vEnableInterrupt(NVIC_TIM1_CC);
+	MNVIC_vEnableInterrupt(NVIC_TIM2);
+	MNVIC_vEnableInterrupt(NVIC_TIM3);
+	MNVIC_vEnableInterrupt(NVIC_TIM4);
+	MNVIC_vEnableInterrupt(NVIC_TIM5);
+
+	HLCD_vInit();
+	HLCD_vSendString("Start...");
+	HLCD_vPutCur(1, 0);
+	HLCD_vSendString("Roll:");
+	MPU6050_init(clk);
+	MSYSTICK_vDelayms(1000);
+	while(1){
+		//init accel
+		Data1 = 0x00;
+		MPU6050_write(PWR_MGMT_1_REG, &Data1, 1);
+		Data1 = 0x05;
+		MPU6050_write(0x1A, &Data1, 1);
+		Data1 = 0x10;
+		MPU6050_write(ACCEL_CONFIG_REG, &Data1, 1);
+		//read acceleration
+		MPU6050_read(ACCEL_XOUT_H_REG, data, 6);
+		Accel_X_RAW = ((s16)(data[0] << 8 | data [1])) / 4096.0;
+		Accel_Y_RAW = ((s16)(data[2] << 8 | data [3])) / 4096.0;
+		Accel_Z_RAW = ((s16)(data[4] << 8 | data [5])) / 4096.0;
+
+		accAngleX = (atan(Accel_Y_RAW / sqrt(pow(Accel_X_RAW, 2) + pow(Accel_Z_RAW, 2))) * 180 / 3.14) - 0.58; // AccErrorX ~(0.58) See the calculate_IMU_error()custom function for more details
+		accAngleY = (atan(-1 * Accel_X_RAW / sqrt(pow(Accel_Y_RAW, 2) + pow(Accel_Z_RAW, 2))) * 180 / 3.14) + 1.58; // AccErrorY ~(-1.58)
+
+		//init gyro
+		Data1 = 0x08;
+		MPU6050_write(GYRO_CONFIG_REG, &Data1, 1);
+
+		//gyro read
+		MPU6050_read(GYRO_XOUT_H_REG, data, 6);
+		Gyro_X_RAW = (s16)(data[0] << 8 | data [1]);
+		Gyro_Y_RAW = (s16)(data[2] << 8 | data [3]);
+		Gyro_Z_RAW = (s16)(data[4] << 8 | data [5]);
+		Gx = Gyro_X_RAW/65.5+ 2.7;
+		Gy = Gyro_Y_RAW/65.5 - .86;
+		Gz = Gyro_Z_RAW/65.5+ 0.40;
+
+		//calculate the time with seconds
+		elapsedTime=MTIMER_f32GetElapsedTime(TIMER2, sec);//timer off
+
+		gyroAngleX = gyroAngleX + Gx * elapsedTime; // deg/s * s = deg
+		gyroAngleY = gyroAngleY + Gy * elapsedTime;
+		yaw =  yaw + Gz * elapsedTime;
+		//timer on
+		MTIMER_vStartTime(TIMER2);
+
+		//angles
+		roll = 0.96 * gyroAngleX + 0.04 * accAngleX;
+		pitch = 0.96 * gyroAngleY + 0.04 * accAngleY;
+
+		if(roll<0)
+			roll = -roll;
+		HLCD_vPutCur(1, 5);
+		HLCD_vSendNum(roll);
+		/*
+		sprintf (buf, "%d", (int)roll);
+		USART_SEND_STRING(USART1,buf);
+		delay(3, U_ms, clk);
+		USART_SEND_STRING(USART1,"Y \n");
+		delay(1, U_ms, clk);
+		sprintf (buf, "%d", (int)pitch);
+		USART_SEND_STRING(USART1,buf);
+		delay(4, U_ms, clk);
+		USART_SEND_STRING(USART1,"X \n");
+		delay(1, U_ms, clk);
+		sprintf (buf, "%d", (int)(yaw));
+		USART_SEND_STRING(USART1,buf);
+		delay(3, U_ms, clk);
+		USART_SEND_STRING(USART1,"Z \n");
+		delay(1, U_ms, clk);*/
+
+	}
+
+}
+
+
+
+
+
+
