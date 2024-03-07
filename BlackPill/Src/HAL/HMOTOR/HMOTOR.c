@@ -1,24 +1,27 @@
-
+#include "HMOTOR.h"
 #include "../../LIB/BIT_MATH.h"
 #include "../../MCAL/MGPIO/MGPIO_Int.h"
 #include "../../MCAL/MGPIO/MGPIO_Config.h"
-#include "HMOTOR.h"
 #include "../../MCAL/MTIMER/MTIMER_Int.h"
 #include"../../MCAL/MEXTI/MEXTI_int.h"
 #include"../../MCAL/MSTK/MSYSTICK_int.h"
-
+#include"../../APP/Inc/Motion_Planing.h"
 #define WHEEL_AREA   26.4
 #define PULSES_PER_REVOLUTION 1024
 
 volatile MOTOR_PINS_t Motor_Pins ;
 volatile u32 encoder_pulses = 0 ;
-volatile u32 temp_pulses = 0 ;
+volatile u32 moved_distance_pulses = 0 ;
+volatile u32 target_distance_pulses = 0 ;
 void Increment_Pulse_CallBack(){
 	encoder_pulses++ ;
-	temp_pulses++ ;
+	moved_distance_pulses++ ; 
 	if (!(encoder_pulses % 38))
 	{
 		MP_ParallelScanProcess();
+	}
+	if (target_distance_pulses <= moved_distance_pulses){
+		HAL_MOTOR_STOP();
 	}
 }
 
@@ -49,7 +52,8 @@ void HAL_MOTOR_Init(u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 ,u8 PORT_PWM 
 void HAL_MOTOR_MOVE(u8 DIRCTION ,u8 SPEED , f32 DISTANCE_cm_){
 	f32 high_duty = (SPEED / 100.0)  ;
 	f32 num_of_revolutions  ;
-	u32 total_pulses = 0 ;
+	moved_distance_pulses = 0 ;
+	target_distance_pulses = 0 ;
 	switch(DIRCTION){
 	case BACKWARD :
 		MGPIO_vSetPinValue(Motor_Pins.PORT_N1, Motor_Pins.PIN_N1, HIGH);
@@ -64,11 +68,8 @@ void HAL_MOTOR_MOVE(u8 DIRCTION ,u8 SPEED , f32 DISTANCE_cm_){
 	MTIMER_vPWM(TIMER1, CH1, 10000, high_duty*10000);
 	/***************************distance******************************/
 	num_of_revolutions = (DISTANCE_cm_/ WHEEL_AREA);
-//	num_of_revolutions = 4;
-	total_pulses = (u32)(num_of_revolutions * PULSES_PER_REVOLUTION);
-		while( total_pulses > temp_pulses );
-		HAL_MOTOR_STOP();
-		temp_pulses = 0 ;
+	target_distance_pulses = (u32)(num_of_revolutions * PULSES_PER_REVOLUTION);
+
 }
 
 void HAL_MOTOR_STOP(){
