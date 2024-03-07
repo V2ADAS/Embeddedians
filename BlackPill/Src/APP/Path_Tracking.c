@@ -49,7 +49,7 @@ void PT_TrackThePath (f32 (*Func_Path)(f32 x)) {
 	current_point = LOC_GetCurrentLocation();
 	next_point = LOC_GetNextLocation(Func_Path);
 	distance = LOC_GetDistanceBet2Points(current_point, next_point);
-	angle = Get_Angle_of_slope(current_point, next_point);
+	angle = LOC_GetAngleofslope(current_point, next_point);
 
 	//It is expected to pass "distance , angle" to a control function will be finished soon
 }
