@@ -1,0 +1,57 @@
+/* PORTA , PIN1 ==> External Interrupt "Falling Edge"
+   PORTC , PIN13 ==> Output LED Toggle To the Interrupt */
+
+#include "MCAL/MGPIO/MGPIO_Config.h"
+#include "MCAL/MGPIO/MGPIO_Private.h"
+#include "MCAL/MGPIO/MGPIO_Int.h"
+
+#include "MCAL/MRCC/MRCC_Config.h"
+#include "MCAL/MRCC/MRCC_Private.h"
+#include "MCAL/MRCC/MRCC_Int.h"
+
+#include"MCAL/MEXTI/MEXTI_Config.h"
+#include"MCAL/MEXTI/MEXTI_Private.h"
+#include"MCAL/MEXTI/MEXTI_Int.h"
+
+#include"MCAL/MNVIC/MNVIC_Config.h"
+#include"MCAL/MNVIC/MNVIC_Private.h"
+#include"MCAL/MNVIC/MNVIC_Int.h"
+
+void delay(volatile u32 count){
+	while(count--);
+}
+
+void Led(void){
+	static u8 Tog = 0;
+	//Toggle Led
+	MGPIO_voidSetPinValue(PORTC,PIN13,Tog);
+	Tog ^= 1;
+}
+
+u8 main(){
+	//Initialize RCC
+	MRCC_voidInit();
+	//Enable GPIO Clock
+	MRCC_voidEnableClock(GPIOAEN);
+	//Enable SYSCFG
+	MRCC_voidEnableSYSCFG();
+
+	MGPIO_voidSetPinMode(PORTA,PIN1,INPUT);
+	MGPIO_voidSetPinInputPull(PORTA,PIN1,PULL_UP);
+
+	//Initialize EXTI
+	MNVIC_voidEnableInterrupt(7);
+	SYSCFG_voidConfigEXTI_Line(EXTI_PORTA,1); /************************************************/
+	MEXTI_voidEnableInterrupt(1);
+	//Set EXTI0 to RISING
+	MEXTI_voidInterruptTrigger(1,FALLING);
+	//Set Call Back Function
+	MEXTI1_voidCallBack(&Led);
+
+	//Enable GPIO Clock
+	MRCC_voidEnableClock(GPIOCEN);
+	//Set LED PIN as OUTPUT
+	MGPIO_voidSetPinMode(PORTC,PIN13,OUTPUT);
+	while(1){}
+
+}
