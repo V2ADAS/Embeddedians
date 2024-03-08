@@ -40,7 +40,7 @@ static void (*GLOBAL_Ptr[8])(void)={STD_NULL};
  * @param 			Copy_u8ChannelNum: The TIMER channel to be configured for Input Capture Unit (ICU).
  * @return 			void
  */
-void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8ChannelNum);
+static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8ChannelNum);
 /*******************************************************************************************************/
 
 //Global Array to Store each CH Captured Pulse width value
@@ -57,7 +57,7 @@ u32 Time[29]={0};
  * @return 		 TIM2_5_MemMap_t*: Pointer to the memory-mapped structure of the specified TIMER.
  * @note 		 using TIM2_5_MemMap_t struct to be used for all timers
  */
-TIM2_5_MemMap_t* LOC_GET_TIMER(u32 Copy_u8TimerNum) {
+static TIM2_5_MemMap_t* LOC_GET_TIMER(u32 Copy_u8TimerNum) {
 	// Array containing the offsets of TIMER registers for different TIMers.
 	u32 Timer_Offset[8] = TIMERS_OFFSET;
 
@@ -248,8 +248,6 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay) {
  * 			ALSO NO EXTERNAL MODE AT ALL FOR TIMER 10 or TIMER 11
  */
 void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel,u32	Copy_u32Max_Value){
-	// Get the base address of the specified timer
-	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	// Configure GPIO pins and alternative functions based on the selected timer and channel
 	MGPIO_vSetPinMode(
 			TIMER_PORT_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1],
@@ -261,6 +259,8 @@ void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8C
 			TIMER_PIN_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1] ,
 			TIMER_AF[Copy_u8TimerNum-1]
 	);
+	// Get the base address of the specified timer
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	//1. Configure channel 2 to detect rising edges on the TI2 input by writing CC2S = ‘01’ in
 	//the TIMx_CCMR1 register.
 	SET_BIT( TIMx->CCMR[0] , ( CCxS0+(((Copy_u8Channel-1)%2)*8)) );
@@ -302,6 +302,7 @@ void MTIMER_vClearCNT(Enum_TIMER_NUM Copy_u8TimerNum) {
 
 /*******************************************************************************************************/
 void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel,u16 Copy_u16TotalTime_uSec,u16 Copy_u16PositiveDutyCycle_uSec){
+	// Configure GPIO pins and alternative functions based on the selected timer and channel
 	MGPIO_vSetPinMode(
 			TIMER_PORT_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1],
 			TIMER_PIN_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1] ,
@@ -312,6 +313,7 @@ void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel,u1
 			TIMER_PIN_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1] ,
 			TIMER_AF[Copy_u8TimerNum-1]
 	);
+	// Get the base address of the specified timer
 	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	SET_BIT( TIMx->CR1 , ARPE );    // Enable auto-reload preload
 	CLR_BIT( TIMx->CR1 , DIR); 	// UP COUNT
@@ -348,6 +350,18 @@ void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel,u1
 
 /*******************************************************************************************************/
 void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
+	// Configure GPIO pins and alternative functions based on the selected timer and channel
+	MGPIO_vSetPinMode(
+			TIMER_PORT_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1],
+			TIMER_PIN_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1] ,
+			ALTFUNC
+	);
+	MGPIO_vSetAlternativeFunction(
+			TIMER_PORT_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1],
+			TIMER_PIN_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1] ,
+			TIMER_AF[Copy_u8TimerNum-1]
+	);
+	// Get the base address of the specified timer
 	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	SET_BIT( TIMx->CR1 , ARPE );    // Enable auto-reload preload
 	CLR_BIT( TIMx->CR1 , DIR ); 	// UP COUNT
@@ -387,7 +401,7 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
  *         timer to capture the rising edge first, then the falling edge.
  * @return None
  */
-void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum) {
+static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum) {
 	static u8 captureState[29] = {0};
 	static u32 captureValue1[29] = {0};
 	static u32 captureValue2[29] = {0};
