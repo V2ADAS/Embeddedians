@@ -18,7 +18,7 @@ typedef struct
 #define Safety_Margin 5
 #define Vth_Parallel (1.5*Car_Length)
 #define Array_Length  100
-u8 Scanned_Area [Array_Length];
+static u8 Scanned_Area [Array_Length];
 /*
     Parameter setter functions.
     
