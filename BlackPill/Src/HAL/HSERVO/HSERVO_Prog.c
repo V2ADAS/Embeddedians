@@ -27,19 +27,6 @@ LOC_SERVO_NUM SERVO_STRUCT[TOT_SERVO_NUM];
 
 
 void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8TimerNum,u8 Copy_u8ChannelNum){
-	// Configure GPIO pins and alternative functions based on the selected timer and channel
-	MGPIO_vSetPinMode(
-			TIMER_PORT_MAP[Copy_u8TimerNum - 1][Copy_u8ChannelNum - 1],
-			TIMER_PIN_MAP[Copy_u8TimerNum - 1][Copy_u8ChannelNum - 1],
-			ALTFUNC
-	);
-
-	MGPIO_vSetAlternativeFunction(
-			TIMER_PORT_MAP[Copy_u8TimerNum - 1][Copy_u8ChannelNum - 1],
-			TIMER_PIN_MAP[Copy_u8TimerNum - 1][Copy_u8ChannelNum - 1],
-			TIMER_AF[Copy_u8TimerNum - 1]
-	);
-
 	// Update the TIMER and CHANNEL configuration in the servo structure
 	SERVO_STRUCT[Copy_u8ServoNum].TIMER = Copy_u8TimerNum;
 	SERVO_STRUCT[Copy_u8ServoNum].CHANNEL = Copy_u8ChannelNum;
