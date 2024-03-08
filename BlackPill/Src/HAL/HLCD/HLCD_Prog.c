@@ -45,7 +45,7 @@
  *       The LCD module is expected to be configured with a specific slave address (SLAVE_ADDRESS_LCD).
  *       The WithStop parameter indicates whether to generate a stop condition after the data transmission.
  */
-void LOC_HLCD_vSendCMD(u8 Copy_u8CMD)
+static void LOC_HLCD_vSendCMD(u8 Copy_u8CMD)
 {
 	u8 data_u, data_l;
 	u8 data_t[4];
