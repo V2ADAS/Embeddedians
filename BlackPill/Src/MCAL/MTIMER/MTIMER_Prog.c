@@ -58,14 +58,14 @@ u32 Time[29]={0};
  * @note 		 using TIM2_5_MemMap_t struct to be used for all timers
  */
 TIM2_5_MemMap_t* LOC_GET_TIMER(u32 Copy_u8TimerNum) {
-    // Array containing the offsets of TIMER registers for different TIMers.
-    u32 Timer_Offset[8] = TIMERS_OFFSET;
+	// Array containing the offsets of TIMER registers for different TIMers.
+	u32 Timer_Offset[8] = TIMERS_OFFSET;
 
-    // Calculate the base address of the specified TIMER using its offset.
-    TIM2_5_MemMap_t* TIMx = (TIM2_5_MemMap_t*)((u32)TIM2 + Timer_Offset[Copy_u8TimerNum - 1]);
+	// Calculate the base address of the specified TIMER using its offset.
+	TIM2_5_MemMap_t* TIMx = (TIM2_5_MemMap_t*)((u32)TIM2 + Timer_Offset[Copy_u8TimerNum - 1]);
 
-    // Return the pointer to the memory-mapped structure of the specified TIMER.
-    return TIMx;
+	// Return the pointer to the memory-mapped structure of the specified TIMER.
+	return TIMx;
 }
 /*******************************************************************************************************/
 
@@ -79,23 +79,23 @@ TIM2_5_MemMap_t* LOC_GET_TIMER(u32 Copy_u8TimerNum) {
  * @return void
  */
 void MTIMER_vStartTime(Enum_TIMER_NUM Copy_u8TimerNum) {
-    // Get the base address of the specified timer
-    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+	// Get the base address of the specified timer
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 
-    // Reset Control Register 1 Value
-    TIMx->CR1 = 0;
+	// Reset Control Register 1 Value
+	TIMx->CR1 = 0;
 
-    // Set the prescaler value to achieve a 1ms time base
-    TIMx->PSC = SYS_CLOCK * 1000 - 1;
+	// Set the prescaler value to achieve a 1ms time base
+	TIMx->PSC = SYS_CLOCK * 1000 - 1;
 
-    // Set the auto-reload value to MAX Value
-    TIMx->ARR = 0xFFFFFFFF;
+	// Set the auto-reload value to MAX Value
+	TIMx->ARR = 0xFFFFFFFF;
 
-    // Set the Counter Enable bit to start the timer
-    SET_BIT(TIMx->CR1, CEN);
+	// Set the Counter Enable bit to start the timer
+	SET_BIT(TIMx->CR1, CEN);
 
-    // Ensure Starting CNT from 0 as of some problems with TIMER2 and TIMER 5 if "ARR >0x0020000"
-    TIMx->CNT = 0xFFFFFFFF;
+	// Ensure Starting CNT from 0 as of some problems with TIMER2 and TIMER 5 if "ARR >0x0020000"
+	TIMx->CNT = 0xFFFFFFFF;
 }
 /*******************************************************************************************************/
 
@@ -110,20 +110,20 @@ void MTIMER_vStartTime(Enum_TIMER_NUM Copy_u8TimerNum) {
  * @return void
  */
 void MTIMER_vCntTimer(Enum_TIMER_NUM Copy_u8TimerNum, Enum_Timer_Cont Copy_u8TimerCont) {
-    // Get the base address of the specified timer
-    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+	// Get the base address of the specified timer
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 
-    // Check the desired action for the TIMER
-    switch (Copy_u8TimerCont) {
-        case StopTimer:
-            // Clear the Counter Enable bit to stop the timer
-            CLR_BIT(TIMx->CR1, CEN);
-            break;
-        case ContinueTimer:
-            // Set the Counter Enable bit to continue or start the timer
-            SET_BIT(TIMx->CR1, CEN);
-            break;
-    }
+	// Check the desired action for the TIMER
+	switch (Copy_u8TimerCont) {
+	case StopTimer:
+		// Clear the Counter Enable bit to stop the timer
+		CLR_BIT(TIMx->CR1, CEN);
+		break;
+	case ContinueTimer:
+		// Set the Counter Enable bit to continue or start the timer
+		SET_BIT(TIMx->CR1, CEN);
+		break;
+	}
 }
 /*******************************************************************************************************/
 /**
@@ -135,33 +135,33 @@ void MTIMER_vCntTimer(Enum_TIMER_NUM Copy_u8TimerNum, Enum_Timer_Cont Copy_u8Tim
  * @return void
  */
 void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
-    // Get the base address of the specified timer
-    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+	// Get the base address of the specified timer
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 
-    // Reset Control Register 1 Value
-    TIMx->CR1 = 0;
+	// Reset Control Register 1 Value
+	TIMx->CR1 = 0;
 
-    // Set the prescaler value to achieve a 1ms time base
-    TIMx->PSC = SYS_CLOCK * 1000 - 1;
+	// Set the prescaler value to achieve a 1ms time base
+	TIMx->PSC = SYS_CLOCK * 1000 - 1;
 
-    // Set the auto-reload value to MAX Value
-    TIMx->ARR = Copy_u32Delayms;
+	// Set the auto-reload value to MAX Value
+	TIMx->ARR = Copy_u32Delayms;
 
-    // Set the Counter Enable bit to start the timer
-    SET_BIT(TIMx->CR1, CEN);
+	// Set the Counter Enable bit to start the timer
+	SET_BIT(TIMx->CR1, CEN);
 
-    // Ensure Starting CNT from 0 as of some problems with TIMER2 and TIMER 5 if "ARR >0x0020000"
-    TIMx->CNT = 0xFFFFFFFF;
-    // Wait for Update flag to be zero
-    while (!GET_BIT(TIMx->SR, 0));
+	// Ensure Starting CNT from 0 as of some problems with TIMER2 and TIMER 5 if "ARR >0x0020000"
+	TIMx->CNT = 0xFFFFFFFF;
+	// Wait for Update flag to be zero
+	while (!GET_BIT(TIMx->SR, 0));
 	// Clear the update interrupt flag of TIMx
-    CLR_BIT(TIMx->SR,0);
-    // Wait for the Timer to reach zero (polling)
-    while ( !GET_BIT(TIMx->SR, 0) );
+	CLR_BIT(TIMx->SR,0);
+	// Wait for the Timer to reach zero (polling)
+	while ( !GET_BIT(TIMx->SR, 0) );
 	// Clear the update interrupt flag of TIM1
-    CLR_BIT(TIMx->SR,0);
-    // Clear Enable bit to disable the timer
-    CLR_BIT(TIMx->CR1, CEN);
+	CLR_BIT(TIMx->SR,0);
+	// Clear Enable bit to disable the timer
+	CLR_BIT(TIMx->CR1, CEN);
 
 }
 
@@ -177,19 +177,19 @@ void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
  * @return f32: The elapsed time in either seconds or milliseconds.
  */
 f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Copy_u8TimerUnit) {
-    // Get the base address of the specified timer
-    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+	// Get the base address of the specified timer
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 
-    switch (Copy_u8TimerUnit) {
-        case milli:
-            return ((f32)(TIMx->CNT));
-            break;
-        case sec:
-            return (((f32)(TIMx->CNT)) / 1000.0);
-            break;
-        default:
-            return 0;
-    }
+	switch (Copy_u8TimerUnit) {
+	case milli:
+		return ((f32)(TIMx->CNT));
+		break;
+	case sec:
+		return (((f32)(TIMx->CNT)) / 1000.0);
+		break;
+	default:
+		return 0;
+	}
 }
 /*******************************************************************************************************/
 
@@ -302,6 +302,16 @@ void MTIMER_vClearCNT(Enum_TIMER_NUM Copy_u8TimerNum) {
 
 /*******************************************************************************************************/
 void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel,u16 Copy_u16TotalTime_uSec,u16 Copy_u16PositiveDutyCycle_uSec){
+	MGPIO_vSetPinMode(
+			TIMER_PORT_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1],
+			TIMER_PIN_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1] ,
+			ALTFUNC
+	);
+	MGPIO_vSetAlternativeFunction(
+			TIMER_PORT_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1],
+			TIMER_PIN_MAP[Copy_u8TimerNum-1][Copy_u8Channel-1] ,
+			TIMER_AF[Copy_u8TimerNum-1]
+	);
 	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 	SET_BIT( TIMx->CR1 , ARPE );    // Enable auto-reload preload
 	CLR_BIT( TIMx->CR1 , DIR); 	// UP COUNT
