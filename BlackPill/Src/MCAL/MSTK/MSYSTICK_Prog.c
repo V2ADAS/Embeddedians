@@ -7,11 +7,12 @@
 /*      02- void MSYSTICK_vStartTime(void);                                                                  */
 /*      03- MSYSTICK_vCntTimer(Enum_Timer_Cont Copy_u8TimerCont)	                                         */
 /*      04- void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);                                                    */
-/*      05- void MSYSTICK_vDelayms(u32 Copy_u32Delay);                                                       */
-/*      06- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
-/*      07- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
-/*      08- void MSYSTICK_vStop(void);                                                                       */
-/*      09- MSYSTICK_vCallBack(void (*ptr)(void))															 */
+/*      05- void MSYSTICK_vDelayms(u32 Copy_u32Delay);														 */
+/*      06- void MSYSTICK_vDelayMicroSec(u32 Copy_u32Delay);                                                 */
+/*      07- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
+/*      08- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
+/*      09- void MSYSTICK_vStop(void);                                                                       */
+/*      10- MSYSTICK_vCallBack(void (*ptr)(void))															 */
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
@@ -169,6 +170,49 @@ void MSYSTICK_vDelayms(u32 Copy_u32Delay) {
     CLR_BIT(STK->CTRL, STK_EN);
 }
 /*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/**
+ * @brief Delays the program execution for the specified duration in microseconds using the SysTick timer.
+ *
+ * @param Copy_u32Delay: The delay duration in microseconds.
+ *
+ * @note  This function disables the SysTick interrupt, calculates the reload value based on
+ * 		  the provided delay,loads the reload value, clears the current value register,
+ *		  enables the SysTick timer, waits for the
+ *        SysTick timer to reach zero (polling), and finally disables the SysTick timer.
+ *        The provided delay is adjusted to prevent exceeding the maximum load value.
+ *
+ * @return void
+ */
+void MSYSTICK_vDelayMicroSec(u32 Copy_u32Delay) {
+    // Disable SysTick interrupt
+    CLR_BIT(STK->CTRL, STK_INT);
+
+    // Calculate the reload value in microseconds
+    if ((Copy_u32Delay * STK_CLOCK) >= MAX_LOAD_VALUE) {
+        Copy_u32Delay = MAX_LOAD_VALUE;
+    } else {
+        Copy_u32Delay = Copy_u32Delay * STK_CLOCK;
+    }
+
+    // Load the reload value
+    STK->LOAD = Copy_u32Delay;
+
+    // Clear the current value register
+    STK->VAL = CLR;
+
+    // Enable the SysTick timer
+    SET_BIT(STK->CTRL, STK_EN);
+
+    // Wait for the SysTick timer to reach zero (polling)
+    while (!GET_BIT(STK->CTRL, COUNT_FLAG));
+
+    // Disable the SysTick timer
+    CLR_BIT(STK->CTRL, STK_EN);
+}
+/*************************************************************************************************************/
+
 
 /*************************************************************************************************************/
 /**
