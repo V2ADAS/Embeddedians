@@ -7,11 +7,12 @@
 /*      02- void MSYSTICK_vStartTime(void);                                                                  */
 /*      03- MSYSTICK_vCntTimer(Enum_Timer_Cont Copy_u8TimerCont)	                                         */
 /*      04- void MSYSTICK_vPeriodicMS(u32 Copy_u32Delay);                                                    */
-/*      05- void MSYSTICK_vDelayms(u32 Copy_u32Delay);                                                       */
-/*      06- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
-/*      07- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
-/*      08- void MSYSTICK_vStop(void);                                                                       */
-/*      09- MSYSTICK_vCallBack(void (*ptr)(void))															 */
+/*      05- void MSYSTICK_vDelayms(u32 Copy_u32Delay);														 */
+/*      06- void MSYSTICK_vDelayMicroSec(u32 Copy_u32Delay);                                                 */
+/*      07- f32 MSYSTICK_f32GetElapsedTime(void);                                                            */
+/*      08- f32 MSYSTICK_f32GetRemainingTime(void);                                                          */
+/*      09- void MSYSTICK_vStop(void);                                                                       */
+/*      10- MSYSTICK_vCallBack(void (*ptr)(void))															 */
 /*************************************************************************************************************/
 
     
@@ -78,7 +79,17 @@ void MSYSTICK_vDelayms(u32 Copy_u32Delay);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                                      06- MSYSTICK_f32GetElapsedTime                                                */
+/*                                      06- MSYSTICK_vDelayMicroSec                                          */
+/*-----------------------------------------------------------------------------------------------------------*/
+/* 1- Function Description -> Function with microsecond delay using polling                                  */
+/* 2- Function Input       -> @param microseconds = desired delay in microseconds                            */
+/* 3- Function Return      -> void                                                                           */
+/*************************************************************************************************************/
+void MSYSTICK_vDelayMicroSec(u32 microseconds);
+/*************************************************************************************************************/
+
+/*************************************************************************************************************/
+/*                                      07- MSYSTICK_f32GetElapsedTime                                                */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function to get the time passed since the systick started                      */
 /* 2- Function Input       -> void                                                                           */                   
@@ -88,7 +99,7 @@ f32 MSYSTICK_f32GetElapsedTime(void);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                                      07- MSYSTICK_f32GetRemainingTime                                                */
+/*                                      08- MSYSTICK_f32GetRemainingTime                                                */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function to get the remaining time until the desired delay                     */
 /* 2- Function Input       -> void                                                                           */                   
@@ -98,7 +109,7 @@ f32 MSYSTICK_f32GetRemainingTime(void);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                                      08- MSYSTICK_vStop                                                   */
+/*                                      09- MSYSTICK_vStop                                                   */
 /*-----------------------------------------------------------------------------------------------------------*/
 /* 1- Function Description -> Function to stop systick                                                       */
 /* 2- Function Input       -> void                                                                           */                   
@@ -108,7 +119,7 @@ void MSYSTICK_vStop(void);
 /*************************************************************************************************************/
 
 /*************************************************************************************************************/
-/*                          		   09- MSYSTICK_vCallBack 		                                         */
+/*                          		   10- MSYSTICK_vCallBack 		                                         */
 /*-----------------------------------------------------------------------------------------------------------*/
 /**
  * @Description Sets a callback function to be executed when the SysTick timer expires.
@@ -118,7 +129,5 @@ void MSYSTICK_vStop(void);
  */
 void MSYSTICK_vCallBack(void (*ptr)(void));
 /*************************************************************************************************************/
-
-
 
 #endif /* MCAL_MSTK_MSYSTICK_INT_H_ */
