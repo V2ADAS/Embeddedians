@@ -123,7 +123,7 @@ void HCOMPASS_vSetRowData(){
 	RowData[1] =  (s16)(Local_RxData[Y_MSB]<<8) | Local_RxData[Y_LSB] ;
 	RowData[2] =  (s16)(Local_RxData[Z_MSB]<<8) | Local_RxData[Z_LSB] ;
 
-	//s16 calibrationData[3][2] = {{-1043, 643}, {-1135, 326}, {0, 706}};
+	//static s16 calibrationData[3][2] = {{-1043, 643}, {-1135, 326}, {0, 706}};
 	static s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {0, 706}};
 	u8 Calibration_Flag=0;
 	for (u8 i = 0; i < 2; ++i) {

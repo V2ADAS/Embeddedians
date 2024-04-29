@@ -24,6 +24,7 @@
 #include "../../LIB/BIT_MATH.h"
 #include "../../LIB/STD_TYPES.h"
 #include"../MGPIO/MGPIO_int.h"
+#include"../MSTK/MSYSTICK_Int.h"
 #include "MI2C_Config.h"
 #include "MI2C_Private.h"
 #include "MI2C_int.h"
@@ -137,13 +138,18 @@ void MI2C_vMasterInit(I2CNo_t Copy_I2CNumber ){
 I2C_ERRORSTATS_t MI2C_vMasterTx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress , u8* Copy_u8Data , u8 Copy_u8DataLen,I2C_STOPSTAT_t StopStatus){
 
 	volatile I2C_Mem_Map_t* I2Cx = NULL_PTR;
+	u8 Local_StatFlag=NoError;
 	switch(Copy_I2CNumber){
 	case I2C1: I2Cx=I2C1_REG; break;
 	case I2C2: I2Cx=I2C2_REG; break;
 	case I2C3: I2Cx=I2C3_REG; break;
 	}
 	/* generate start */
-	MI2C_vGenerateStart(I2Cx);
+	Local_StatFlag=MI2C_vGenerateStart(I2Cx);
+	if (Local_StatFlag !=NoError){
+		MI2C_vMasterInit(Copy_I2CNumber);
+		return Local_StatFlag;
+	}
 
 	/* clear start flag */
 	MI2C_vClearStart(I2Cx);
@@ -154,32 +160,57 @@ I2C_ERRORSTATS_t MI2C_vMasterTx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress 
 	//I2Cx->DR= Copy_u8SlaveAddress  ;
 
 	MI2C_vSendSlaveADDR(I2Cx, Copy_u8SlaveAddress, WithWrite);
-	if(GET_BIT(I2Cx->SR1,SR1_AF)){
+/*	if(GET_BIT(I2Cx->SR1,SR1_AF)){
+		CLR_BIT(I2Cx->SR1,SR1_AF);
+		MI2C_vGenerateStop(I2Cx);
 		return ADDRFAIL;
-	}
+	}*/
 	/* clear ADDR flag */
-	MI2C_vClearADDR(I2Cx);
+	Local_StatFlag = MI2C_vClearADDR(I2Cx);
+	if (Local_StatFlag !=NoError){
+		MI2C_vMasterInit(Copy_I2CNumber);
+		return Local_StatFlag;
+	}
+
+
 	u8 Count=0;
 	while(Count<Copy_u8DataLen){
 
 		/* write data in DR */
-		MI2C_vSendDataByte(I2Cx, Copy_u8Data[Count]);
+		Local_StatFlag=MI2C_vSendDataByte(I2Cx, Copy_u8Data[Count]);
+		if(Local_StatFlag!= NoError){
+			MI2C_vMasterInit(Copy_I2CNumber);
+			return Local_StatFlag;
+		}
 
 		/* check  byte transfer successfully */
 		// TODO : check if this works properly
-		while( !GET_BIT(I2Cx->SR1,SR1_BTF) );
+		MSYSTICK_vStartTime();
+		while( !GET_BIT(I2Cx->SR1,SR1_BTF) ){
+
+				if(MSYSTICK_f32GetElapsedTime()> I2C_TIMEOUT){
+					MSYSTICK_vStop();
+					/* reset the peripheral */
+//					SET_BIT(I2Cx->CR1,CR1_SWRST);
+//					CLR_BIT(I2Cx->CR1,CR1_SWRST);
+//				// TODO:	MI2C_vMasterInit(Copy_I2CNumber);
+					return DATAFAIL;
+				}
+
+		}
 		Count++;
 	}
 
 	if(StopStatus == WithStop)
 		/* generate stop condition */
 		MI2C_vGenerateStop(I2Cx);
-	return NoError;
 
+
+	return NoError;
 }
 
 u8 MI2C_u8MasterRx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress, u8* RxData , u8 DataLen ){
-
+	u8 Local_StatFlag = NoError ;
 	volatile I2C_Mem_Map_t* I2Cx = NULL_PTR;
 	switch(Copy_I2CNumber){
 	case I2C1: I2Cx=I2C1_REG; break;
@@ -188,20 +219,32 @@ u8 MI2C_u8MasterRx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress, u8* RxData ,
 	}
 	/* Generate Start */
 	MI2C_vGenerateStart(I2Cx);
+	if (Local_StatFlag !=NoError){
+		MI2C_vMasterInit(Copy_I2CNumber);
+		return Local_StatFlag;
+	}
+
 	/* Clear Start */
 	MI2C_vClearStart(I2Cx);
 	/* send Slave address with read */
 	MI2C_vSendSlaveADDR(I2Cx, Copy_u8SlaveAddress, WithRead);
 
-	if(GET_BIT(I2Cx->SR1,SR1_AF))
-			return ADDRFAIL;
+//	if(GET_BIT(I2Cx->SR1,SR1_AF)){
+//		CLR_BIT(I2Cx->SR1,SR1_AF);
+//		MI2C_vGenerateStop(I2Cx);
+//		return ADDRFAIL;
+//	}
 
 	/* if receiving only one byte disable ack before clearing ADDR Flag */
 	if(DataLen==1)
 		CLR_BIT(I2Cx->CR1,CR1_ACK);
 
 	/* clear ADDR flag */
-	MI2C_vClearADDR(I2Cx);
+	Local_StatFlag=MI2C_vClearADDR(I2Cx);
+	if (Local_StatFlag !=NoError){
+		MI2C_vMasterInit(Copy_I2CNumber);
+		return Local_StatFlag;
+	}
 
 	/* if receiving only one byte */
 	if(DataLen==1){
@@ -238,7 +281,7 @@ u8 MI2C_u8MasterRx(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress, u8* RxData ,
 void MI2C_vSlaveInit(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveOwnAddress){
 
 	volatile I2C_Mem_Map_t* I2Cx = NULL_PTR;
-	switch(Copy_I2CNumber){
+ 	switch(Copy_I2CNumber){
 	case I2C1: I2Cx=I2C1_REG; break;
 	case I2C2: I2Cx=I2C2_REG; break;
 	case I2C3: I2Cx=I2C3_REG; break;
@@ -333,28 +376,61 @@ void MI2C_vSendSlaveADDR(volatile I2C_Mem_Map_t* I2Cx,u8 Copy_u8SlaveAddress,I2C
 
 }
 
-void MI2C_vSendDataByte(volatile I2C_Mem_Map_t* I2Cx , u8 Copy_u8Data){
+u8 MI2C_vSendDataByte(volatile I2C_Mem_Map_t* I2Cx , u8 Copy_u8Data){
 
-	while( !GET_BIT(I2Cx->SR1,SR1_TXE) );
+	MSYSTICK_vStartTime();
+	while( !GET_BIT(I2Cx->SR1,SR1_TXE) ){
+
+			if(MSYSTICK_f32GetElapsedTime()> I2C_TIMEOUT){
+				MSYSTICK_vStop();
+				/* reset the peripheral */
+				SET_BIT(I2Cx->CR1,CR1_SWRST);
+				CLR_BIT(I2Cx->CR1,CR1_SWRST);
+
+				return DATAFAIL;
+			}
+	}
 	I2Cx->DR = Copy_u8Data;
-	// TODO : use BTF ??
+		// TODO : use BTF ??
+		return NoError;
 
 }
 
 u8 MI2C_vReadDataByte(volatile I2C_Mem_Map_t* I2Cx){
 
-	while(!GET_BIT(I2Cx->SR1,SR1_RXNE));
+	MSYSTICK_vStartTime();
+	while(!GET_BIT(I2Cx->SR1,SR1_RXNE)){
+			if(MSYSTICK_f32GetElapsedTime()> I2C_TIMEOUT){
+				MSYSTICK_vStop();
+//				/* reset the peripheral */
+//				SET_BIT(I2Cx->CR1,CR1_SWRST);
+//				CLR_BIT(I2Cx->CR1,CR1_SWRST);
+//				MI2C_vMasterInit(I2Cx);
+				return DATAFAIL;
+		}
+	}
 	u8 RxData = I2Cx ->DR ;
 	return RxData ;
 }
 
-void MI2C_vGenerateStart(volatile I2C_Mem_Map_t* I2Cx){
+u8 MI2C_vGenerateStart(volatile I2C_Mem_Map_t* I2Cx){
 	/* enable ACK */
 	SET_BIT(I2Cx->CR1,CR1_ACK);
 
 	SET_BIT(I2Cx->CR1,CR1_START);
 	/* hold on start flag until set */
-	while( !GET_BIT(I2Cx->SR1,SR1_SB));
+	MSYSTICK_vStartTime();
+	while( !GET_BIT(I2Cx->SR1,SR1_SB)){
+
+		if(MSYSTICK_f32GetElapsedTime()> I2C_TIMEOUT){
+			MSYSTICK_vStop();
+			/* reset the peripheral */
+			SET_BIT(I2Cx->CR1,CR1_SWRST);
+			CLR_BIT(I2Cx->CR1,CR1_SWRST);
+			return STARTFAIL;
+		}
+	}
+	return NoError;
 
 }
 
@@ -365,13 +441,23 @@ void MI2C_vClearStart(volatile I2C_Mem_Map_t* I2Cx){
 	//TODO
 	/* writing data ( address ) in DR */
 }
+u8 MI2C_vClearADDR(volatile I2C_Mem_Map_t* I2Cx){
 
-void MI2C_vClearADDR(volatile I2C_Mem_Map_t* I2Cx){
+	MSYSTICK_vStartTime();
+	while( !GET_BIT(I2Cx->SR1,SR1_ADDR)){
 
-	while( !GET_BIT(I2Cx->SR1,SR1_ADDR));
+			if(MSYSTICK_f32GetElapsedTime()> I2C_TIMEOUT){
+				MSYSTICK_vStop();
+				/* reset the peripheral */
+				SET_BIT(I2Cx->CR1,CR1_SWRST);
+				CLR_BIT(I2Cx->CR1,CR1_SWRST);
+				return ADDRFAIL;
+			}
+	}
 	u32 Local_u8Dummy = I2Cx->SR1;
 	Local_u8Dummy = I2Cx->SR2;
 	(void)Local_u8Dummy;
+	return NoError;
 }
 
 void MI2C_vGenerateStop(volatile I2C_Mem_Map_t* I2Cx){
@@ -380,4 +466,3 @@ void MI2C_vGenerateStop(volatile I2C_Mem_Map_t* I2Cx){
 	SET_BIT(I2Cx->CR1,CR1_STOP);
 
 }
-

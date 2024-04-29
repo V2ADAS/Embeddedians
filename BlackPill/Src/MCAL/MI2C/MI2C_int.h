@@ -63,6 +63,9 @@ typedef enum {
 typedef enum {
 
 	ADDRFAIL,
+	ACKFAIL,
+	STARTFAIL,
+	DATAFAIL,
 	NoError
 } I2C_ERRORSTATS_t;
 
@@ -145,7 +148,7 @@ void MI2C_vSendSlaveADDR(volatile I2C_Mem_Map_t* I2Cx, u8 Copy_u8SlaveAddress, I
 /*                            @param Copy_u8Data = Data to be transmitted                             */
 /* 3- Function Return      -> void                                                                    */
 /*----------------------------------------------------------------------------------------------------*/
-void MI2C_vSendDataByte(volatile I2C_Mem_Map_t* I2Cx, u8 Copy_u8Data);
+u8 MI2C_vSendDataByte(volatile I2C_Mem_Map_t* I2Cx, u8 Copy_u8Data);
 
 /*----------------------------------------------------------------------------------------------------*/
 /*                                      08- MI2C_ReadDataByte                                         */
@@ -163,7 +166,7 @@ u8 MI2C_vReadDataByte(volatile I2C_Mem_Map_t* I2Cx);
 /* 2- Function Input       -> @param I2Cx = I2C memory map structure                                  */
 /* 3- Function Return      -> void                                                                    */
 /*----------------------------------------------------------------------------------------------------*/
-void MI2C_vGenerateStart(volatile I2C_Mem_Map_t* I2Cx);
+u8 MI2C_vGenerateStart(volatile I2C_Mem_Map_t* I2Cx);
 
 /*                                      10- MI2C_ClearStart                                           */
 /*----------------------------------------------------------------------------------------------------*/
@@ -180,7 +183,7 @@ void MI2C_vClearStart(volatile I2C_Mem_Map_t* I2Cx);
 /* 2- Function Input       -> @param I2Cx = I2C memory map structure                                */
 /* 3- Function Return      -> void                                                                    */
 /*----------------------------------------------------------------------------------------------------*/
-void MI2C_vClearADDR(volatile I2C_Mem_Map_t* I2Cx);
+u8 MI2C_vClearADDR(volatile I2C_Mem_Map_t* I2Cx);
 
 /*----------------------------------------------------------------------------------------------------*/
 /*                                      12- MI2C_GenerateStop                                        */
