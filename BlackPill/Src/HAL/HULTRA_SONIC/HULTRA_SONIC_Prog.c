@@ -32,24 +32,14 @@ typedef struct {
 LOC_ULTRA_NUM ULTRA_STRUCT[TOT_ULTRA_SONIC_NUM];
 
 
-void HULTRA_vInitialize(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,Enum_TIMER_NUM Copy_u8TimerNum, u8 Copy_u8ChannelNum)
-{	// Configure GPIO pins and alternative functions based on the selected timer and channel
-	MGPIO_vSetPinMode(
-			TIMER_PORT_MAP[Copy_u8TimerNum - 1][Copy_u8ChannelNum - 1],
-			TIMER_PIN_MAP[Copy_u8TimerNum - 1][Copy_u8ChannelNum - 1],
-			ALTFUNC
-	);
+void HULTRA_vInitialize(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM, Enum_TIMER_NUM Copy_u8TimerNum, u8 Copy_u8ChannelNum)
+{
+    // Initialize the Input Capture Unit (ICU) of the specified timer and channel
+    MTIMER_vICU(Copy_u8TimerNum, Copy_u8ChannelNum);
 
-	MGPIO_vSetAlternativeFunction(
-			TIMER_PORT_MAP[Copy_u8TimerNum - 1][Copy_u8ChannelNum - 1],
-			TIMER_PIN_MAP[Copy_u8TimerNum - 1][Copy_u8ChannelNum - 1],
-			TIMER_AF[Copy_u8TimerNum - 1]
-	);
-
-	MTIMER_vICU(Copy_u8TimerNum,Copy_u8ChannelNum);
-	ULTRA_STRUCT[Copy_u8Ultra_NUM].TIMER = Copy_u8TimerNum;
-	ULTRA_STRUCT[Copy_u8Ultra_NUM].CHANNELS = Copy_u8ChannelNum;
-
+    // Store the timer number and channel number in the ultrasonic sensor structure
+    ULTRA_STRUCT[Copy_u8Ultra_NUM].TIMER = Copy_u8TimerNum;
+    ULTRA_STRUCT[Copy_u8Ultra_NUM].CHANNELS = Copy_u8ChannelNum;
 }
 
 
