@@ -7,7 +7,7 @@
 #include"../../MCAL/MNVIC/MNVIC_int.h"
 #include"../../MCAL/MSTK/MSYSTICK_int.h"
 #include"../../APP/Inc/Motion_Planing.h"
-#define WHEEL_AREA   26.4
+#define WHEEL_AREA   26
 #define PULSES_PER_REVOLUTION 1024
 
 volatile MOTOR_PINS_t Motor_Pins ;
