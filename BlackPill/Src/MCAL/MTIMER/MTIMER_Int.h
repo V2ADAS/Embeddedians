@@ -7,7 +7,8 @@
 /*      01- MTIMER_vStartTime                                                                          */
 /*      02- MTIMER_vCntTimer                                                                          */
 /*      03- MTIMER_vDelayms                                                                            */
-/*      04- MTIMER_f32GetElapsedTime                                                                   */
+/*      04- MTIMER_f32GetElapsedTime
+ * 		05- MTIMER_f32GetElapsedTicks                                                                  */
 /*      05- MTIMER_vPeriodicMS                                                                         */
 /*		06- MTIMER_EXTCNTClock																		   */
 /*      07- MTIMER_vClearCNT																		   */
@@ -242,6 +243,8 @@ void MTIMER_vDelayms(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delayms);
  * 										And for timer2,5 is 49.71 DAY !!!.
  */
 f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Copy_u8TimerUnit);
+u32 MTIMER_u32GetElapsedTicks(Enum_TIMER_NUM Copy_u8TimerNum) ;
+
 /*******************************************************************************************************/
 
 
