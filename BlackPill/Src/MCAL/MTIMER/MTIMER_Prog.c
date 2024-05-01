@@ -5,7 +5,7 @@
 /* Description       : MTimer_Prog.c --> implementations                                               */
 /* Module  Features  :                                                                                 */
 /*      01- MTIMER_vStartTime                                                                          */
-/*      02- MTIMER_vCntTimer                                                                          */
+/*      02- MTIMER_vCntTimer                                                                           */
 /*      03- MTIMER_vDelayms                                                                            */
 /*      04- MTIMER_f32GetElapsedTime                                                                   */
 /*      05- MTIMER_vPeriodicMS                                                                         */
@@ -190,6 +190,12 @@ f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Cop
 	default:
 		return 0;
 	}
+}
+/***********************************************************************************************************/
+u32 MTIMER_u32GetElapsedTicks(Enum_TIMER_NUM Copy_u8TimerNum) {
+	// Get the base address of the specified timer
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+	return (TIMx->CNT);
 }
 /*******************************************************************************************************/
 
