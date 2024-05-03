@@ -31,6 +31,9 @@
 #define UART2               2
 #define UART6               6
 
+#define MUART1					0
+#define MUART2					1
+#define MUART3					2
 
 /*******************************************************************************************************/
 /*                                   USART LENGTH MODES : 8-BIT , 9-BIT                                */
@@ -117,12 +120,13 @@ u8 MUART_Receive_Byte(u8 UART_Index);
 /*                            @param max_size = size of array                                           */
 /* 3- Function Return      -> 1 Byte                                                                    */
 /********************************************************************************************************/
-void MUART_Receive_Data(u8 UART_Index,u8 Buffer[] ,u8 max_size);
+u8 MUART_Receive_Data(u8 UART_Index);
 /********************************************************************************************************/
 
 
 /*Helper Function*/
 USART_REG Get_UART(u8 UART_Index);
+void MUART_vSetRxCallBackFunc(u8 Local_u8UARTNo,void(*Local_pvRxIRQ)(void));
 
 
 #endif /* MUSART_INTERFACE_H_ */
