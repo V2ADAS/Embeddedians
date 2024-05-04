@@ -1,6 +1,6 @@
 /*******************************************************************************************************/
 /* Author            : Amr ElMaghraby                                                            	   */
-/* Version           : V1.2.0                                                                          */
+/* Version           : V1.1.0                                                                          */
 /* Data              : 28 Jan 2024                                                                     */
 /* Description       : MTimer_Prog.c --> implementations                                               */
 /* Module  Features  :                                                                                 */
@@ -9,13 +9,13 @@
 /*      03- MTIMER_vDelayms                                                                            */
 /*      04- MTIMER_f32GetElapsedTime                                                                   */
 /*      05- MTIMER_u32GetElapsedTicks																   */
-/*      05- MTIMER_vPeriodicMS                                                                         */
-/*		06- MTIMER_EXTCNTClock																		   */
-/*      07- MTIMER_vClearCNT																		   */
-/*      08- MTIMER_vPWM                                                                                */
-/*      09- MTIMER_vICU                                                                                */
-/*      10- MTIMER_GET_ICU                                                                             */
-/*      11- MTIMER_CallBack                                                                            */
+/*      06- MTIMER_vPeriodicMS                                                                         */
+/*		07- MTIMER_EXTCNTClock																		   */
+/*      08- MTIMER_vClearCNT																		   */
+/*      09- MTIMER_vPWM                                                                                */
+/*      10- MTIMER_vICU                                                                                */
+/*      11- MTIMER_GET_ICU                                                                             */
+/*      12- MTIMER_CallBack                                                                            */
 /*      Local functions:																			   */
 /* 		01-  LOC_GET_TIMER                                                                             */
 /*      02-  LOC_TIMER_ICU                                                                             */
@@ -127,6 +127,8 @@ void MTIMER_vCntTimer(Enum_TIMER_NUM Copy_u8TimerNum, Enum_Timer_Cont Copy_u8Tim
 	}
 }
 /*******************************************************************************************************/
+
+/*******************************************************************************************************/
 /**
  * @brief Delays the program execution for the specified duration in milliseconds using the specified TIMER.
  * @param Copy_u8TimerNum: The TIMER number to use for the delay.
@@ -169,7 +171,7 @@ void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
 	CLR_BIT(TIMx->CR1, CEN);
 
 }
-
+/*******************************************************************************************************/
 
 /*******************************************************************************************************/
 /**
@@ -196,7 +198,9 @@ f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Cop
 		return 0;
 	}
 }
-/***********************************************************************************************************/
+/*******************************************************************************************************/
+
+/*******************************************************************************************************/
 /**
  * @brief Retrieves the elapsed ticks on the specified TIMER.
  *
@@ -212,8 +216,7 @@ u32 MTIMER_u32GetElapsedTicks(Enum_TIMER_NUM Copy_u8TimerNum) {
     // Return the raw count of the timer, representing elapsed ticks
     return (TIMx->CNT);
 }
-/***********************************************************************************************************/
-
+/*******************************************************************************************************/
 
 
 
@@ -259,13 +262,15 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay) {
 
 /*******************************************************************************************************/
 /**
- * @brief Configures the specified TIMER channel to count external events on the rising edge of the input signal.
+ * @brief Configures the specified TIMER channel to count external events on the rising edge of
+ * 				 the input signal.
  * @param Copy_u8TimerNum: The TIMER number to be configured.
  *                         Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
  *                           TIMER5, TIMER9 }.
  * @param Copy_u8Channel: The channel on which external events will be counted.
  *                        Expected to be Enum_TIMER_CHs ==> { CH1, CH2 }.
- * @param Copy_u32Max_Value: The maximum value for the counter. When the counter reaches this value, it will reset.
+ * @param Copy_u32Max_Value: The maximum value for the counter. When the counter reaches this value,
+ * 								 it will reset.
  * @return void
  * VERY IMPORTANT NOTE: NO EXTERNAL CLOCK MODE FOR CH3 or CH4 for Any TIMER
  * 			ALSO NO EXTERNAL MODE AT ALL FOR TIMER 10 or TIMER 11

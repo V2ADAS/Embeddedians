@@ -9,13 +9,13 @@
 /*      03- MTIMER_vDelayms                                                                            */
 /*      04- MTIMER_f32GetElapsedTime                                                                   */
 /*      05- MTIMER_u32GetElapsedTicks																   */
-/*      05- MTIMER_vPeriodicMS                                                                         */
-/*		06- MTIMER_EXTCNTClock																		   */
-/*      07- MTIMER_vClearCNT																		   */
-/*      08- MTIMER_vPWM                                                                                */
-/*      09- MTIMER_vICU                                                                                */
-/*      10- MTIMER_GET_ICU                                                                             */
-/*      11- MTIMER_CallBack                                                                            */
+/*      06- MTIMER_vPeriodicMS                                                                         */
+/*		07- MTIMER_EXTCNTClock																		   */
+/*      08- MTIMER_vClearCNT																		   */
+/*      09- MTIMER_vPWM                                                                                */
+/*      10- MTIMER_vICU                                                                                */
+/*      11- MTIMER_GET_ICU                                                                             */
+/*      12- MTIMER_CallBack                                                                            */
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
@@ -247,7 +247,7 @@ f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Cop
 
 
 /*******************************************************************************************************/
-/*                 						05- MTIMER_u32GetElapsedTick                                   */
+/*                 						05- MTIMER_u32GetElapsedTicks                                  */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description 	Retrieves the current tick count of the specified TIMER.
