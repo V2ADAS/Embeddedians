@@ -1,6 +1,6 @@
 /*******************************************************************************************************/
 /* Author            : Amr ElMaghraby                                                            	   */
-/* Version           : V1.1.0                                                                          */
+/* Version           : V1.2.0                                                                          */
 /* Data              : 28 Jan 2024                                                                     */
 /* Description       : MTimer_Prog.c --> implementations                                               */
 /* Module  Features  :                                                                                 */
@@ -8,6 +8,7 @@
 /*      02- MTIMER_vCntTimer                                                                           */
 /*      03- MTIMER_vDelayms                                                                            */
 /*      04- MTIMER_f32GetElapsedTime                                                                   */
+/*      05- MTIMER_u32GetElapsedTicks																   */
 /*      05- MTIMER_vPeriodicMS                                                                         */
 /*		06- MTIMER_EXTCNTClock																		   */
 /*      07- MTIMER_vClearCNT																		   */
@@ -196,12 +197,24 @@ f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Cop
 	}
 }
 /***********************************************************************************************************/
+/**
+ * @brief Retrieves the elapsed ticks on the specified TIMER.
+ *
+ * @param Copy_u8TimerNum: The TIMER number to query.
+ *                         Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ *                             TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @return u32: The elapsed ticks on the specified TIMER.
+ */
 u32 MTIMER_u32GetElapsedTicks(Enum_TIMER_NUM Copy_u8TimerNum) {
-	// Get the base address of the specified timer
-	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
-	return (TIMx->CNT);
+    // Get the base address of the specified timer
+    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+
+    // Return the raw count of the timer, representing elapsed ticks
+    return (TIMx->CNT);
 }
-/*******************************************************************************************************/
+/***********************************************************************************************************/
+
+
 
 
 /*******************************************************************************************************/
