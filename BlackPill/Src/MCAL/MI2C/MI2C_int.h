@@ -6,16 +6,17 @@
 /* Module  Features  :                                                                                 */
 /*      01- MI2C_MasterInit                                                                            */
 /*      02- MI2C_MasterTx                                                                              */
-/*      03- MI2C_MasterRx                                                                              */
-/*      04- MI2C_SlaveInit                                                                             */
-/*      05- MI2C_SlaveRx                                                                               */
-/*      06- MI2C_SendSlaveADDR                                                                         */
-/*      07- MI2C_SendDataByte                                                                          */
-/*      08- MI2C_ReadDataByte                                                                          */
-/*      09- MI2C_GenerateStart                                                                         */
-/*      10- MI2C_ClearStart                                                                            */
-/*      11- MI2C_ClearADDR                                                                             */
-/*      12- MI2C_GenerateStop                                                                          */
+/*      03- MI2C_Master_Memwrite                                                                              */
+/*      04- MI2C_MasterRx                                                                              */
+/*      05- MI2C_SlaveInit                                                                             */
+/*      06- MI2C_SlaveRx                                                                               */
+/*      07- MI2C_SendSlaveADDR                                                                         */
+/*      08- MI2C_SendDataByte                                                                          */
+/*      09- MI2C_ReadDataByte                                                                          */
+/*      10- MI2C_GenerateStart                                                                         */
+/*      11- MI2C_ClearStart                                                                            */
+/*      12- MI2C_ClearADDR                                                                             */
+/*      13- MI2C_GenerateStop                                                                          */
 /*******************************************************************************************************/
 
 /* test */
@@ -125,6 +126,7 @@ void MI2C_vSlaveInit(I2CNo_t Copy_I2CNumber, u8 Copy_u8SlaveOwnAddress);
 u8 MI2C_u8SlaveRx(I2CNo_t Copy_I2CNumber);
 
 
+I2C_ERRORSTATS_t MI2C_vMaster_MemWrite(I2CNo_t Copy_I2CNumber , u8 Copy_u8SlaveAddress ,u8*Copy_u8MemAdd,u8 Copy_u8MemAddLen, u8* Copy_u8Data , u8 Copy_u8DataLen);
 
 
 /************************* Helping APIs *************************************/
