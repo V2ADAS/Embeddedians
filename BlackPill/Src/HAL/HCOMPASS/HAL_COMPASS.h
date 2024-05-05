@@ -50,6 +50,7 @@ typedef enum{
 void HCOMPASS_vInit();
 void HCOMPASS_vReadRowData(s16* PTR_RxRowData);
 void HCOMPASS_vSetRowData();
+void HCOMPASS_RSTCalibration(void);
 
 f32 HCOMPASS_f32GetPitch();
 f32 HCOMPASS_f32GetRoll() ;
