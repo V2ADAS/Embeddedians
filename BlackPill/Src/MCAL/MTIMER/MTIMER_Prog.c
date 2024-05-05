@@ -164,7 +164,7 @@ void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
 	CLR_BIT(TIMx->SR,0);
 	// Wait for the Timer to reach zero (polling)
 	while ( !GET_BIT(TIMx->SR, 0) );
-	*/
+	 */
 	// Clear the update interrupt flag of TIM1
 	CLR_BIT(TIMx->SR,0);
 	// Clear Enable bit to disable the timer
@@ -210,11 +210,11 @@ f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Cop
  * @return u32: The elapsed ticks on the specified TIMER.
  */
 u32 MTIMER_u32GetElapsedTicks(Enum_TIMER_NUM Copy_u8TimerNum) {
-    // Get the base address of the specified timer
-    TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+	// Get the base address of the specified timer
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 
-    // Return the raw count of the timer, representing elapsed ticks
-    return (TIMx->CNT);
+	// Return the raw count of the timer, representing elapsed ticks
+	return (TIMx->CNT);
 }
 /*******************************************************************************************************/
 
@@ -401,13 +401,14 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
 	CLR_BIT( TIMx->CCMR[Copy_u8Channel / 3] , ( CCxS1 + ( ((Copy_u8Channel-1)%2)*8)) );
 
 	//FILTERING
-	SET_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF0 + ( ((Copy_u8Channel-1)%2)*8)));
+	//0010: fSAMPLING=fCK_INT, N=4
+	CLR_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF0 + ( ((Copy_u8Channel-1)%2)*8)));
 	SET_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF1 + ( ((Copy_u8Channel-1)%2)*8)));
 	CLR_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF2 + ( ((Copy_u8Channel-1)%2)*8)));
 	CLR_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF3 + ( ((Copy_u8Channel-1)%2)*8)));
 
 	// set prescaler
-	TIMx->PSC = SYS_CLOCK * 10;
+	TIMx->PSC = SYS_CLOCK * 10 ;
 	TIMx -> ARR = 0xFFFFFFFF;
 
 	//SET_BIT(TIMx->EGR,0); //UG: Update generation - 1: Reinitialize counter&update registers
@@ -431,37 +432,41 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
  */
 u32 cv1=0;
 u32	cv2=0;
-static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8ChannelNum) {
-	static u8 captureState[29] = {0};
-	static u32 captureValue1[29] = {0};
-	static u32 captureValue2[29] = {0};
-	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum+1);
-	if (captureState[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] == 0) {
+static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerArrIdx,Enum_TIMER_CHs Copy_u8ChannelNum) {
+
+	// Initialize arrays to store capture state and values for each channel
+	static u8 captureState[29] = {0};        // Array to store capture state for each channel
+	static u32 captureValue1[29] = {0};       // Array to store capture value 1 for each channel
+	static u32 captureValue2 = 0;       // Array to store capture value 2 for each channel
+
+	// Get pointer to the memory map of the timer based on the input timer number
+	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER( (Copy_u8TimerArrIdx/4) + 1);
+
+	if (captureState[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] == 0 ) {
 		// Capture the time on the rising edge
-		captureValue1[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = TIMx->CCR[Copy_u8ChannelNum];
-		cv1= captureValue1[(4*Copy_u8TimerNum+Copy_u8ChannelNum)];
+		captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] = TIMx->CCR[Copy_u8ChannelNum];
+		cv1= captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ];
 		// Enable falling edge capture
 		SET_BIT(TIMx->CCER, (CCxP + Copy_u8ChannelNum*4) );
 
 		// Move to the next state
-		captureState[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = 1;
+		captureState[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] = 1;
 	} else {
 		// Capture the time on the falling edge
-		captureValue2[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = TIMx->CCR[Copy_u8ChannelNum];
-		cv2= captureValue2[(4*Copy_u8TimerNum+Copy_u8ChannelNum)];
+		captureValue2 = TIMx->CCR[Copy_u8ChannelNum];
+		cv2= captureValue2;
 		// Enable rising edge capture
 		CLR_BIT(TIMx->CCER, (CCxP + Copy_u8ChannelNum*4) );
-		if( captureValue1[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] > captureValue2[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] ){
-			if(Copy_u8TimerNum == TIMER2 -1 || Copy_u8TimerNum == TIMER5 -1)
-				Time[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = 4294967295 - captureValue1[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] + captureValue2[(4*Copy_u8TimerNum+Copy_u8ChannelNum)];
-			else
-				Time[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = 65535 - captureValue1[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] + captureValue2[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] ;
-		}else{
+		//IF Capture_Value1 > Capture_Value2 This could be due to two reasons:
+		// 1) Error in edge detection due to Noise
+		// 2) Timer Wraparound not handled
+		//===> Solved here be let previous reading not changed
+		if( captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] < captureValue2 ){
 			// Calculate the time difference
-			Time[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = captureValue2[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] - captureValue1[(4*Copy_u8TimerNum+Copy_u8ChannelNum)];
+			Time[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] = captureValue2 - captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ];
 		}
 		// Reset state value
-		captureState[(4*Copy_u8TimerNum+Copy_u8ChannelNum)] = 0;
+		captureState[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] = 0;
 	}
 }
 /*******************************************************************************************************/
@@ -524,7 +529,8 @@ void TIM1_UP_TIM10_IRQHandler(void) {
 		if (GET_BIT(TIM10->SR, 1)) {
 
 			// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM10
-			LOC_TIMER_ICU(TIMER10 - 1, CH1 - 1);
+			// Multiplying by 4 is to get index in the array for the timer channel
+			LOC_TIMER_ICU( 4 * (TIMER10 - 1) , CH1 - 1);
 
 			// Clear the capture/compare interrupt flag for CH1 of TIM10
 			CLR_BIT(TIM10->SR, CH1);
@@ -537,14 +543,11 @@ void TIM1_UP_TIM10_IRQHandler(void) {
 
 				// Call the callback function for TIM10
 				GLOBAL_Ptr[6]();
+			}
 
-				// Clear the update interrupt flag of TIM10
-				CLR_BIT(TIM10->SR, 0);
-			}
-			else {
-				// Clear the update interrupt flag of TIM10 without calling a callback function
-				CLR_BIT(TIM10->SR, 0);
-			}
+			// Clear the update interrupt flag of TIM10
+			CLR_BIT(TIM10->SR, 0);
+
 		}
 	}
 }
@@ -569,7 +572,8 @@ void TIM1_TRG_COM_TIM11_IRQHandler(void) {
 		if (GET_BIT(TIM11->SR, 1)) {
 
 			// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM11
-			LOC_TIMER_ICU(TIMER11 - 1, CH1 - 1);
+			// Multiplying by 4 is to get index in the array for the timer channel
+			LOC_TIMER_ICU( 4* (TIMER11 - 1) , CH1 - 1);
 
 			// Clear the capture/compare interrupt flag for CH1 of TIM11
 			CLR_BIT(TIM11->SR, CH1);
@@ -582,14 +586,10 @@ void TIM1_TRG_COM_TIM11_IRQHandler(void) {
 
 				// Call the callback function for TIM11
 				GLOBAL_Ptr[7]();
+			}
 
-				// Clear the update interrupt flag of TIM11
-				CLR_BIT(TIM11->SR, 0);
-			}
-			else {
-				// Clear the update interrupt flag of TIM11 without calling a callback function
-				CLR_BIT(TIM11->SR, 0);
-			}
+			// Clear the update interrupt flag of TIM11
+			CLR_BIT(TIM11->SR, 0);
 		}
 	}
 }
@@ -609,21 +609,20 @@ void TIM1_BRK_TIM9_IRQHandler(void) {
 	}
 	else {
 
-		// Check if the capture/compare interrupt flag for CH1 of TIM9 is set
-		if (GET_BIT(TIM9->SR, 1)) {
+		// Iterate through all channels of TIM9
+		for (u8 ch = 1; ch <= 2; ch++) {
+			// Check if the capture/compare interrupt flag for the current channel is set
+			if (GET_BIT(TIM9->SR, ch)) {
+				// Call the LOC_TIMER_ICU function for handling the interrupt
+				// Multiplying by 4 is to get index in the array for the timer channel
+				LOC_TIMER_ICU(4 * (TIMER9 - 1), ch - 1);
 
-			// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM9
-			LOC_TIMER_ICU(TIMER9 - 1, CH1 - 1);
+				// Clear the capture/compare interrupt flag for the current channel
+				CLR_BIT(TIM9->SR, ch);
 
-			// Clear the capture/compare interrupt flag for CH1 of TIM9
-			CLR_BIT(TIM9->SR, CH1);
-		}
-		else if (GET_BIT(TIM9->SR, 2)) {
-			// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM9
-			LOC_TIMER_ICU(TIMER9 - 1, CH2 - 1);
-
-			// Clear the capture/compare interrupt flag for CH2 of TIM9
-			CLR_BIT(TIM9->SR, CH2);
+				// Exit the loop after handling the first set interrupt
+				break;
+			}
 		}
 		// Check if the update interrupt flag of TIM9 is set
 		if (GET_BIT(TIM9->SR, 0)) {
@@ -633,14 +632,10 @@ void TIM1_BRK_TIM9_IRQHandler(void) {
 
 				// Call the callback function for TIM9
 				GLOBAL_Ptr[5]();
+			}
 
-				// Clear the update interrupt flag of TIM9
-				CLR_BIT(TIM9->SR, 0);
-			}
-			else {
-				// Clear the update interrupt flag of TIM9 without calling a callback function
-				CLR_BIT(TIM9->SR, 0);
-			}
+			// Clear the update interrupt flag of TIM9
+			CLR_BIT(TIM9->SR, 0);
 		}
 	}
 }
@@ -654,37 +649,20 @@ void TIM1_BRK_TIM9_IRQHandler(void) {
  * 				 of TIM1 triggers an interrupt.
  */
 void TIM1_CC_IRQHandler(void) {
-	// Check if the capture/compare interrupt flag for CH1 of TIM1 is set
-	if (GET_BIT(TIM1->SR, 1)) {
+	// Iterate through channels 1 to 4 of Timer 1 (TIM1)
+	for (u8 ch = 1; ch <= 4; ch++) {
+		// Check if the capture/compare interrupt flag for the current channel is set
+		if (GET_BIT(TIM1->SR, ch)) {
+			// Call the LOC_TIMER_ICU function for handling the interrupt
+			// Multiplying by 4 is to get index in the array for the timer channel
+			LOC_TIMER_ICU(4 * (TIMER1 - 1), ch - 1);
 
-		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM1
-		LOC_TIMER_ICU(TIMER1 - 1, CH1 - 1);
+			// Clear the capture/compare interrupt flag for the current channel
+			CLR_BIT(TIM1->SR, ch);
 
-		// Clear the capture/compare interrupt flag for CH1 of TIM1
-		CLR_BIT(TIM1->SR, CH1);
-	}
-	else if (GET_BIT(TIM1->SR, 2)) {
-
-		// Call the LOC_LOC_TIMER_ICU function for handling CH2 interrupt of TIM1
-		LOC_TIMER_ICU(TIMER1 - 1, CH2 - 1);
-
-		// Clear the capture/compare interrupt flag for CH2 of TIM1
-		CLR_BIT(TIM1->SR, CH2);
-	}
-	else if (GET_BIT(TIM1->SR, 3)) {
-
-		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM1
-		LOC_TIMER_ICU(TIMER1 - 1, CH3 - 1);
-
-		// Clear the capture/compare interrupt flag for CH3 of TIM1
-		CLR_BIT(TIM1->SR, CH3);
-	}
-	else {
-		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM1
-		LOC_TIMER_ICU(TIMER1 - 1, CH4 - 1);
-
-		// Clear the capture/compare interrupt flag for CH4 of TIM1
-		CLR_BIT(TIM1->SR, CH4);
+			// Exit the loop after handling the first set interrupt
+			break;
+		}
 	}
 }
 /*******************************************************************************************************/
@@ -697,34 +675,20 @@ void TIM1_CC_IRQHandler(void) {
  * 				the update interrupt of TIM2 triggers an interrupt.
  */
 void TIM2_IRQHandler(void) {
-	// Check if the capture/compare interrupt flag for CH1 of TIM2 is set
-	if (GET_BIT(TIM2->SR, 1)) {
-		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM2
-		LOC_TIMER_ICU(TIMER2 - 1, CH1 - 1);
+	// Iterate through all channels of TIM2
+	for (u8 ch = 1; ch <= 4; ch++) {
+		// Check if the capture/compare interrupt flag for the current channel is set
+		if (GET_BIT(TIM2->SR, ch)) {
+			// Call the LOC_TIMER_ICU function for handling the interrupt
+			// Multiplying by 4 is to get index in the array for the timer channel
+			LOC_TIMER_ICU( 4 * (TIMER2 - 1) , ch - 1);
 
-		// Clear the capture/compare interrupt flag for CH1 of TIM2
-		CLR_BIT(TIM2->SR, CH1);
-	}
-	else if (GET_BIT(TIM2->SR, 2)) {
-		// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM2
-		LOC_TIMER_ICU(TIMER2 - 1, CH2 - 1);
+			// Clear the capture/compare interrupt flag for the current channel
+			CLR_BIT(TIM2->SR, ch);
 
-		// Clear the capture/compare interrupt flag for CH2 of TIM2
-		CLR_BIT(TIM2->SR, CH2);
-	}
-	else if (GET_BIT(TIM2->SR, 3)) {
-		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM2
-		LOC_TIMER_ICU(TIMER2 - 1, CH3 - 1);
-
-		// Clear the capture/compare interrupt flag for CH3 of TIM2
-		CLR_BIT(TIM2->SR, CH3);
-	}
-	else if (GET_BIT(TIM2->SR, 4)) {
-		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM2
-		LOC_TIMER_ICU(TIMER2 - 1, CH4 - 1);
-
-		// Clear the capture/compare interrupt flag for CH4 of TIM2
-		CLR_BIT(TIM2->SR, CH4);
+			// Exit the loop after handling the first set interrupt
+			break;
+		}
 	}
 
 	// Check if the update interrupt flag of TIM2 is set
@@ -734,14 +698,10 @@ void TIM2_IRQHandler(void) {
 
 			// Call the callback function for TIM2
 			GLOBAL_Ptr[1]();
+		}
 
-			// Clear the update interrupt flag of TIM2
-			CLR_BIT(TIM2->SR, 0);
-		}
-		else {
-			// Clear the update interrupt flag of TIM2 without calling a callback function
-			CLR_BIT(TIM2->SR, 0);
-		}
+		// Clear the update interrupt flag of TIM2
+		CLR_BIT(TIM2->SR, 0);
 	}
 }
 /*******************************************************************************************************/
@@ -755,34 +715,21 @@ void TIM2_IRQHandler(void) {
  * 			 the update interrupt of TIM3 triggers an interrupt.
  */
 void TIM3_IRQHandler(void) {
-	// Check if the capture/compare interrupt flag for CH1 of TIM3 is set
-	if (GET_BIT(TIM3->SR, 1)) {
-		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM3
-		LOC_TIMER_ICU(TIMER3 - 1, CH1 - 1);
 
-		// Clear the capture/compare interrupt flag for CH1 of TIM3
-		CLR_BIT(TIM3->SR, CH1);
-	}
-	else if (GET_BIT(TIM3->SR, 2)) {
-		// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM3
-		LOC_TIMER_ICU(TIMER3 - 1, CH2 - 1);
+	// Iterate through all channels of TIM3
+	for (u8 ch = 1; ch <= 4; ch++) {
+		// Check if the capture/compare interrupt flag for the current channel is set
+		if (GET_BIT(TIM3->SR, ch)) {
+			// Call the LOC_TIMER_ICU function for handling the interrupt
+			// Multiplying by 4 is to get index in the array for the timer channel
+			LOC_TIMER_ICU(4 * (TIMER3 - 1), ch - 1);
 
-		// Clear the capture/compare interrupt flag for CH2 of TIM3
-		CLR_BIT(TIM3->SR, CH2);
-	}
-	else if (GET_BIT(TIM3->SR, 3)) {
-		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM3
-		LOC_TIMER_ICU(TIMER3 - 1, CH3 - 1);
+			// Clear the capture/compare interrupt flag for the current channel
+			CLR_BIT(TIM3->SR, ch);
 
-		// Clear the capture/compare interrupt flag for CH3 of TIM3
-		CLR_BIT(TIM3->SR, CH3);
-	}
-	else if (GET_BIT(TIM3->SR, 4)) {
-		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM3
-		LOC_TIMER_ICU(TIMER3 - 1, CH4 - 1);
-
-		// Clear the capture/compare interrupt flag for CH4 of TIM3
-		CLR_BIT(TIM3->SR, CH4);
+			// Exit the loop after handling the first set interrupt
+			break;
+		}
 	}
 
 	// Check if the update interrupt flag of TIM3 is set
@@ -792,14 +739,10 @@ void TIM3_IRQHandler(void) {
 
 			// Call the callback function for TIM3
 			GLOBAL_Ptr[2]();
+		}
 
-			// Clear the update interrupt flag of TIM3
-			CLR_BIT(TIM3->SR, 0);
-		}
-		else {
-			// Clear the update interrupt flag of TIM3 without calling a callback function
-			CLR_BIT(TIM3->SR, 0);
-		}
+		// Clear the update interrupt flag of TIM3
+		CLR_BIT(TIM3->SR, 0);
 	}
 }
 /*******************************************************************************************************/
@@ -812,35 +755,21 @@ void TIM3_IRQHandler(void) {
  * 			 the update interrupt of TIM4 triggers an interrupt.
  */
 void TIM4_IRQHandler(void) {
-	// Check if the capture/compare interrupt flag for CH1 of TIM4 is set
-	if (GET_BIT(TIM4->SR, 1)) {
 
-		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM4
-		LOC_TIMER_ICU(TIMER4 - 1, CH1 - 1);
+	// Iterate through all channels of TIM4
+	for (u8 ch = 1; ch <= 4; ch++) {
+		// Check if the capture/compare interrupt flag for the current channel is set
+		if (GET_BIT(TIM4->SR, ch)) {
+			// Call the LOC_TIMER_ICU function for handling the interrupt
+			// Multiplying by 4 is to get index in the array for the timer channel
+			LOC_TIMER_ICU(4 * (TIMER4 - 1), ch - 1);
 
-		// Clear the capture/compare interrupt flag for CH1 of TIM4
-		CLR_BIT(TIM4->SR, CH1);
-	}
-	else if (GET_BIT(TIM4->SR, 2)) {
-		// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM4
-		LOC_TIMER_ICU(TIMER4 - 1, CH2 - 1);
+			// Clear the capture/compare interrupt flag for the current channel
+			CLR_BIT(TIM4->SR, ch);
 
-		// Clear the capture/compare interrupt flag for CH2 of TIM4
-		CLR_BIT(TIM4->SR, CH2);
-	}
-	else if (GET_BIT(TIM4->SR, 3)) {
-		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM4
-		LOC_TIMER_ICU(TIMER4 - 1, CH3 - 1);
-
-		// Clear the capture/compare interrupt flag for CH3 of TIM4
-		CLR_BIT(TIM4->SR, CH3);
-	}
-	else if (GET_BIT(TIM4->SR, 4)) {
-		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM4
-		LOC_TIMER_ICU(TIMER4 - 1, CH4 - 1);
-
-		// Clear the capture/compare interrupt flag for CH4 of TIM4
-		CLR_BIT(TIM4->SR, CH4);
+			// Exit the loop after handling the first set interrupt
+			break;
+		}
 	}
 
 	// Check if the update interrupt flag of TIM4 is set
@@ -850,14 +779,10 @@ void TIM4_IRQHandler(void) {
 
 			// Call the callback function for TIM4
 			GLOBAL_Ptr[3]();
+		}
 
-			// Clear the update interrupt flag of TIM4
-			CLR_BIT(TIM4->SR, 0);
-		}
-		else {
-			// Clear the update interrupt flag of TIM4 without calling a callback function
-			CLR_BIT(TIM4->SR, 0);
-		}
+		// Clear the update interrupt flag of TIM4
+		CLR_BIT(TIM4->SR, 0);
 	}
 }
 /*******************************************************************************************************/
@@ -870,34 +795,21 @@ void TIM4_IRQHandler(void) {
  *  			the update interrupt of TIM5 triggers an interrupt.
  */
 void TIM5_IRQHandler(void) {
-	// Check if the capture/compare interrupt flag for CH1 of TIM5 is set
-	if (GET_BIT(TIM5->SR, 1)) {
-		// Call the LOC_TIMER_ICU function for handling CH1 interrupt of TIM5
-		LOC_TIMER_ICU(TIMER5 - 1, CH1 - 1);
 
-		// Clear the capture/compare interrupt flag for CH1 of TIM5
-		CLR_BIT(TIM5->SR, CH1);
-	}
-	else if (GET_BIT(TIM5->SR, 2)) {
-		// Call the LOC_TIMER_ICU function for handling CH2 interrupt of TIM5
-		LOC_TIMER_ICU(TIMER5 - 1, CH2 - 1);
+	// Iterate through all channels of TIM5
+	for (u8 ch = 1; ch <= 4; ch++) {
+		// Check if the capture/compare interrupt flag for the current channel is set
+		if (GET_BIT(TIM5->SR, ch)) {
+			// Call the LOC_TIMER_ICU function for handling the interrupt
+			// Multiplying by 4 is to get index in the array for the timer channel
+			LOC_TIMER_ICU(4 * (TIMER5 - 1), ch - 1);
 
-		// Clear the capture/compare interrupt flag for CH2 of TIM5
-		CLR_BIT(TIM5->SR, CH2);
-	}
-	else if (GET_BIT(TIM5->SR, 3)) {
-		// Call the LOC_TIMER_ICU function for handling CH3 interrupt of TIM5
-		LOC_TIMER_ICU(TIMER5 - 1, CH3 - 1);
+			// Clear the capture/compare interrupt flag for the current channel
+			CLR_BIT(TIM5->SR, ch);
 
-		// Clear the capture/compare interrupt flag for CH3 of TIM5
-		CLR_BIT(TIM5->SR, CH3);
-	}
-	else if (GET_BIT(TIM5->SR, 4)) {
-		// Call the LOC_TIMER_ICU function for handling CH4 interrupt of TIM5
-		LOC_TIMER_ICU(TIMER5 - 1, CH4 - 1);
-
-		// Clear the capture/compare interrupt flag for CH4 of TIM5
-		CLR_BIT(TIM5->SR, CH4);
+			// Exit the loop after handling the first set interrupt
+			break;
+		}
 	}
 
 	// Check if the update interrupt flag of TIM5 is set
@@ -907,14 +819,10 @@ void TIM5_IRQHandler(void) {
 
 			// Call the callback function for TIM5
 			GLOBAL_Ptr[4]();
+		}
 
-			// Clear the update interrupt flag of TIM5
-			CLR_BIT(TIM5->SR, 0);
-		}
-		else {
-			// Clear the update interrupt flag of TIM5 without calling a callback function
-			CLR_BIT(TIM5->SR, 0);
-		}
+		// Clear the update interrupt flag of TIM5
+		CLR_BIT(TIM5->SR, 0);
 	}
 }
 /*******************************************************************************************************/
