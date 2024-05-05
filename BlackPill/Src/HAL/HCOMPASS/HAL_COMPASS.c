@@ -12,8 +12,12 @@
 #include"math.h"
 
 #include"../../MCAL/MSTK/MSYSTICK_Int.h"
+#include"../../MCAL/MSTK/MSYSTICK_Private.h"
 #include"../../MCAL/MTIMER/MTIMER_Int.h"
 #include"../../MCAL/MGPIO/MGPIO_int.h"
+#include"../../MCAL/MEXTI/MEXTI_Int.h"
+#include"../../MCAL/MNVIC/MNVIC_int.h"
+#include"../../HAL/HEPROM/MEPROM_Int.h"
 
 struct Compass_struct {
 	s16 X;
@@ -22,9 +26,19 @@ struct Compass_struct {
 } CompassData;
 
 // Calibration variables
+static s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {32767, -32767}};
 
 f32 _offset[3] = {0.0, 0.0, 0.0};
 f32 _scale[3] = {1.0, 1.0, 1.0};
+
+void HCOMPASS_RSTCalibration(void){
+
+	s16 Calibration_RSTval[4]={32767, -32768, 32767, -32768};
+
+	HEPROM_vWriteData(0, 0, Calibration_RSTval, 8);
+	SET_BIT(STK->CTRL, STK_EN);
+
+}
 
 // Function to apply calibration to raw data
 void HCOMPASS_ApplyCalibration(s16 *raw, f32* calibrated) {
@@ -98,7 +112,30 @@ void HCOMPASS_vInit(){
 	MI2C_vMasterTx(COMPASS_I2C,COMPASS_ADDRESS,Local_TxData,2,WithStop);
 
 	//HCOMPASS_Calibrate(8000);
+	u8 EPROM_CalibratingData[8];
+	HEPROM_vReadData(0, 0,EPROM_CalibratingData ,8);
+	/* x min */
+	calibrationData[0][0]= (s16)(EPROM_CalibratingData[1]<<8) | EPROM_CalibratingData[0] ;
+	/* x max */
+	calibrationData[0][1]= (s16)(EPROM_CalibratingData[3]<<8) | EPROM_CalibratingData[2] ;
+	/* y min */
+	calibrationData[1][0]= (s16)(EPROM_CalibratingData[5]<<8) | EPROM_CalibratingData[4] ;
+	/* y max */
+	calibrationData[1][1]= (s16)(EPROM_CalibratingData[7]<<8) | EPROM_CalibratingData[6] ;
+	HCOMPASS_SetCalibration(
+					calibrationData[0][0], calibrationData[0][1],
+					calibrationData[1][0], calibrationData[1][1],
+					calibrationData[2][0], calibrationData[2][1]
+			);
 
+	SYSCFG_vConfigEXTI_Line(PORTA, EXTI2);
+	MGPIO_vSetPinMode(PORTC, PIN2,INPUT);
+	MGPIO_vSetPinInPutType(PORTA,PIN2,PULLUP);
+	MEXTI_vInterruptTrigger(EXTI2,FALLING);
+
+	MEXTI_vCallBack(EXTI2, HCOMPASS_RSTCalibration);
+	MEXTI_vEnableInterrupt(EXTI2);
+	MNVIC_vEnableInterrupt(NVIC_EXTI2);
 
 
 }
@@ -124,7 +161,7 @@ void HCOMPASS_vSetRowData(){
 	RowData[2] =  (s16)(Local_RxData[Z_MSB]<<8) | Local_RxData[Z_LSB] ;
 
 	//static s16 calibrationData[3][2] = {{-1043, 643}, {-1135, 326}, {0, 706}};
-	static s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {0, 706}};
+	//static s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {0, 706}};
 	u8 Calibration_Flag=0;
 	for (u8 i = 0; i < 2; ++i) {
 		if (RowData[i] < calibrationData[i][0]) {
@@ -148,6 +185,7 @@ void HCOMPASS_vSetRowData(){
 				calibrationData[1][0], calibrationData[1][1],
 				calibrationData[2][0], calibrationData[2][1]
 		);
+		HEPROM_vWriteData(0,0, calibrationData, 8);
 	}
 
 
