@@ -128,22 +128,20 @@ void HCOMPASS_vInit(){
 					calibrationData[2][0], calibrationData[2][1]
 			);
 
-	SYSCFG_vConfigEXTI_Line(PORTA, EXTI2);
-	MGPIO_vSetPinMode(PORTC, PIN2,INPUT);
-	MGPIO_vSetPinInPutType(PORTA,PIN2,PULLUP);
-	MEXTI_vInterruptTrigger(EXTI2,FALLING);
+	SYSCFG_vConfigEXTI_Line(PORTC, EXTI14);
+	MGPIO_vSetPinMode(PORTC, PIN14,INPUT);
+	MGPIO_vSetPinInPutType(PORTC,PIN14,PULLUP);
+	MEXTI_vInterruptTrigger(EXTI14,FALLING);
 
-	MEXTI_vCallBack(EXTI2, HCOMPASS_RSTCalibration);
-	MEXTI_vEnableInterrupt(EXTI2);
-	MNVIC_vEnableInterrupt(NVIC_EXTI2);
+	MEXTI_vCallBack(EXTI14, HCOMPASS_RSTCalibration);
+	MEXTI_vEnableInterrupt(EXTI14);
+	MNVIC_vEnableInterrupt(NVIC_EXTI15_10);
 
 
 }
 void HCOMPASS_vSetRowData(){
 
-	MGPIO_vSetPinMode(PORTA,PIN10, OUTPUT);
-	MGPIO_vSetPinMode(PORTA,PIN9, OUTPUT);
-	static u8 data_Flag=0;
+	MGPIO_vSetPinMode(PORTC,PIN14, OUTPUT);
 	static u8 cal_Flag=0;
 
 	/* Read data register 00H ~ 05H. */
@@ -167,19 +165,15 @@ void HCOMPASS_vSetRowData(){
 		if (RowData[i] < calibrationData[i][0]) {
 			calibrationData[i][0] = RowData[i];
 			Calibration_Flag=1;
-			data_Flag^=1;
-			MGPIO_vSetPinValue(PORTA, PIN10, data_Flag);
 		}
 		if (RowData[i] > calibrationData[i][1]) {
 			calibrationData[i][1] = RowData[i];
 			Calibration_Flag=1;
-			data_Flag^=1;
-			MGPIO_vSetPinValue(PORTA, PIN10, data_Flag);
 		}
 	}
 	if(Calibration_Flag==1){
 		cal_Flag^=1;
-		MGPIO_vSetPinValue(PORTA, PIN9, cal_Flag);
+		MGPIO_vSetPinValue(PORTC, PIN14, cal_Flag);
 		HCOMPASS_SetCalibration(
 				calibrationData[0][0], calibrationData[0][1],
 				calibrationData[1][0], calibrationData[1][1],
