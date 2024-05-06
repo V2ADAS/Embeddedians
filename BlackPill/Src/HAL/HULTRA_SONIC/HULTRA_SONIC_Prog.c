@@ -14,7 +14,7 @@
 /********************************************************************************************************/
 
 #include "../../MCAL/MRCC/MRCC_Int.h"   // MRCC: Reset and Clock Control driver
-#include "../../MCAL/MGPIO/MGPIO_Int.h" // MGPIO: General Purpose Input/Output driver
+#include "../../MCAL/MGPIO/MGPIO_int.h" // MGPIO: General Purpose Input/Output driver
 #include "../../MCAL/MTIMER/MTIMER_Int.h" // MTIMER: Timer driver
 #include "../../MCAL/MSTK/MSYSTICK_Int.h" // MSTK: SysTick timer driver
 
@@ -49,7 +49,7 @@ void HULTRA_vSendTrigger(u8 Copy_u8Port, u8 Copy_u8Pin) {
 
 	// Raise the ultrasonic sensor trigger pin to HIGH for a short duration
 	MGPIO_vSetPinAtomic(Copy_u8Port, Copy_u8Pin, HIGH);
-	MSYSTICK_vDelayMicroSec(Trigger_Pulse_Width);  // Wait for "Trigger_Pulse_Width" milliseconds
+	MSYSTICK_vDelayms(Trigger_Pulse_Width);  // Wait for "Trigger_Pulse_Width" milliseconds
 
 	// Bring the ultrasonic sensor trigger pin back to LOW
 	MGPIO_vSetPinAtomic(Copy_u8Port, Copy_u8Pin, LOW);

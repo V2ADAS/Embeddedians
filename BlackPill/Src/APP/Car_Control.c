@@ -1,4 +1,4 @@
-#include "Inc/CAR_CONTROL.h"
+#include "Inc/Car_Control.h"
 
 // Define static variables to store previous values
 static u8 prevDirection = FORWARD;
@@ -37,7 +37,7 @@ void CAR_CONTROL(u8 Direction, f32 Distance, s8 Degree){
 
     HSERVO_vServoDeg(SERVO1, Degree);
 
-    HAL_MOTOR_MOVE(Direction, speed, Distance);
+    HAL_MOTOR_MOVE(DC_MOTOR,Direction, speed, Distance);
 }
 
 // Access the static variables using pointers
