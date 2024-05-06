@@ -1,21 +1,21 @@
 /*******************************************************************************************************/
 /* Author            : Amr ElMaghraby                                                            	   */
-/* Version           : V1.1.0                                                                          */
+/* Version           : V1.2.0                                                                          */
 /* Data              : 28 Jan 2024                                                                     */
 /* Description       : MTimer_Prog.c --> implementations                                               */
 /* Module  Features  :                                                                                 */
 /*      01- MTIMER_vStartTime                                                                          */
-/*      02- MTIMER_vCntTimer                                                                          */
+/*      02- MTIMER_vCntTimer                                                                           */
 /*      03- MTIMER_vDelayms                                                                            */
-/*      04- MTIMER_f32GetElapsedTime
- * 		05- MTIMER_f32GetElapsedTicks                                                                  */
-/*      05- MTIMER_vPeriodicMS                                                                         */
-/*		06- MTIMER_EXTCNTClock																		   */
-/*      07- MTIMER_vClearCNT																		   */
-/*      08- MTIMER_vPWM                                                                                */
-/*      09- MTIMER_vICU                                                                                */
-/*      10- MTIMER_GET_ICU                                                                             */
-/*      11- MTIMER_CallBack                                                                            */
+/*      04- MTIMER_f32GetElapsedTime                                                                   */
+/*      05- MTIMER_u32GetElapsedTicks																   */
+/*      06- MTIMER_vPeriodicMS                                                                         */
+/*		07- MTIMER_EXTCNTClock																		   */
+/*      08- MTIMER_vClearCNT																		   */
+/*      09- MTIMER_vPWM                                                                                */
+/*      10- MTIMER_vICU                                                                                */
+/*      11- MTIMER_GET_ICU                                                                             */
+/*      12- MTIMER_CallBack                                                                            */
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
@@ -243,13 +243,28 @@ void MTIMER_vDelayms(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delayms);
  * 										And for timer2,5 is 49.71 DAY !!!.
  */
 f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Copy_u8TimerUnit);
-u32 MTIMER_u32GetElapsedTicks(Enum_TIMER_NUM Copy_u8TimerNum) ;
-
 /*******************************************************************************************************/
 
 
 /*******************************************************************************************************/
-/*                                      05- MTIMER_vPeriodicMS                                         */
+/*                 						05- MTIMER_u32GetElapsedTicks                                  */
+/*-----------------------------------------------------------------------------------------------------*/
+/**
+ * @Description 	Retrieves the current tick count of the specified TIMER.
+ * @param 			Copy_u8TimerNum: The TIMER number to query.
+ *                      	    Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
+ *                          	    TIMER5, TIMER9, TIMER10, TIMER11 }
+ * @return u32		The current tick count of the specified TIMER.
+ *
+ * @note 			The tick count represents the current value of the timer's counter.
+ */
+u32 MTIMER_u32GetElapsedTicks(Enum_TIMER_NUM Copy_u8TimerNum);
+/*******************************************************************************************************/
+
+
+
+/*******************************************************************************************************/
+/*                                      06- MTIMER_vPeriodicMS                                         */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description   Configure the specified timer for a periodic delay in milliseconds.
@@ -272,16 +287,18 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay);
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-/*										06- MTIMER_vEXTCNTClock							    		   */
+/*										07- MTIMER_vEXTCNTClock							    		   */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
- * @brief Configures the specified TIMER channel to count external events on the rising edge of the input signal.
+ * @brief Configures the specified TIMER channel to count external events on the rising edge
+ * 				of the input signal.
  * @param Copy_u8TimerNum: The TIMER number to be configured.
  *                         Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
  *                           TIMER5, TIMER9 }.
  * @param Copy_u8Channel: The channel on which external events will be counted.
  *                        Expected to be Enum_TIMER_CHs ==> { CH1, CH2 }.
- * @param Copy_u32Max_Value: The maximum value for the counter. When the counter reaches this value, it will reset.
+ * @param Copy_u32Max_Value: The maximum value for the counter. When the counter reaches this value,
+ * 								 it will reset.
  * @return void
  * NOTE: NO EXTERNAL CLOCK MODE FOR CH3 or CH4 for Any TIMER
  * 			ALSO NO EXTERNAL MODE AT ALL FOR TIMER 10 or TIMER 11
@@ -292,7 +309,7 @@ void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8C
 
 
 /*******************************************************************************************************/
-/*                                      07- MTIMER_vClearCNT                                           */
+/*                                      08- MTIMER_vClearCNT                                           */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Clears the counter (CNT) of the specified TIMER.
@@ -305,7 +322,7 @@ void MTIMER_vClearCNT(Enum_TIMER_NUM Copy_u8TimerNum);
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-/*                                      08- MTIMER_vPWM                                       		   */
+/*                                      09- MTIMER_vPWM                                       		   */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Configures the specified TIMER in PWM mode on a specific channel.
@@ -322,7 +339,7 @@ void MTIMER_vPWM(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel, 
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-/*                                      09- MTIMER_vICU                                       		   */
+/*                                      10- MTIMER_vICU                                       		   */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Configures the specified TIMER to work as an Input Capture Unit (ICU) on a specific channel.
@@ -337,10 +354,11 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel);
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-/*                                      10- MTIMER_GET_ICU                                       	   */
+/*                                      11- MTIMER_GET_ICU                                       	   */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
- * @Description Retrieves the captured time value from an Input Capture event on the specified TIMER and channel.
+ * @Description Retrieves the captured time value from an Input Capture event on the
+ * 					specified TIMER and channel.
  * @param Copy_u8TimerNum: The TIMER number from which to retrieve the captured time.
  * 							Expected to be Enum_TIMER_NUM ==> { TIMER1, TIMER2, TIMER3, TIMER4,
  * 								TIMER5, TIMER9, TIMER10, TIMER11 }
@@ -352,7 +370,7 @@ u32 MTIMER_GET_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8Channel
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/
-/*                                      11- MTIMER_CallBack                                       	   */
+/*                                      12- MTIMER_CallBack                                       	   */
 /*-----------------------------------------------------------------------------------------------------*/
 /**
  * @Description Registers a callback function to be executed when the specified TIMER generates an interrupt.
