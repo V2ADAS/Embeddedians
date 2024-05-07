@@ -59,11 +59,8 @@ u32 Time[29]={0};
  * @note 		 using TIM2_5_MemMap_t struct to be used for all timers
  */
 static TIM2_5_MemMap_t* LOC_GET_TIMER(u32 Copy_u8TimerNum) {
-	// Array containing the offsets of TIMER registers for different TIMers.
-	u32 Timer_Offset[8] = TIMERS_OFFSET;
-
 	// Calculate the base address of the specified TIMER using its offset.
-	TIM2_5_MemMap_t* TIMx = (TIM2_5_MemMap_t*)((u32)TIM2 + Timer_Offset[Copy_u8TimerNum - 1]);
+	TIM2_5_MemMap_t* TIMx = (TIM2_5_MemMap_t*)((u32)TIM2 + TIMERS_OFFSET[Copy_u8TimerNum - 1]);
 
 	// Return the pointer to the memory-mapped structure of the specified TIMER.
 	return TIMx;
@@ -430,8 +427,6 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
  *         timer to capture the rising edge first, then the falling edge.
  * @return None
  */
-u32 cv1=0;
-u32	cv2=0;
 static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerArrIdx,Enum_TIMER_CHs Copy_u8ChannelNum) {
 
 	// Initialize arrays to store capture state and values for each channel
@@ -445,7 +440,6 @@ static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerArrIdx,Enum_TIMER_CHs Copy_
 	if (captureState[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] == 0 ) {
 		// Capture the time on the rising edge
 		captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] = TIMx->CCR[Copy_u8ChannelNum];
-		cv1= captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ];
 		// Enable falling edge capture
 		SET_BIT(TIMx->CCER, (CCxP + Copy_u8ChannelNum*4) );
 
@@ -454,7 +448,6 @@ static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerArrIdx,Enum_TIMER_CHs Copy_
 	} else {
 		// Capture the time on the falling edge
 		captureValue2 = TIMx->CCR[Copy_u8ChannelNum];
-		cv2= captureValue2;
 		// Enable rising edge capture
 		CLR_BIT(TIMx->CCER, (CCxP + Copy_u8ChannelNum*4) );
 		//IF Capture_Value1 > Capture_Value2 This could be due to two reasons:

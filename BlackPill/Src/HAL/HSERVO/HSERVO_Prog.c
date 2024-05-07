@@ -9,7 +9,7 @@
 /*******************************************************************************************************/
 // Include necessary MCU Abstraction Layer (MCAL) headers
 #include "../../MCAL/MRCC/MRCC_Int.h"    // RCC (Reset and Clock Control)
-#include "../../MCAL/MGPIO/MGPIO_Int.h"  // GPIO (General Purpose Input/Output)
+#include "../../MCAL/MGPIO/MGPIO_int.h"  // GPIO (General Purpose Input/Output)
 #include "../../MCAL/MTIMER/MTIMER_Int.h" // TIMER (Timer Control)
 
 // Include HSERVO configuration and interface headers
