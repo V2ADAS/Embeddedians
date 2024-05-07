@@ -33,11 +33,13 @@ f32 _scale[3] = {1.0, 1.0, 1.0};
 
 void HCOMPASS_RSTCalibration(void){
 
-	s16 Calibration_RSTval[4]={32767, -32768, 32767, -32768};
+	calibrationData[0][0]=32767;
+	calibrationData[0][1]=-32767;
+	calibrationData[1][0]=32767;
+	calibrationData[1][1]=-32767;
 
-	HEPROM_vWriteData(0, 0, Calibration_RSTval, 8);
+	HEPROM_vWriteData(0, 0, calibrationData, 8);
 	SET_BIT(STK->CTRL, STK_EN);
-
 }
 
 // Function to apply calibration to raw data
@@ -128,13 +130,13 @@ void HCOMPASS_vInit(){
 					calibrationData[2][0], calibrationData[2][1]
 			);
 
-	SYSCFG_vConfigEXTI_Line(PORTC, EXTI14);
-	MGPIO_vSetPinMode(PORTC, PIN14,INPUT);
-	MGPIO_vSetPinInPutType(PORTC,PIN14,PULLUP);
-	MEXTI_vInterruptTrigger(EXTI14,FALLING);
+	SYSCFG_vConfigEXTI_Line(PORTC, EXTI15);
+	MGPIO_vSetPinMode(PORTC, PIN15,INPUT);
+	MGPIO_vSetPinInPutType(PORTC,PIN15,PULLUP);
+	MEXTI_vInterruptTrigger(EXTI15,FALLING);
 
-	MEXTI_vCallBack(EXTI14, HCOMPASS_RSTCalibration);
-	MEXTI_vEnableInterrupt(EXTI14);
+	MEXTI_vCallBack(EXTI15, HCOMPASS_RSTCalibration);
+	MEXTI_vEnableInterrupt(EXTI15);
 	MNVIC_vEnableInterrupt(NVIC_EXTI15_10);
 
 
