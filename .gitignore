@@ -5,9 +5,3 @@ RemoteSystemsTempFiles/
 .gitignore
 .vscode
 
-# Exclude specific subfolders within BlackPill_RC/
-!BlackPill/Src/MCAL/
-!BlackPill/Src/HAL/
-!BlackPill/Src/LIB/
-!BlackPill/Src/APP/
-!Examples
