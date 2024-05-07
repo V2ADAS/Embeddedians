@@ -22,7 +22,7 @@
 #define TIMER11_Base_Add	0x40014800
 
 //Initialize with TIMER2 as it's LOWEST ADD
-#define TIMERS_OFFSET \
+#define TIMERS_OFFSET 	(u32[])\
     { \
         (TIMER1_Base_Add - TIMER2_Base_Add), \
         (TIMER2_Base_Add - TIMER2_Base_Add), \
