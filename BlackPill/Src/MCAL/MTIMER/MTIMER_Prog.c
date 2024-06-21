@@ -139,7 +139,7 @@ void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
 	// Get the base address of the specified timer
 	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 
-
+	static u8 first_delay_error[8] = {1,1,1,1,1,1,1,1};
 	// Reset Control Register 1 Value
 	TIMx->CR1 = 0;
 
@@ -162,10 +162,14 @@ void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
 	while (!GET_BIT(TIMx->SR, 0));
 
 	// TODO: Solve error of first Delay not working
-	/*// Clear the update interrupt flag of TIMx
-	CLR_BIT(TIMx->SR,0);
-	// Wait for the Timer to reach zero (polling)
-	while ( !GET_BIT(TIMx->SR, 0) );*/
+	if(first_delay_error[Copy_u8TimerNum-1] == 1){
+		// Clear the update interrupt flag of TIMx
+		CLR_BIT(TIMx->SR,0);
+		// Wait for the Timer to reach zero (polling)
+		while ( !GET_BIT(TIMx->SR, 0) );
+		//set first delay error to zero
+		first_delay_error[Copy_u8TimerNum-1] = 0;
+	}
 
 	// Clear the update interrupt flag of TIM1
 	CLR_BIT(TIMx->SR,0);
