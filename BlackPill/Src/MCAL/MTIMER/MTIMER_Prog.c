@@ -291,6 +291,9 @@ void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8C
 	);
 	// Get the base address of the specified timer
 	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
+
+	//Clear CNT before starting
+	//TIMx->CNT = 0x00;
 	//1. Configure channel 2 to detect rising edges on the TI2 input by writing CC2S = ‘01’ in
 	//the TIMx_CCMR1 register.
 	SET_BIT( TIMx->CCMR[0] , ( CCxS0+(((Copy_u8Channel-1)%2)*8)) );
