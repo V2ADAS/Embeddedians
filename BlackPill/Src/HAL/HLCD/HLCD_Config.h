@@ -15,6 +15,6 @@
 #define TOT_LCD_LENGTH 70
 
 // Number of decimal places to consider when converting floating-point numbers to strings for LCD display
-#define LCD_FLOAT_PRECISION	2
+#define LCD_FLOAT_PRECISION	1
 
 #endif /* HAL_HLCD_HLCD_CONFIG_H_ */
