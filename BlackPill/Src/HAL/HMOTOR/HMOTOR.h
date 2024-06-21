@@ -27,7 +27,7 @@ void HAL_MOTOR_STOP(u8 MOTOR);
 
 void HAL_ENCODER_Init( Enum_TIMER_NUM CNTR_TIMER , Enum_TIMER_CHs CNTR_CH );
 
-f32 HAL_MOTOR_GetMovedDistance();
+f64 HAL_MOTOR_GetMovedDistance();
 
 
 

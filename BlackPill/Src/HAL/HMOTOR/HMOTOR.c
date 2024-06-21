@@ -13,8 +13,8 @@ MOTOR_t CALP_Motor ;
 
 ENCODER_t Encoder ;
 u32 encoder_pulses = 0 ;
-f32 moved_distance = 0 ;
-f32 total_moved_distance = 0 ;
+f64 moved_distance = 0 ;
+f64 total_moved_distance = 0 ;
 
 /*****************************Local Functions***********************************/
 MOTOR_t* LOC_GetMotorName(u8 MOTOR);
@@ -91,10 +91,10 @@ void HAL_MOTOR_STOP(u8 MOTOR){
 }
 
 
-f32 HAL_MOTOR_GetMovedDistance(){
+f64 HAL_MOTOR_GetMovedDistance(){
 	u32 moved_distance_pulses = MTIMER_u32GetElapsedTicks(Encoder.CNTR_TIMER);
-	f32 num_of_revolutions = (f32) moved_distance_pulses / PULSES_PER_REVOLUTION ;
-	f32 moved_distance_cm = num_of_revolutions * WHEEL_AREA ;
+	f64 num_of_revolutions = (f64) moved_distance_pulses / PULSES_PER_REVOLUTION ;
+	f64 moved_distance_cm = num_of_revolutions * WHEEL_AREA ;
 	return total_moved_distance + moved_distance_cm ;
 }
 void LOC_MotorCallBack(){
