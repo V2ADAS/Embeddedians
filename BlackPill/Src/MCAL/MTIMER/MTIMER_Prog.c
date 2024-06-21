@@ -46,6 +46,7 @@ static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8
 
 //Global Array to Store each CH Captured Pulse width value
 u32 Time[29]={0};
+f32 timee=0;
 
 /*******************************************************************************************************/
 /*                                      LOC_GET_TIMER Function                                         */
@@ -84,7 +85,7 @@ void MTIMER_vStartTime(Enum_TIMER_NUM Copy_u8TimerNum) {
 	TIMx->CR1 = 0;
 
 	// Set the prescaler value to achieve a 1ms time base
-	TIMx->PSC = SYS_CLOCK * 1000 - 1;
+	TIMx->PSC = SYS_CLOCK * 1000;
 
 	// Set the auto-reload value to MAX Value
 	TIMx->ARR = 0xFFFFFFFF;
@@ -138,11 +139,12 @@ void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
 	// Get the base address of the specified timer
 	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
 
+	static u8 first_delay_error[8] = {1,1,1,1,1,1,1,1};
 	// Reset Control Register 1 Value
 	TIMx->CR1 = 0;
 
 	// Set the prescaler value to achieve a 1ms time base
-	TIMx->PSC = SYS_CLOCK * 1000  - 1;
+	TIMx->PSC = SYS_CLOCK * 1000;
 
 	// Set the auto-reload value to MAX Value
 	TIMx->ARR = Copy_u32Delayms;
@@ -152,16 +154,23 @@ void MTIMER_vDelayms(Enum_TIMER_NUM	Copy_u8TimerNum,u32 Copy_u32Delayms){
 
 	// Ensure Starting CNT from 0 as of some problems with TIMER2 and TIMER 5 if "ARR >0x0020000"
 	TIMx->CNT = 0xFFFFFFFF;
+
 	// Clear the update interrupt flag of TIMx
 	CLR_BIT(TIMx->SR,0);
+
 	// Wait for Update flag to be zero
 	while (!GET_BIT(TIMx->SR, 0));
-	/*
-	// Clear the update interrupt flag of TIMx
-	CLR_BIT(TIMx->SR,0);
-	// Wait for the Timer to reach zero (polling)
-	while ( !GET_BIT(TIMx->SR, 0) );
-	 */
+
+	// TODO: Solve error of first Delay not working
+	if(first_delay_error[Copy_u8TimerNum-1] == 1){
+		// Clear the update interrupt flag of TIMx
+		CLR_BIT(TIMx->SR,0);
+		// Wait for the Timer to reach zero (polling)
+		while ( !GET_BIT(TIMx->SR, 0) );
+		//set first delay error to zero
+		first_delay_error[Copy_u8TimerNum-1] = 0;
+	}
+
 	// Clear the update interrupt flag of TIM1
 	CLR_BIT(TIMx->SR,0);
 	// Clear Enable bit to disable the timer
@@ -241,7 +250,7 @@ void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay) {
 	TIMx->CR1 = 0;
 
 	// Set the prescaler value to achieve a 1ms time base
-	TIMx->PSC = SYS_CLOCK * 1000 - 1;
+	TIMx->PSC = SYS_CLOCK * 1000;
 
 	// Set the auto-reload value to achieve the desired delay
 	TIMx->ARR = Copy_u32Delay - 1;
@@ -286,8 +295,9 @@ void MTIMER_vEXTCNTClock(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_CHs Copy_u8C
 	);
 	// Get the base address of the specified timer
 	TIM2_5_MemMap_t* TIMx = LOC_GET_TIMER(Copy_u8TimerNum);
-	// Clear CNT before starting
-	//TIMx -> CNT = 0x00;
+
+	//Clear CNT before starting
+	//TIMx->CNT = 0x00;
 	//1. Configure channel 2 to detect rising edges on the TI2 input by writing CC2S = ‘01’ in
 	//the TIMx_CCMR1 register.
 	SET_BIT( TIMx->CCMR[0] , ( CCxS0+(((Copy_u8Channel-1)%2)*8)) );
@@ -407,7 +417,7 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
 	CLR_BIT(TIMx->CCMR[Copy_u8Channel / 3],( ICxF3 + ( ((Copy_u8Channel-1)%2)*8)));
 
 	// set prescaler
-	TIMx->PSC = SYS_CLOCK * 10 ;
+	TIMx->PSC = SYS_CLOCK * 10;
 	TIMx -> ARR = 0xFFFFFFFF;
 
 	//SET_BIT(TIMx->EGR,0); //UG: Update generation - 1: Reinitialize counter&update registers
@@ -429,6 +439,8 @@ void MTIMER_vICU(Enum_TIMER_NUM Copy_u8TimerNum,Enum_TIMER_CHs Copy_u8Channel){
  *         timer to capture the rising edge first, then the falling edge.
  * @return None
  */
+u32 cv1=0;
+u32	cv2=0;
 static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerArrIdx,Enum_TIMER_CHs Copy_u8ChannelNum) {
 
 	// Initialize arrays to store capture state and values for each channel
@@ -442,6 +454,7 @@ static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerArrIdx,Enum_TIMER_CHs Copy_
 	if (captureState[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] == 0 ) {
 		// Capture the time on the rising edge
 		captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] = TIMx->CCR[Copy_u8ChannelNum];
+		cv1= captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ];
 		// Enable falling edge capture
 		SET_BIT(TIMx->CCER, (CCxP + Copy_u8ChannelNum*4) );
 
@@ -450,6 +463,7 @@ static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerArrIdx,Enum_TIMER_CHs Copy_
 	} else {
 		// Capture the time on the falling edge
 		captureValue2 = TIMx->CCR[Copy_u8ChannelNum];
+		cv2= captureValue2;
 		// Enable rising edge capture
 		CLR_BIT(TIMx->CCER, (CCxP + Copy_u8ChannelNum*4) );
 		//IF Capture_Value1 > Capture_Value2 This could be due to two reasons:
@@ -459,6 +473,7 @@ static void LOC_TIMER_ICU(Enum_TIMER_NUM Copy_u8TimerArrIdx,Enum_TIMER_CHs Copy_
 		if( captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] < captureValue2 ){
 			// Calculate the time difference
 			Time[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] = captureValue2 - captureValue1[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ];
+			timee = Time[13] / 100.0;
 		}
 		// Reset state value
 		captureState[ ( Copy_u8TimerArrIdx + Copy_u8ChannelNum ) ] = 0;
@@ -821,4 +836,3 @@ void TIM5_IRQHandler(void) {
 	}
 }
 /*******************************************************************************************************/
-

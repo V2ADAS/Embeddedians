@@ -49,7 +49,7 @@ void HULTRA_vSendTrigger(u8 Copy_u8Port, u8 Copy_u8Pin) {
 
 	// Raise the ultrasonic sensor trigger pin to HIGH for a short duration
 	MGPIO_vSetPinAtomic(Copy_u8Port, Copy_u8Pin, HIGH);
-	MSYSTICK_vDelayms(Trigger_Pulse_Width);  // Wait for "Trigger_Pulse_Width" milliseconds
+	MSYSTICK_vDelayMicroSec(Trigger_Pulse_Width);  // Wait for "Trigger_Pulse_Width" microseconds
 
 	// Bring the ultrasonic sensor trigger pin back to LOW
 	MGPIO_vSetPinAtomic(Copy_u8Port, Copy_u8Pin, LOW);
@@ -58,7 +58,7 @@ void HULTRA_vSendTrigger(u8 Copy_u8Port, u8 Copy_u8Pin) {
 
 void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance) {
 	// Calculate distance based on timer values and assume speed of sound is 343 meters per second
-	*Copy_f64Distance = ((f64)MTIMER_GET_ICU(ULTRA_STRUCT[Copy_u8Ultra_NUM].TIMER, ULTRA_STRUCT[Copy_u8Ultra_NUM].CHANNELS) / 2) * 3.43;
+	*Copy_f64Distance = ( (f64)MTIMER_GET_ICU(ULTRA_STRUCT[Copy_u8Ultra_NUM].TIMER, ULTRA_STRUCT[Copy_u8Ultra_NUM].CHANNELS) ) * 3.43 / 20;
 }
 
 
