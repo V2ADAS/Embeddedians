@@ -15,9 +15,9 @@
 
 #include "math.h"
 
+#include"../../MCAL/MTIMER/MTIMER_Int.h"
 #include"../../MCAL/MSTK/MSYSTICK_Int.h"
 #include"../../MCAL/MI2C/MI2C_int.h"
-#include"../HLCD/HLCD_Int.h"
 
 #include"HMPU6050.h"
 
@@ -58,7 +58,11 @@ float velocityY = 0; // Initial velocity
 float positionY = 0; // Initial position
 
 float elapsedTime=0.015, currentTime, previousTime;
-float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ,yaw,roll,pitch;
+float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ,yyaw,roll,pitch;
+
+
+u8 MPU_TIMER = 0;
+
 // Assuming sensitivity is 8192 LSB/g, adjust this based on your sensor's datasheet
 #define ACCEL_SENSITIVITY 16384.0
 // Assuming sensitivity values for gyroscope (adjust based on your sensor's datasheet)
@@ -72,7 +76,7 @@ float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ,yaw,roll,pitch;
  * These settings include configuring the sensitivity of the gyroscope and accelerometer,
  * setting the Digital Low Pass Filter (DLPF) mode, and managing power settings.
  */
-void HMPU_vInit(){
+void HMPU_vInit(Enum_TIMER_NUM Copy_u8MPU_Timer){
     // Data array to hold register addresses and configuration values
     u8 data[2];
 
@@ -95,6 +99,9 @@ void HMPU_vInit(){
     data[0] = REG_PWR_MGMT_1;   // Register address for power management configuration
     data[1] = 0;                 // Default value (no sleep mode)
     MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
+
+    //Set timer to be used with mpu
+    MPU_TIMER = Copy_u8MPU_Timer;
 }
 /******************************************************************************************************/
 
@@ -203,15 +210,18 @@ void HMPU_s16ReadRowData(s16 *ptr_RowData) {
  *
  * @return The calculated yaw angle in degrees (floating-point value).
  */
-f32 HMPU_f32GetYawAngle(Enum_TIMER_NUM Copy_u8TimerNum) {
+f32 accel_angle = 0;
+f32 alpha = 0.0;
+f32 HMPU_f32GetYawAngle() {
 
 	// Read acceleration data from MPU
 	HMPU_s16ReadRowData(buf);
 
 	// Extract raw accelerometer data
 	//Accel_X_RAW = (buf[0] - OFFSET_ACCEL_X);
-	//Accel_Y_RAW = (buf[1] - OFFSET_ACCEL_Y);
+	Accel_Y_RAW = (buf[1] - OFFSET_ACCEL_Y);
 	Accel_Z_RAW = (buf[2] - OFFSET_ACCEL_Z);
+	accel_angle = atan2(Accel_Y_RAW, Accel_Z_RAW);
 
 	// Calculate pitch and roll angles using accelerometer data
 	//accAngleX = (atan(Accel_Y_RAW / sqrt(pow(Accel_X_RAW, 2) + pow(Accel_Z_RAW, 2))) * 180 / 3.14) - 0.58; // AccErrorX ~(0.58) See the calculate_IMU_error() custom function for more details
@@ -226,13 +236,13 @@ f32 HMPU_f32GetYawAngle(Enum_TIMER_NUM Copy_u8TimerNum) {
 	Gz = Gyro_Z_RAW;
 
 	// Calculate the time elapsed using a timer
-	elapsedTime = MTIMER_f32GetElapsedTime(Copy_u8TimerNum, sec); // timer off
-	MTIMER_vCntTimer(Copy_u8TimerNum, StopTimer);
+	elapsedTime = MTIMER_f32GetElapsedTime(MPU_TIMER, sec); // timer off
+	MTIMER_vCntTimer(MPU_TIMER, StopTimer);
 
 	// Integrate gyroscope data to obtain angle changes
 	//gyroAngleX = gyroAngleX + Gx * elapsedTime; // deg/s * s = deg
 	//gyroAngleY = gyroAngleY + Gy * elapsedTime;
-	yaw = yaw +  Gz * elapsedTime; //1.23
+	yyaw = (yyaw +  Gz * elapsedTime) + (alpha * accel_angle); //1.23
 	//velocityY=0;
 	// Calculate velocity using acceleration data from accelerometer
 	//velocityX = Accel_X_RAW * elapsedTime;
@@ -241,15 +251,15 @@ f32 HMPU_f32GetYawAngle(Enum_TIMER_NUM Copy_u8TimerNum) {
 	//positionX += velocityX * elapsedTime;
 
 	// Turn on the timer
-	MTIMER_vStartTime(Copy_u8TimerNum);
+	MTIMER_vStartTime(MPU_TIMER);
 
 	// Combine accelerometer and gyroscope angles using a complementary filter
 	//roll = 0.96 * gyroAngleX + 0.04 * accAngleX;
 	//pitch = 0.96 * gyroAngleY + 0.04 * accAngleY;
 
 	// Display the yaw angle on the LCD
-	HLCD_vPutCur(0, 4);
-	HLCD_vSendNum(yaw);
+	//HLCD_vPutCur(0, 4);
+	//HLCD_vSendNum(yyaw);
 
 	//HLCD_vPutCur(1, 3);
 	//HLCD_vSendNum(positionX);

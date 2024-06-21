@@ -62,8 +62,11 @@
  * Initializing the MPU device by configuring its various settings.
  * These settings include configuring the sensitivity of the gyroscope and accelerometer,
  * setting the Digital Low Pass Filter (DLPF) mode, and managing power settings.
+ *
+ * @param Copy_u8TiemrNum The enumeration representing the TIMER to be used for measuring elapsed time.
+ *                         Expected to be Enum_TIMER_NUM.
  */
-void HMPU_vInit();
+void HMPU_vInit(Enum_TIMER_NUM Copy_u8MPU_Timer);
 /*******************************************************************************************************/
 
 
@@ -111,12 +114,9 @@ void HMPU_s16ReadRowData(s16 *ptr_RowData);
  * This function integrates gyroscope data over time to calculate the yaw angle.
  * Gyroscope data is obtained from the MPU (Motion Processing Unit).
  *
- * @param Copy_u8TiemrNum The enumeration representing the TIMER to be used for measuring elapsed time.
- *                         Expected to be Enum_TIMER_NUM.
- *
  * @return The calculated yaw angle in degrees (floating-point value).
  */
-f32 HMPU_f32GetYawAngle(Enum_TIMER_NUM Copy_u8TiemrNum);
+f32 HMPU_f32GetYawAngle();
 /*******************************************************************************************************/
 
 
