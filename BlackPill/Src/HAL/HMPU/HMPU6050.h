@@ -37,6 +37,9 @@
 #define REG_CONFIG_GYRO		27
 #define REG_CONFIG_ACC		28
 #define REG_PWR_MGMT_1		107
+#define REG_INT_PIN			55
+#define REG_INT_ENABLE		56
+#define REG_INT_STATUS		58
 #define REG_DATA			59
 
 #define REG_CONFIG_DLPF		0x1A

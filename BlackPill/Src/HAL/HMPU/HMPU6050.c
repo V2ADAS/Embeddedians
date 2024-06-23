@@ -77,31 +77,47 @@ u8 MPU_TIMER = 0;
  * setting the Digital Low Pass Filter (DLPF) mode, and managing power settings.
  */
 void HMPU_vInit(Enum_TIMER_NUM Copy_u8MPU_Timer){
-    // Data array to hold register addresses and configuration values
-    u8 data[2];
+	// Data array to hold register addresses and configuration values
+	u8 data[2];
 
-    // Configure gyroscope sensitivity to 500 degrees per second
-    data[0] = REG_CONFIG_GYRO;  // Register address for gyroscope configuration
-    data[1] = FS_GYRO_500;      // Gyroscope sensitivity configuration (500 degrees per second)
-    MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
+	// Configure gyroscope sensitivity to 500 degrees per second
+	data[0] = REG_CONFIG_GYRO;  // Register address for gyroscope configuration
+	data[1] = FS_GYRO_500;      // Gyroscope sensitivity configuration (500 degrees per second)
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
 
-    // Configure accelerometer sensitivity to 2G
-    data[0] = REG_CONFIG_ACC;   // Register address for accelerometer configuration
-    data[1] = FS_ACC_2G;        // Accelerometer sensitivity configuration (2G)
-    MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
+	// Configure accelerometer sensitivity to 2G
+	data[0] = REG_CONFIG_ACC;   // Register address for accelerometer configuration
+	data[1] = FS_ACC_2G;        // Accelerometer sensitivity configuration (2G)
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
 
-    // Configure Digital Low Pass Filter (DLPF) mode
-    data[0] = REG_CONFIG_DLPF;  // Register address for DLPF configuration
-    data[1] = DLPF_CFG_4;       // DLPF mode configuration (Mode 4)
-    MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
+	// Configure Digital Low Pass Filter (DLPF) mode
+	data[0] = REG_CONFIG_DLPF;  // Register address for DLPF configuration
+	data[1] = DLPF_CFG_4;       // DLPF mode configuration (Mode 4)
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
 
-    // Set power management to default (wake up the device)
-    data[0] = REG_PWR_MGMT_1;   // Register address for power management configuration
-    data[1] = 0;                 // Default value (no sleep mode)
-    MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
+	// Configure Interrupt
+	data[0] = REG_INT_PIN;
+	data[1] = 0b00010100;
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
 
-    //Set timer to be used with mpu
-    MPU_TIMER = Copy_u8MPU_Timer;
+	data[0] = 31;
+	data[1] = 0x01;
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
+	data[0] = REG_INT_ENABLE;
+	//data[1] = 0b01011001;
+	data[1] = 0b00000001;
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
+
+	//data[0] = REG_INT_STATUS;
+	//data[1] = 0x00;
+
+	// Set power management to default (wake up the device)
+	data[0] = REG_PWR_MGMT_1;   // Register address for power management configuration
+	data[1] = 0;                 // Default value (no sleep mode)
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 2, WithStop);  // Transmit configuration data over I2C
+
+	//Set timer to be used with mpu
+	MPU_TIMER = Copy_u8MPU_Timer;
 }
 /******************************************************************************************************/
 
@@ -119,29 +135,29 @@ void HMPU_vInit(Enum_TIMER_NUM Copy_u8MPU_Timer){
  *                        will take longer to complete.
  */
 void HMPU_vCalibration(u16 itr) {
-    // Loop for the specified number of iterations
-    for (u16 i = 0; i < itr; i++) {
-        // Read sensor data and accumulate values for calibration
-        Counter = i;
-        HMPU_s16ReadRowData(buf); // Read raw sensor data
-        OFFSET_ACCEL_X += buf[0]; // Accumulate X-axis accelerometer readings
-        OFFSET_ACCEL_Y += buf[1]; // Accumulate Y-axis accelerometer readings
-        OFFSET_ACCEL_Z += buf[2]; // Accumulate Z-axis accelerometer readings
-        OFFSET_GYRO_X += buf[4];  // Accumulate X-axis gyroscope readings
-        OFFSET_GYRO_Y += buf[5];  // Accumulate Y-axis gyroscope readings
-        OFFSET_GYRO_Z += buf[6];  // Accumulate Z-axis gyroscope readings
+	// Loop for the specified number of iterations
+	for (u16 i = 0; i < itr; i++) {
+		// Read sensor data and accumulate values for calibration
+		Counter = i;
+		HMPU_s16ReadRowData(buf); // Read raw sensor data
+		OFFSET_ACCEL_X += buf[0]; // Accumulate X-axis accelerometer readings
+		OFFSET_ACCEL_Y += buf[1]; // Accumulate Y-axis accelerometer readings
+		OFFSET_ACCEL_Z += buf[2]; // Accumulate Z-axis accelerometer readings
+		OFFSET_GYRO_X += buf[4];  // Accumulate X-axis gyroscope readings
+		OFFSET_GYRO_Y += buf[5];  // Accumulate Y-axis gyroscope readings
+		OFFSET_GYRO_Z += buf[6];  // Accumulate Z-axis gyroscope readings
 
-        // Delay for stabilization before next iteration
-        MSYSTICK_vDelayms(15);
-    }
+		// Delay for stabilization before next iteration
+		MSYSTICK_vDelayms(15);
+	}
 
-    // Calculate average offset values by dividing accumulated values by the number of iterations
-    OFFSET_ACCEL_X /= itr; // Calculate average X-axis accelerometer offset
-    OFFSET_ACCEL_Y /= itr; // Calculate average Y-axis accelerometer offset
-    OFFSET_ACCEL_Z /= itr; // Calculate average Z-axis accelerometer offset
-    OFFSET_GYRO_X /= itr;  // Calculate average X-axis gyroscope offset
-    OFFSET_GYRO_Y /= itr;  // Calculate average Y-axis gyroscope offset
-    OFFSET_GYRO_Z /= itr;  // Calculate average Z-axis gyroscope offset
+	// Calculate average offset values by dividing accumulated values by the number of iterations
+	OFFSET_ACCEL_X /= itr; // Calculate average X-axis accelerometer offset
+	OFFSET_ACCEL_Y /= itr; // Calculate average Y-axis accelerometer offset
+	OFFSET_ACCEL_Z /= itr; // Calculate average Z-axis accelerometer offset
+	OFFSET_GYRO_X /= itr;  // Calculate average X-axis gyroscope offset
+	OFFSET_GYRO_Y /= itr;  // Calculate average Y-axis gyroscope offset
+	OFFSET_GYRO_Z /= itr;  // Calculate average Z-axis gyroscope offset
 }
 /*******************************************************************************************************/
 
@@ -161,39 +177,46 @@ void HMPU_vCalibration(u16 itr) {
  *                    The array must have a length of at least 7 elements to store all sensor readings.
  */
 void HMPU_s16ReadRowData(s16 *ptr_RowData) {
-    // Array to hold the register address to read data from
-    u8 data[] = {REG_DATA};
+	// Array to hold the register address to read data from
+	u8 data[] = {REG_DATA};
 
-    // Array to hold the received raw sensor data
-    u8 dat[14] = {0};
+	// Array to hold the received raw sensor data
+	u8 dat[14] = {0};
 
-    // Send the register address to initiate the data read
-    MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
+	// Send the register address to initiate the data read
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
 
-    // Read 14 bytes of data from the MPU
-    MI2C_u8MasterRx(I2C1, MPU_Add, dat, 14);
+	// Read 14 bytes of data from the MPU
+	MI2C_u8MasterRx(I2C1, MPU_Add, dat, 14);
 
-    // Process the received data and store it in the ptr_RowData array
-    ptr_RowData[0] = (s16)((dat[0] << 8) | dat[1]); // Accelerometer X-axis
-    ptr_RowData[1] = (s16)((dat[2] << 8) | dat[3]); // Accelerometer Y-axis
-    ptr_RowData[2] = (s16)((dat[4] << 8) | dat[5]); // Accelerometer Z-axis
-    ptr_RowData[3] = (s16)((dat[6] << 8) | dat[7]); // Temperature
-    ptr_RowData[4] = (s16)((dat[8] << 8) | dat[9]); // Gyroscope X-axis
-    ptr_RowData[5] = (s16)((dat[10] << 8) | dat[11]); // Gyroscope Y-axis
-    ptr_RowData[6] = (s16)((dat[12] << 8) | dat[13]); // Gyroscope Z-axis
+	// Process the received data and store it in the ptr_RowData array
+	ptr_RowData[0] = (s16)((dat[0] << 8) | dat[1]); // Accelerometer X-axis
+	ptr_RowData[1] = (s16)((dat[2] << 8) | dat[3]); // Accelerometer Y-axis
+	ptr_RowData[2] = (s16)((dat[4] << 8) | dat[5]); // Accelerometer Z-axis
+	ptr_RowData[3] = (s16)((dat[6] << 8) | dat[7]); // Temperature
+	ptr_RowData[4] = (s16)((dat[8] << 8) | dat[9]); // Gyroscope X-axis
+	ptr_RowData[5] = (s16)((dat[10] << 8) | dat[11]); // Gyroscope Y-axis
+	ptr_RowData[6] = (s16)((dat[12] << 8) | dat[13]); // Gyroscope Z-axis
 
-    // Convert accelerometer data to g-force (assuming sensitivity of 8192 LSB/g)
-    ptr_RowData[0] = (ptr_RowData[0] / ACCEL_SENSITIVITY) * 9.81;
-    ptr_RowData[1] = (ptr_RowData[1] / ACCEL_SENSITIVITY) * 9.81;
-    ptr_RowData[2] = (ptr_RowData[2] / ACCEL_SENSITIVITY) * 9.81;
+	// Convert accelerometer data to g-force (assuming sensitivity of 8192 LSB/g)
+	ptr_RowData[0] = (ptr_RowData[0] / ACCEL_SENSITIVITY) * 9.81;
+	ptr_RowData[1] = (ptr_RowData[1] / ACCEL_SENSITIVITY) * 9.81;
+	ptr_RowData[2] = (ptr_RowData[2] / ACCEL_SENSITIVITY) * 9.81;
 
-    // Convert temperature data to degrees Celsius
-    ptr_RowData[3] = ((ptr_RowData[3] / 340.0) + 36.53);
+	// Convert temperature data to degrees Celsius
+	ptr_RowData[3] = ((ptr_RowData[3] / 340.0) + 36.53);
 
-    // Convert gyroscope data to degrees per second (assuming sensitivity of 65.5 LSB/°/s)
-    ptr_RowData[4] = (ptr_RowData[4] / GYRO_SENSITIVITY);
-    ptr_RowData[5] = (ptr_RowData[5] / GYRO_SENSITIVITY);
-    ptr_RowData[6] = (ptr_RowData[6] / GYRO_SENSITIVITY);
+	// Convert gyroscope data to degrees per second (assuming sensitivity of 65.5 LSB/°/s)
+	ptr_RowData[4] = (ptr_RowData[4] / GYRO_SENSITIVITY);
+	ptr_RowData[5] = (ptr_RowData[5] / GYRO_SENSITIVITY);
+	ptr_RowData[6] = (ptr_RowData[6] / GYRO_SENSITIVITY);
+//	data[0] = REG_INT_STATUS;
+//	// Send the register address to initiate reading int status reg
+//	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
+//
+//	// Read int status reg to clear all int
+//	MI2C_u8MasterRx(I2C1, MPU_Add, dat, 1);
+
 }
 /*******************************************************************************************************/
 

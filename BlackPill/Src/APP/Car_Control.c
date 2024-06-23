@@ -4,7 +4,7 @@
 static u8 prevDirection = FORWARD;
 static u8 prevDegree = 0;
 
-void CAR_CONTROL(u8 Direction, f32 Distance, s8 Degree){
+void CarControl_Move(u8 Direction, f32 distance, s8 Steering , u8 speed ){
 
     // Control the movement of the DC motor
 
@@ -31,14 +31,29 @@ void CAR_CONTROL(u8 Direction, f32 Distance, s8 Degree){
     // Save the current direction and angle
 
     prevDirection = Direction;
-    prevDegree = Degree;
-    u8 speed = 50;
+    prevDegree = Steering;
+
+    f32 RR = Reduction_Ratio(Steering);
+    f32 Motor_distance = distance / RR ;
 
 
-    HSERVO_vServoDeg(SERVO1, Degree);
+    HSERVO_vServoDeg(SERVO1, Steering);
+    MSYSTICK_vDelayms(500);
 
-    HAL_MOTOR_MOVE(DC_MOTOR,Direction, speed, Distance);
+    HAL_MOTOR_MOVE(DC_MOTOR,Direction, speed, Motor_distance);
 }
+
+
+f32 Reduction_Ratio(f32 Copy_f32Yaw){
+//	f32 RR = 4.16 * pow(10, -8) * pow(Copy_f32Yaw, 4)
+//                  - 7.5 * pow(10, -6) * pow(Copy_f32Yaw, 3)
+//        		  + 0.00019 * pow(Copy_f32Yaw, 2)
+//        		  - 0.00225 * Copy_f32Yaw + 1;
+	return 0.85 ;
+}
+
+
+
 
 // Access the static variables using pointers
 u8* getPrevDirection() {
