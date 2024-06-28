@@ -37,6 +37,9 @@
 #define REG_CONFIG_GYRO		27
 #define REG_CONFIG_ACC		28
 #define REG_PWR_MGMT_1		107
+#define REG_INT_PIN			55
+#define REG_INT_ENABLE		56
+#define REG_INT_STATUS		58
 #define REG_DATA			59
 
 #define REG_CONFIG_DLPF		0x1A
@@ -116,9 +119,9 @@ void HMPU_s16ReadRowData(s16 *ptr_RowData);
  *
  * @return The calculated yaw angle in degrees (floating-point value).
  */
-f32 HMPU_f32GetYawAngle();
+void HMPU_UpdateYawAngle();
 /*******************************************************************************************************/
-
+f32 HMPU_f32GetYawAngle();
 
 /******************************************TEST FUNCTIONS***********************************************/
 void HMPU_vDMPtest();

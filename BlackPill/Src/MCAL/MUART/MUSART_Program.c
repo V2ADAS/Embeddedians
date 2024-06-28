@@ -57,7 +57,7 @@ void MUART_Enable(u8 UART_Index)
 	UARTx ->CR1.M = _8DATA_LENGTH_ ;
 
 	/*SELECT OVER SAMPLING BY 16*/
-	UARTx ->CR1.OVER8 = 0;
+	UARTx ->CR1.OVER8 = 0 ;
     MNVIC_vEnableInterrupt(NVIC_USART1);
 
 	UARTx ->CR1.UE = 1 ;

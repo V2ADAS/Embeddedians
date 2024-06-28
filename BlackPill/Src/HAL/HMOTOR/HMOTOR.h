@@ -21,9 +21,12 @@ void HAL_MOTOR_Init(u8 MOTOR , u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 , 
 //void HAL_MOTOR_Init ( u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 ,u8 PORT_PWM ,
 //					u8 PIN_PWM, u8 PWM_TIMER , u8 ENCODER_EXTIx ,u8 NVIC_EXTIx);
 
-void HAL_MOTOR_MOVE(u8 MOTOR , u8 DIRCTION ,u8 SPEED , f32 DISTANCE_cm_);
+void HAL_MOTOR_MOVE(u8 MOTOR , u8 DIRCTION ,u8 SPEED );
 
-void HAL_MOTOR_STOP(u8 MOTOR);
+void HAL_MOTOR_ForceStop(u8 MOTOR);
+
+void HAL_MOTOR_StopDcAfterDistance(f32 distance);
+
 
 void HAL_ENCODER_Init( Enum_TIMER_NUM CNTR_TIMER , Enum_TIMER_CHs CNTR_CH );
 

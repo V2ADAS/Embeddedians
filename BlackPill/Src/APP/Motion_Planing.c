@@ -3,7 +3,7 @@
 #include "../MCAL/MTIMER/MTIMER_Int.h"
 #include "../MCAL/MGPIO/MGPIO_int.h"
 #include "../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h"
-
+#include "Inc/Odometry.h"
 // TODO: replace math.h with implementations as needed
 #include <math.h>
 

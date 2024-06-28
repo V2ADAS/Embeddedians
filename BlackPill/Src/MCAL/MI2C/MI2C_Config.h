@@ -39,5 +39,5 @@ typedef enum {
     I2C3_SCL = PIN8
 } I2C_GPIOConfig;
 
-#define I2C_TIMEOUT			100
+#define I2C_TIMEOUT			250
 #endif /* MCAL_MI2C_MI2C_CONFIG_H_ */

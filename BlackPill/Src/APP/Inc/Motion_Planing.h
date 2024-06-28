@@ -5,12 +5,6 @@
 #include "../Inc/Scenario_Select.h"
 
 
-typedef struct 
-{
-    f32 x ;
-    f32 y ;
-
-}Point_t;
 
 
 #define Car_Length  50

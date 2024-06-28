@@ -4,7 +4,7 @@
 #include "../../LIB/STD_TYPES.h"
 #include "../Inc/Motion_Planing.h"
 #include "../../LIB/BIT_MATH.h"
-
+#include "Odometry.h"
 
 /******************************************************************************************************/
 /*                                       LOC_GetCurrentLocation                                       */
@@ -50,8 +50,7 @@ static f32 LOC_GetDistanceBet2Points (Point_t point1 ,Point_t point2 );
 /*  					   	  @param point2 >> next point								              */
 /* 3- Function Return      -> return signed integer                                                   */
 /******************************************************************************************************/
-static s8 LOC_GetAngleofslope(Point_t point1 ,Point_t point2);
-
+static s8 LOC_GetAngleOfSlope(Point_t point1 ,Point_t point2);
 
 
 /******************************************************************************************************/
