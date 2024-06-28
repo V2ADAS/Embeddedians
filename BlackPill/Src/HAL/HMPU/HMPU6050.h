@@ -119,9 +119,9 @@ void HMPU_s16ReadRowData(s16 *ptr_RowData);
  *
  * @return The calculated yaw angle in degrees (floating-point value).
  */
-f32 HMPU_f32GetYawAngle();
+void HMPU_UpdateYawAngle();
 /*******************************************************************************************************/
-
+f32 HMPU_f32GetYawAngle();
 
 /******************************************TEST FUNCTIONS***********************************************/
 void HMPU_vDMPtest();

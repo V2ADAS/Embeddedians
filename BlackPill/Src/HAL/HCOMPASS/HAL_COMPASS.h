@@ -65,5 +65,7 @@ f32 HCOMPASS_GetCalibrationOffset(u8 index);
 f32 HCOMPASS_GetCalibrationScale(u8 index);
 void HCOMPASS_ClearCalibration();
 
+void HCOMPASS_SetHeading_Ref(f32 Copy_f32Heading_Ref);
+f32 HCOMPASS_f32GetHeadingOutRef();
 
 #endif /* HAL_COMPASS_HAL_COMPASS_H_ */

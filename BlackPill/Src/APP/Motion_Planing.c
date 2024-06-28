@@ -3,11 +3,11 @@
 #include "../MCAL/MTIMER/MTIMER_Int.h"
 #include "../MCAL/MGPIO/MGPIO_int.h"
 #include "../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h"
-
+#include "Inc/Odometry.h"
 // TODO: replace math.h with implementations as needed
 #include <math.h>
 
-Point_t point_CSA,point_SP,point_EP;   // Center point of the parking space
+Position_ST point_CSA,point_SP,point_EP;   // Center point of the parking space
 u8 GInit_D; // The distance between our car and the surrounding car, measured at the start point.
 
 f32 _param_a = 0;
@@ -30,7 +30,7 @@ void Set_Param_D(f32 new_value) { _param_d = new_value; }
     > and the radius connecting the tangential point on the final circle.
     > this is also the angle of the car with the y-axis as it enters the second circle.
 */
-static f32 circleLineCircle(f32 x) {
+ f32 circleLineCircle(f32 x) {
 	f32 y;
 
 	#define X_F _param_a
@@ -73,12 +73,18 @@ static f32 circleLineCircle(f32 x) {
 
 	return y;
 }
-
 /*
   uses _param_a as the radius of the two circles.
   uses _param_b as the x-coord of the saddle point.
  */
-static f32 twoCircles(f32 x) {
+
+f32 line_path (f32 x){
+	 f32 y = 5*x ;
+	 return y ;
+}
+
+
+f32 twoCircles(f32 x) {
 	f32 y;
 
 	#define R _param_a
