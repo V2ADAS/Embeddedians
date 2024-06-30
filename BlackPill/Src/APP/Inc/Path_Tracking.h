@@ -7,6 +7,10 @@
 #include "Odometry.h"
 
 typedef struct{
+	Position_ST CurrentPoint ;
+	Position_ST NextPoint ;
+	f32 distanceBet2Points ;
+	s16 angleSlope ;
 
 }PathTracking_Data_ST;
 /******************************************************************************************************/
@@ -28,8 +32,9 @@ typedef struct{
 /* 2- Function Input       -> @param Func_Path() = PaB_Path , PeB_Path , PeF_Path                     */
 /* 3- Function Return      -> return Point_t >> the next point                                        */
 /******************************************************************************************************/
- static Position_ST LOC_GetNextLocation (f32 (*Func_Path)(f32 x));
 
+void LOC_NextLocation (Odometry_Data_ST * Odometry_Data ,
+		MotionPlanning_Data_ST * MotionPlanning_Data , PathTracking_Data_ST *  PathTracking_Data);
 
 
 
@@ -41,7 +46,7 @@ typedef struct{
 /*  					   	  @param point2 >> next point								              */
 /* 3- Function Return      -> return float distance in cm unit                                        */
 /******************************************************************************************************/
- static f32 LOC_GetDistanceBet2Points (Position_ST point1 ,Position_ST point2 );
+void LOC_DistanceBet2Points (Odometry_Data_ST * Odometry_Data,PathTracking_Data_ST *  PathTracking_Data);
 
 
 
@@ -53,7 +58,7 @@ typedef struct{
 /*  					   	  @param point2 >> next point								              */
 /* 3- Function Return      -> return signed integer                                                   */
 /******************************************************************************************************/
- static s8 LOC_GetAngleOfSlope(Position_ST point1 ,Position_ST point2);
+void LOC_AngleOfSlope(Odometry_Data_ST * Odometry_Data,PathTracking_Data_ST *  PathTracking_Data);
 
 
 /******************************************************************************************************/
@@ -63,6 +68,6 @@ typedef struct{
 /* 2- Function Input       -> @param Func_Path() = PaB_Path , PeB_Path , PeF_Path                     */
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
- void PT_TrackThePath(Odometry_Data_ST * Odometry_Data , MotionPlanning_Data_ST * MotionPlanning_Data);
-
+void PT_TrackThePath ( Odometry_Data_ST * Odometry_Data , MotionPlanning_Data_ST * MotionPlanning_Data ,
+						PathTracking_Data_ST *  PathTracking_Data) ;
 #endif /*PATH_TRACKING_*/

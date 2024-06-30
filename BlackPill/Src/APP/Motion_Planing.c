@@ -20,6 +20,8 @@ void Set_Param_B(f32 new_value) { _param_b = new_value; }
 void Set_Param_C(f32 new_value) { _param_c = new_value; }
 void Set_Param_D(f32 new_value) { _param_d = new_value; }
 
+
+
 /*
   uses _param_a as the x-coordinate of the final point (relative to the starting point)
   uses _param_b as the y-coordinate of the final point (relative to the starting point)
@@ -79,7 +81,7 @@ void Set_Param_D(f32 new_value) { _param_d = new_value; }
  */
 
 f32 line_path (f32 x){
-	 f32 y = 5*x ;
+	 f32 y = 5*x*x ;
 	 return y ;
 }
 

@@ -20,7 +20,7 @@ f32 R_40 = 63 , R_30 = 80 , R_20 = 116.3 ;
 Position_ST Current_Point ;
 
 Position_ST* Get_Center(void){
-//	Update_Odometry();
+	//	Update_Odometry();
 	return &Current_Point;
 }
 
@@ -51,14 +51,14 @@ f32 Loc_GetAngleOfArc(){
 
 	switch(steering ){
 	case 40 :
-			R = R_40;
-			break ;
+		R = R_40;
+		break ;
 	case 30 :
-			R = R_30;
-			break ;
+		R = R_30;
+		break ;
 	case 20 :
-			R = R_20;
-			break ;
+		R = R_20;
+		break ;
 	default :
 		break ;
 	}
@@ -86,7 +86,13 @@ f32 Get_Angle(Enum_Sensor_t Angle_Select){
 		return ((HAL_MOTOR_GetMovedDistance()*360)/(2*PI*R_40)) ;
 		break;
 	case FUSION://TODO: Handle fusion correctly
-		return ( ( alpha_angle * HMPU_f32GetYawAngle() ) + ( (1 - alpha_angle) * HCOMPASS_f32GetHeading() ) ) ;
+		Deg = HMPU_f32GetYawAngle();
+		if(Deg > 0)
+			Deg += HAL_MOTOR_GetMovedDistance()*(5.0/70.0);
+		else
+			Deg -= HAL_MOTOR_GetMovedDistance()*(5.0/70.0);
+
+		return ( ( alpha_angle * Deg ) + ( (1 - alpha_angle) * HCOMPASS_f32GetHeadingOutRef() ) ) ;
 		break;
 	default:
 		return 0;
@@ -95,7 +101,7 @@ f32 Get_Angle(Enum_Sensor_t Angle_Select){
 
 void Update_Odometry(CarControl_Data_ST * CarControl_Data , Odometry_Data_ST * Odometry_Data ){
 	f32 delta_d = get_delta_distance() ;
-	f32 yaw = Get_Angle(ARC) ;
+	f32 yaw = Get_Angle(FUSION);
 	f32 RR = CarControl_Data->Reduction_Ratio ;
 	delta_d *= RR ;
 	yaw = yaw * PI /180 ;

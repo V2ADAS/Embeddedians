@@ -14,4 +14,12 @@ typedef struct  {
 	CarControl_Data_ST Car_Control ;
 }Internal_Data_ST;
 
+Internal_Data_ST internal_data  ;
+void AutoParking ();
+
+void LCD_Display();
+
+void Loc_UpdateOdometryCallBack();
+
+
 #endif /*AUTO_PARKING_H_*/
