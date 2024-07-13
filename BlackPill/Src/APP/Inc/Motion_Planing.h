@@ -5,12 +5,6 @@
 #include "../Inc/Scenario_Select.h"
 
 
-typedef struct 
-{
-    f32 x ;
-    f32 y ;
-
-}Point_t;
 
 
 #define Car_Length  50
@@ -19,6 +13,10 @@ typedef struct
 #define Vth_Parallel (1.5*Car_Length)
 #define Array_Length  100
 static u8 Scanned_Area [Array_Length];
+
+ typedef struct{
+		f32 (*Func_Path)(f32 x) ;
+ }MotionPlanning_Data_ST;
 /*
     Parameter setter functions.
     
@@ -71,6 +69,8 @@ void Set_Param_D(f32 new_value);
         - all required parameters should be set before using this function
         - all algorithms assume parking to the right.
 */
+f32 line_path (f32 x);
+
 f32 PaB_Path (f32 x);
 
 //Perpendicular backward Path

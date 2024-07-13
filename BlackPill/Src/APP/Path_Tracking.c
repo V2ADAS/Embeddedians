@@ -1,55 +1,62 @@
 #include "Inc/Path_Tracking.h"
+#include "Inc/Odometry.h"
+#include "Inc/Motion_Planing.h"
+#include "../HAL/HMOTOR/HMOTOR.h"
+#include "../HAL/HSERVO/HSERVO_Int.h"
+#include "Inc/Car_Control.h"
 
-static Point_t LOC_GetCurrentLocation (){
-	Point_t current_point;
-	//code using MPU6050
-
-	//for test
-	current_point.x = 3.1 ;
-	current_point.y = 9.01 ;
-	return current_point ;
-}
+#include "stdlib.h"
 
 
-static Point_t LOC_GetNextLocation (f32 (*Func_Path)(f32 x)){
-	Point_t current_point , next_point ;
-	f32 delta_x = 0.1 ;
+void LOC_NextLocation (Odometry_Data_ST * Odometry_Data ,
+		MotionPlanning_Data_ST * MotionPlanning_Data , PathTracking_Data_ST *  PathTracking_Data){
+	Position_ST  next_point ;
+	f32 delta_x = 15 ;
 	f32 x_new , y_new ;
 	//get current point to increment its x by delta_x and get y_new by substituting
-	current_point = LOC_GetCurrentLocation();
-	x_new = current_point.x + delta_x ;
-	y_new = Func_Path(x_new);
+	x_new = Odometry_Data->CurrentPoint.x + delta_x ;
+	y_new = MotionPlanning_Data->Func_Path(x_new);
 	next_point.x = x_new ;
 	next_point.y = y_new ;
-	return next_point ;
+	PathTracking_Data->NextPoint = next_point ;
 }
 
-static f32 LOC_GetDistanceBet2Points (Point_t point1 ,Point_t point2 ){
-
+void LOC_DistanceBet2Points (Odometry_Data_ST * Odometry_Data,PathTracking_Data_ST *  PathTracking_Data){
+	Position_ST point1 , point2 ;
+	point1 = Odometry_Data->CurrentPoint ;
+	point2 = PathTracking_Data->NextPoint ;
 	return sqrt(pow(point2.x - point1.x, 2) + pow(point2.y - point1.y, 2));
 }
 
 
-static s8 LOC_GetAngleofslope(Point_t point1 ,Point_t point2){
-    f32 deltaX = point2.x - point1.x;
-    f32 deltaY = point2.y - point1.y;
+void LOC_AngleOfSlope(Odometry_Data_ST * Odometry_Data,PathTracking_Data_ST *  PathTracking_Data){
+	Position_ST point1 , point2 ;
+	point1 = Odometry_Data->CurrentPoint ;
+	point2 = PathTracking_Data->NextPoint ;
+	f32 deltaX = point2.x - point1.x;
+	f32 deltaY = point2.y - point1.y;
 
-    // Calculate the angle using arctangent
-    f32 angle = atan2(deltaY, deltaX);
+	// Calculate the angle using arctangent
+	f32 angle = atan2(deltaX, deltaY);
 
-    // Convert the angle from radians to degrees
-    angle = angle * (180.0 / PI);
-
-    return (s8) angle;
+	// Convert the angle from radians to degrees
+	angle = angle * (180.0 / PI);
+	PathTracking_Data->angleSlope = (s16) angle ;
 }
 
-void PT_TrackThePath (f32 (*Func_Path)(f32 x)) {
+void PT_TrackThePath ( Odometry_Data_ST * Odometry_Data , MotionPlanning_Data_ST * MotionPlanning_Data ,
+						PathTracking_Data_ST *  PathTracking_Data) {
 	f32 distance , angle ;
-	Point_t current_point , next_point ;
-	current_point = LOC_GetCurrentLocation();
-	next_point = LOC_GetNextLocation(Func_Path);
-	distance = LOC_GetDistanceBet2Points(current_point, next_point);
-	angle = LOC_GetAngleofslope(current_point, next_point);
-
-	//It is expected to pass "distance , angle" to a control function will be finished soon
+	s8 sign = 1 ;
+	Position_ST next_point ;
+	//	current_point.x = Internal_Data.currentLoc.x;
+	//	current_point.y = Internal_Data.currentLoc.y;
+	//	next_point = LOC_GetNextLocation(Func_Path);
+	LOC_NextLocation(Odometry_Data, MotionPlanning_Data, PathTracking_Data);
+	LOC_DistanceBet2Points(Odometry_Data, PathTracking_Data);
+	LOC_AngleOfSlope(Odometry_Data, PathTracking_Data);
+	if (angle < 0 )
+		sign = -1 ;
+	HAL_MOTOR_StopDcAfterDistance(PathTracking_Data->distanceBet2Points);
+	HSERVO_vServoDeg(SERVO1, PathTracking_Data->angleSlope);
 }

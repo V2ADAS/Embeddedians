@@ -28,8 +28,14 @@ struct Compass_struct {
 // Calibration variables
 static s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {32767, -32767}};
 
+f32 Heading_Ref = 0;
+
 f32 _offset[3] = {0.0, 0.0, 0.0};
 f32 _scale[3] = {1.0, 1.0, 1.0};
+
+void HCOMPASS_SetHeading_Ref(f32 Copy_f32Heading_Ref){
+	Heading_Ref = Copy_f32Heading_Ref;
+}
 
 void HCOMPASS_RSTCalibration(void){
 
@@ -194,6 +200,8 @@ void HCOMPASS_vSetRowData(){
 
 
 }
+
+
 void HCOMPASS_vReadRowData(s16* PTR_RxRowData){
 
 	PTR_RxRowData[0] =  CompassData.X ;
@@ -231,9 +239,18 @@ f32 HCOMPASS_f32GetHeading() {
 	// Ensure the heading is in the range [0, 360) degrees
 	Heading = (Heading < 0) ? (360.0 + Heading) : Heading;
 
-
 	return Heading;
 }
+
+f32 HCOMPASS_f32GetHeadingOutRef(){
+	// Get Heading value out of GetHeading function
+	f32 Heading = HCOMPASS_f32GetHeading();
+	f32 HeadingOutRef = Heading - Heading_Ref;
+	HeadingOutRef = (HeadingOutRef < 0) ? (360.0 + HeadingOutRef) : HeadingOutRef;
+	return HeadingOutRef;
+}
+
+
 void HCOMPASS_SetCalibration(s16 x_min, s16 x_max, s16 y_min, s16 y_max, s16 z_min, s16 z_max) {
 
 

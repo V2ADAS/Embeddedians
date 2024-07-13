@@ -234,17 +234,17 @@ void HMPU_s16ReadRowData(s16 *ptr_RowData) {
  * @return The calculated yaw angle in degrees (floating-point value).
  */
 f32 accel_angle = 0;
-f32 alpha = 0.0;
-f32 HMPU_f32GetYawAngle() {
+f32 alpha = 0.5;
+void HMPU_UpdateYawAngle() {
 
 	// Read acceleration data from MPU
 	HMPU_s16ReadRowData(buf);
 
 	// Extract raw accelerometer data
 	//Accel_X_RAW = (buf[0] - OFFSET_ACCEL_X);
-	Accel_Y_RAW = (buf[1] - OFFSET_ACCEL_Y);
-	Accel_Z_RAW = (buf[2] - OFFSET_ACCEL_Z);
-	accel_angle = atan2(Accel_Y_RAW, Accel_Z_RAW);
+	//Accel_Y_RAW = (buf[1] - OFFSET_ACCEL_Y);
+	//Accel_Z_RAW = (buf[2] - OFFSET_ACCEL_Z);
+	//accel_angle = atan2(Accel_X_RAW, Accel_Y_RAW);
 
 	// Calculate pitch and roll angles using accelerometer data
 	//accAngleX = (atan(Accel_Y_RAW / sqrt(pow(Accel_X_RAW, 2) + pow(Accel_Z_RAW, 2))) * 180 / 3.14) - 0.58; // AccErrorX ~(0.58) See the calculate_IMU_error() custom function for more details
@@ -289,8 +289,9 @@ f32 HMPU_f32GetYawAngle() {
 }
 /*******************************************************************************************************/
 
-
-
+f32 HMPU_f32GetYawAngle(){
+	return yyaw;
+}
 
 
 /*****************************************TEST Functions************************************************/
