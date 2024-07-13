@@ -25,6 +25,9 @@ void CarControl_Move(u8 Direction, f32 distance, s8 Steering , u8 speed , CarCon
 
 void Set_ReductionRatio(f32 Copy_f32Yaw);
 
+void CarCtrl_UpdateScheduler();
+void CarCtrl_Dispatcher();
+
 f32 Get_ReductionRatio(void);
 s8 getSteering ();
 
