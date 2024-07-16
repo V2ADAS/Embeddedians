@@ -6,6 +6,11 @@
 #include "Odometry.h"
 #include "Path_Tracking.h"
 
+//extern Odometry_Data_ST ;
+//typedef struct PathTracking_Data_ST;
+//typedef struct Odometry_Data_ST ;
+//typedef struct MotionPlanning_Data_ST ;
+//typedef struct CarControl_Data_ST ;
 
 typedef struct  {
 	Odometry_Data_ST Odometry ;
@@ -14,7 +19,8 @@ typedef struct  {
 	CarControl_Data_ST Car_Control ;
 }Internal_Data_ST;
 
-Internal_Data_ST internal_data  ;
+extern Internal_Data_ST internal_data  ;
+
 void AutoParking ();
 
 void LCD_Display();

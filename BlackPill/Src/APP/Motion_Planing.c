@@ -81,7 +81,7 @@ void Set_Param_D(f32 new_value) { _param_d = new_value; }
  */
 
 f32 line_path (f32 x){
-	 f32 y = 5*x*x ;
+	 f32 y = x ;
 	 return y ;
 }
 

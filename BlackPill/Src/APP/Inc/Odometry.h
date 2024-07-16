@@ -16,6 +16,7 @@ typedef struct
 
 typedef struct {
 	Position_ST CurrentPoint ;
+
 }Odometry_Data_ST;
 
 
@@ -37,7 +38,7 @@ void Auto_Update_Odometry(/*Shared_Area_t * Internal_Data */);
 
 void Update_Odometry(CarControl_Data_ST * CarControl_Data , Odometry_Data_ST * Odometry_Data );
 
-f32 Get_Angle(Enum_Sensor_t Angle_Select);
+f32 Get_Yaw(Enum_Sensor_t Angle_Select);
 
 f64 get_delta_distance();
 
