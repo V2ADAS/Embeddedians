@@ -2,7 +2,6 @@
 #define APP_NAVIGATION_H_
 
 #include "../../LIB/STD_TYPES.h"
-#include "Motion_Planing.h"
 #include "../../MCAL/MTIMER/MTIMER_Int.h"
 #include "Car_Control.h"
 
