@@ -3,7 +3,6 @@
 #include "../MCAL/MTIMER/MTIMER_Int.h"
 #include "../MCAL/MGPIO/MGPIO_int.h"
 #include "../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h"
-#include "Inc/Odometry.h"
 // TODO: replace math.h with implementations as needed
 #include <math.h>
 
@@ -224,4 +223,29 @@ void Process(u8 Scanned_Area[])
 
 
 void Plot_The_Path(Scenario_t Scenario , .../*path */ );
+
+f32 a=0.0005,b=0;
+
+Position_ST Start_Point(){
+	Position_ST Position;
+	Position.x=0;
+	Position.y=0;
+	return Position;
+}
+
+Position_ST End_Point(){
+	Position_ST Position;
+	Position.x= -67;
+	Position.y= -150;
+	return Position;
+}
+
+f32 Test_Func(f32 x){
+	f32 y = a * x * x * x + b ;
+	return y;
+}
+
+
+
+
 

@@ -2,10 +2,8 @@
 #define MOTION_PLANNING_
 
 #include "../../LIB/STD_TYPES.h"
-#include "../Inc/Scenario_Select.h"
-
-
-
+#include "Scenario_Select.h"
+#include "Odometry.h"
 
 #define Car_Length  50
 #define Car_Width   35
@@ -85,5 +83,11 @@ void Process(u8 Scanned_Area[]);
 
 void Plot_The_Path(Scenario_t Scenario , .../*path */ );
 
+
+Position_ST Start_Point();
+
+Position_ST End_Point();
+
+f32 Test_Func(f32 x);
 
 #endif /*MOTION_PLANNING_*/
