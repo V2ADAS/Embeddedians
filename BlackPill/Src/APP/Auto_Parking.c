@@ -68,7 +68,8 @@ void AutoParking (){
 		yaw_arc = Get_Yaw(ARC);
 		s = HAL_MOTOR_GetMovedDistance() ;
 
-		Update_Odometry(&internal_data.Car_Control , &internal_data.Odometry);
+		Update_Odometry( &internal_data.Car_Control , &internal_data.Odometry );
+
 		x=internal_data.Odometry.CurrentPoint.x;
 		y=internal_data.Odometry.CurrentPoint.y;
 		slopeAngle = GetSlopeOfFunc(x);
