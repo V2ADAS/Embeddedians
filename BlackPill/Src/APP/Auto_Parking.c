@@ -69,8 +69,6 @@ void AutoParking (){
 		y = p.y ;
 
 		MEXTI_vSWevent(EXTI1);
-
-
 	}
 
 }
