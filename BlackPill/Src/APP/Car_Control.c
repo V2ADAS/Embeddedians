@@ -20,7 +20,7 @@ typedef struct{
 	f32 totalDistance ;
 }Process_TS;
 
-Process_TS scheduler [10] = {
+Process_TS scheduler [100] = {
 		{0 , 0 , 0 , 0 , 1 , 1 }
 };
 
@@ -31,7 +31,6 @@ void CarCtrl_UpdateScheduler(){
 		scheduler[i].isDone = (HAL_MOTOR_GetMovedDistance() >= scheduler[i].totalDistance );
 	}
 }
-
 
 void CarCtrl_Dispatcher(CarControl_Data_ST * CarControl_Data){
 	int i ;
