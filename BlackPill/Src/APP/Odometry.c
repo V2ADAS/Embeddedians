@@ -115,11 +115,3 @@ void Update_Odometry(CarControl_Data_ST * CarControl_Data , Odometry_Data_ST * O
 
 
 
-//void Auto_Update_Odometry(){
-//	u8 delta_d = 15 ;
-//	u8 pulsePerCm = 38 ;
-//	MTIMER_vEXTCNTClock(TIMER2, CH1, delta_d * pulsePerCm);
-//	MTIMER_CallBack(TIMER2, Update_Odometry);
-//}
-
-

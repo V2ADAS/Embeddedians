@@ -30,14 +30,14 @@ void Set_Param_D(f32 new_value) { _param_d = new_value; }
     > this is the angle between the positive x-axis,
     > and the radius connecting the tangential point on the final circle.
     > this is also the angle of the car with the y-axis as it enters the second circle.
-*/
- f32 circleLineCircle(f32 x) {
+ */
+f32 circleLineCircle(f32 x) {
 	f32 y;
 
-	#define X_F _param_a
-	#define Y_F _param_b
-	#define R_M _param_c
-	#define THETA (_param_d * M_PI / 180)
+#define X_F _param_a
+#define Y_F _param_b
+#define R_M _param_c
+#define THETA (_param_d * M_PI / 180)
 
 	// the x-coord of the second tangential point
 	f32 x_2 = X_F - R_M + R_M * cos(THETA);
@@ -67,10 +67,10 @@ void Set_Param_D(f32 new_value) { _param_d = new_value; }
 		return 1;
 	}
 
-	#undef X_F
-	#undef Y_F
-	#undef R_M
-	#undef THETA
+#undef X_F
+#undef Y_F
+#undef R_M
+#undef THETA
 
 	return y;
 }
@@ -79,17 +79,29 @@ void Set_Param_D(f32 new_value) { _param_d = new_value; }
   uses _param_b as the x-coord of the saddle point.
  */
 
+
 f32 line_path (f32 x){
-	 f32 y = x ;
-	 return y ;
+	f32 y = x*x ;
+	return y ;
 }
 
+f32 GetSlopeOfFunc(f32 x){
+	f32 deltaY = line_path(x + 0.01) - line_path(x - 0.01) ;
+	f32 deltaX = 0.02 ;
+
+	// Calculate the angle using arc tangent
+	f32 angle = atan2(deltaX, deltaY);
+
+	// Convert the angle from radians to degrees
+	angle = angle * (180.0 / PI);
+	return angle ;
+}
 
 f32 twoCircles(f32 x) {
 	f32 y;
 
-	#define R _param_a
-	#define X_S _param_b
+#define R _param_a
+#define X_S _param_b
 
 	// check if given x-coord is in the first circle
 	if (x <= X_S) {
@@ -110,8 +122,8 @@ f32 twoCircles(f32 x) {
 		y = sqrt(pow(R, 2) - pow(x - x_2, 2)) + y_2;
 	}
 
-	#undef R
-	#undef X_S
+#undef R
+#undef X_S
 
 	return y;
 }
