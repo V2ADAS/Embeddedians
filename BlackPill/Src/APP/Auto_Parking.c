@@ -21,7 +21,9 @@ yaw_arc,
 yaw_mpu,
 yaw_comp,
 Heading,
-x,y;
+x,y,
+slopeAngle,
+error;
 
 
 void LCD_Display();
@@ -43,25 +45,19 @@ void AutoParking (){
 
 	}while(MGPIO_u8GetPinValue(PORTA, PIN0));
 
-	Update_Odometry(&internal_data.Car_Control , &internal_data.Odometry);
-	LOC_NextLocation (&internal_data.Odometry  , &internal_data.Motion_Planning ,&internal_data.Path_tracking);
-	LOC_DistanceBet2Points(&internal_data.Odometry , &internal_data.Path_tracking);
-	LOC_AngleOfSlope(&internal_data.Odometry , &internal_data.Path_tracking);
 
 
 	HCOMPASS_SetHeading_Ref( HCOMPASS_f32GetHeading() );
 
 	HMPU_vCalibration(150);
-	//	Auto_Update_Odometry();
 
-	distanceBet2Points = internal_data.Path_tracking.distanceBet2Points ;
-
-	angle = internal_data.Path_tracking.angleSlope ;
-
-	//	CarControl_Move(FORWARD, distanceBet2Points, 40 , 50, &internal_data.Car_Control);
-	CarControl_Move(FORWARD, 50, 40 , 100);
-	CarControl_Move(FORWARD, 50, -40 , 100);
-
+//	LOC_NextLocation (&internal_data.Odometry  , &internal_data.Motion_Planning ,&internal_data.Path_tracking);
+//	LOC_DistanceBet2Points(&internal_data.Odometry , &internal_data.Path_tracking);
+//	LOC_AngleOfSlope(&internal_data.Odometry , &internal_data.Path_tracking);
+//	distanceBet2Points = internal_data.Path_tracking.distanceBet2Points ;
+//	angle = internal_data.Path_tracking.angleSlope ;
+	CarControl_Move(FORWARD, 300,  0  , 50);
+//	HAL_MOTOR_MOVE(DC_MOTOR, FORWARD, 50);
 	while(1){
 		CarCtrl_UpdateScheduler();
 		CarCtrl_Dispatcher(&internal_data.Car_Control);
@@ -72,9 +68,12 @@ void AutoParking (){
 		yaw_arc = Get_Yaw(ARC);
 		s = HAL_MOTOR_GetMovedDistance() ;
 
-		Update_Odometry( &internal_data.Car_Control , &internal_data.Odometry );
+		Update_Odometry(&internal_data.Car_Control , &internal_data.Odometry);
 		x=internal_data.Odometry.CurrentPoint.x;
 		y=internal_data.Odometry.CurrentPoint.y;
+		slopeAngle = GetSlopeOfFunc(x);
+		error = yaw_mpu - slopeAngle ;
+		HSERVO_vServoDeg(SERVO1, -2*error);
 		//		if(Get_Yaw(FUSION) >= angle)
 		//			HSERVO_vServoDeg(SERVO1, 0);
 
@@ -107,7 +106,7 @@ void Loc_UpdateOdometryCallBack(){
 //////////////////////////////////////////////////////////////////////////////////////////////////////
 void LCD_Display(){
 	HLCD_vPutCur(0,0);
-	HLCD_vSendNum(yaw_arc);
+	HLCD_vSendNum(error);
 	HLCD_vSendString("' ");
 	HLCD_vPutCur(0,6);
 	HLCD_vSendNum((s32)yaw_comp);
