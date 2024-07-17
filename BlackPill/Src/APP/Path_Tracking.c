@@ -11,7 +11,7 @@
 void LOC_NextLocation (Odometry_Data_ST * Odometry_Data ,
 		MotionPlanning_Data_ST * MotionPlanning_Data , PathTracking_Data_ST *  PathTracking_Data){
 	Position_ST  next_point ;
-	f32 delta_x = 50 ;
+	f32 delta_x = 5 ;
 	f32 x_new , y_new ;
 	//get current point to increment its x by delta_x and get y_new by substituting
 	x_new = Odometry_Data->CurrentPoint.x + delta_x ;
