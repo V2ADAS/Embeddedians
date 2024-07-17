@@ -2,17 +2,21 @@
 #define PATH_TRACKING_
 
 #include "../../LIB/STD_TYPES.h"
-#include "../Inc/Motion_Planing.h"
+#include "Motion_Planing.h"
 #include "../../LIB/BIT_MATH.h"
 #include "Odometry.h"
+//#include "Auto_Parking.h"
+
+
 
 typedef struct{
-	Position_ST CurrentPoint ;
+//	Position_ST CurrentPoint ;
 	Position_ST NextPoint ;
 	f32 distanceBet2Points ;
 	s16 angleSlope ;
 
 }PathTracking_Data_ST;
+
 /******************************************************************************************************/
 /*                                       LOC_GetCurrentLocation                                       */
 /*----------------------------------------------------------------------------------------------------*/
@@ -68,6 +72,7 @@ void LOC_AngleOfSlope(Odometry_Data_ST * Odometry_Data,PathTracking_Data_ST *  P
 /* 2- Function Input       -> @param Func_Path() = PaB_Path , PeB_Path , PeF_Path                     */
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
-void PT_TrackThePath ( Odometry_Data_ST * Odometry_Data , MotionPlanning_Data_ST * MotionPlanning_Data ,
-						PathTracking_Data_ST *  PathTracking_Data) ;
+void PT_TrackThePath (Odometry_Data_ST * Odometry_Data , MotionPlanning_Data_ST * MotionPlanning_Data ,
+						PathTracking_Data_ST *  PathTracking_Data , CarControl_Data_ST * CarControl_Data) ;
+
 #endif /*PATH_TRACKING_*/

@@ -9,12 +9,14 @@
 typedef struct {
 	u8 Direction;
 	s8 Steering ;
+	s8 DircOfSteering ;
 	u8 Speed;
 	f32 Reduction_Ratio ;
+
 }CarControl_Data_ST;
 // Function to control the car movement and steering angle
 
-void CarControl_Move(u8 Direction, f32 distance, s8 Steering , u8 speed , CarControl_Data_ST * CarControl_Data);
+void CarControl_Move(u8 Direction, f32 distance, s8 Steering , u8 speed);
 
 // The "distance & direction" are paremeters that must be specified in the path tracking!
 // distance to move in cm 
@@ -26,7 +28,7 @@ void CarControl_Move(u8 Direction, f32 distance, s8 Steering , u8 speed , CarCon
 void Set_ReductionRatio(f32 Copy_f32Yaw);
 
 void CarCtrl_UpdateScheduler();
-void CarCtrl_Dispatcher();
+void CarCtrl_Dispatcher(CarControl_Data_ST * CarControl_Data);
 
 f32 Get_ReductionRatio(void);
 s8 getSteering ();
