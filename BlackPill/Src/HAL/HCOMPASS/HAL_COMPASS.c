@@ -19,6 +19,8 @@
 #include"../../MCAL/MNVIC/MNVIC_int.h"
 #include"../../HAL/HEPROM/MEPROM_Int.h"
 
+#define CalibrationSize			12
+
 struct Compass_struct {
 	s16 X;
 	s16 Y;
@@ -43,8 +45,10 @@ void HCOMPASS_RSTCalibration(void){
 	calibrationData[0][1]=-32767;
 	calibrationData[1][0]=32767;
 	calibrationData[1][1]=-32767;
+	calibrationData[2][0]=32767;
+	calibrationData[2][1]=-32767;
 
-	HEPROM_vWriteData(0, 0, calibrationData, 8);
+	HEPROM_vWriteData(CMP_EPROM_PAGE, CMP_EPROM_PAGE_OFFSET, calibrationData, CalibrationSize);
 	SET_BIT(STK->CTRL, STK_EN);
 }
 
@@ -120,8 +124,8 @@ void HCOMPASS_vInit(){
 	MI2C_vMasterTx(COMPASS_I2C,COMPASS_ADDRESS,Local_TxData,2,WithStop);
 
 	//HCOMPASS_Calibrate(8000);
-	u8 EPROM_CalibratingData[8];
-	HEPROM_vReadData(0, 0,EPROM_CalibratingData ,8);
+	u8 EPROM_CalibratingData[CalibrationSize];
+	HEPROM_vReadData(CMP_EPROM_PAGE,CMP_EPROM_PAGE_OFFSET,EPROM_CalibratingData ,CalibrationSize);
 	/* x min */
 	calibrationData[0][0]= (s16)(EPROM_CalibratingData[1]<<8) | EPROM_CalibratingData[0] ;
 	/* x max */
@@ -130,6 +134,12 @@ void HCOMPASS_vInit(){
 	calibrationData[1][0]= (s16)(EPROM_CalibratingData[5]<<8) | EPROM_CalibratingData[4] ;
 	/* y max */
 	calibrationData[1][1]= (s16)(EPROM_CalibratingData[7]<<8) | EPROM_CalibratingData[6] ;
+	/* z min */
+	calibrationData[2][0]= (s16)(EPROM_CalibratingData[9]<<8) | EPROM_CalibratingData[8] ;
+	/* z max */
+	calibrationData[2][1]= (s16)(EPROM_CalibratingData[11]<<8) | EPROM_CalibratingData[10] ;
+
+
 	HCOMPASS_SetCalibration(
 					calibrationData[0][0], calibrationData[0][1],
 					calibrationData[1][0], calibrationData[1][1],
@@ -169,7 +179,7 @@ void HCOMPASS_vSetRowData(){
 	//static s16 calibrationData[3][2] = {{-1043, 643}, {-1135, 326}, {0, 706}};
 	//static s16 calibrationData[3][2] = {{32767, -32768}, {32767, -32768}, {0, 706}};
 	u8 Calibration_Flag=0;
-	for (u8 i = 0; i < 2; ++i) {
+	for (u8 i = 0; i < 3 ; i++ ) {
 		if (RowData[i] < calibrationData[i][0]) {
 			calibrationData[i][0] = RowData[i];
 			Calibration_Flag=1;
@@ -187,7 +197,7 @@ void HCOMPASS_vSetRowData(){
 				calibrationData[1][0], calibrationData[1][1],
 				calibrationData[2][0], calibrationData[2][1]
 		);
-		HEPROM_vWriteData(0,0, calibrationData, 8);
+		HEPROM_vWriteData(CMP_EPROM_PAGE,CMP_EPROM_PAGE_OFFSET, calibrationData, CalibrationSize);
 	}
 
 
@@ -234,10 +244,10 @@ f32 HCOMPASS_f32GetRoll() {
  */
 f32 HCOMPASS_f32GetHeading() {
 	// Calculate the heading angle using atan2 and convert to degrees
-	f32 Heading = atan2((f32)CompassData.Y, (f32)CompassData.X) * (180.0 / M_PI);
-	Heading = Heading * (-1) ;
-	// Ensure the heading is in the range [0, 360) degrees
-	Heading = (Heading < 0) ? (360.0 + Heading) : Heading;
+	f32 Heading = atan2((f32)CompassData.Y, (f32)CompassData.X) * (180.0 / M_PI)*(-1);
+	//Heading = Heading * (-1) ;
+//	// Ensure the heading is in the range [0, 360) degrees
+//	Heading = (Heading < 0) ? (360.0 + Heading) : Heading;
 
 	return Heading;
 }
@@ -246,7 +256,11 @@ f32 HCOMPASS_f32GetHeadingOutRef(){
 	// Get Heading value out of GetHeading function
 	f32 Heading = HCOMPASS_f32GetHeading();
 	f32 HeadingOutRef = Heading - Heading_Ref;
-	HeadingOutRef = (HeadingOutRef < 0) ? (360.0 + HeadingOutRef) : HeadingOutRef;
+	if (HeadingOutRef < -180)
+		HeadingOutRef += 360;
+	if ( HeadingOutRef > 180)
+		HeadingOutRef -= 360;
+//	HeadingOutRef = (HeadingOutRef < 0) ? (360.0 + HeadingOutRef) : HeadingOutRef;
 	return HeadingOutRef;
 }
 
@@ -261,6 +275,7 @@ void HCOMPASS_SetCalibration(s16 x_min, s16 x_max, s16 y_min, s16 y_max, s16 z_m
 	f32 z_avg_delta = (z_max - z_min) / 2.0;
 
 	f32 avg_delta = (x_avg_delta + y_avg_delta + z_avg_delta) / 3.0;
+	//f32 avg_delta = (x_avg_delta + y_avg_delta ) / 2.0 ;
 
 	HCOMPASS_SetCalibrationScales(avg_delta / x_avg_delta, avg_delta / y_avg_delta, avg_delta / z_avg_delta);
 }

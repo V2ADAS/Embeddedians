@@ -27,6 +27,7 @@ send and a 1-bit acknowledge bit*/
 
 #define COMPASS_I2C						I2C1
 
+
 typedef enum{
 
 	X_LSB = 0x00,
