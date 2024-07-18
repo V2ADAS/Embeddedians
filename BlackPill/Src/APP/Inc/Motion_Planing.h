@@ -17,7 +17,7 @@ static u8 Scanned_Area [Array_Length];
  }MotionPlanning_Data_ST;
 /*
     Parameter setter functions.
-    
+
     These parameters must be set as needed before using any path function.
 
     Each function should define how it uses each parameter,
@@ -29,7 +29,7 @@ void Set_Param_C(f32 new_value);
 void Set_Param_D(f32 new_value);
 
 /*
-    In Parallel Backwards Parking, returns the y-coordinate given 
+    In Parallel Backwards Parking, returns the y-coordinate given
     a specific x-coordinate on the parking motion path.
 
     The origin is assumed to be the starting point of the path.
@@ -45,7 +45,7 @@ void Set_Param_D(f32 new_value);
         - The Saddle point is defined as the x-coordinate at which
           the path transitions from circle 1 to circle 2.
           and should be set using Set_Param_B.
-    
+
     - Circle Line Circle Method:
         - The x-coordinate of the End-Point (relative to the starting point)
           should be set using Set_Param_A.
@@ -63,7 +63,7 @@ void Set_Param_D(f32 new_value);
           (this also the angle of the tangential line with the positive y-axis).
           sould be set using Set_Param_D.
 
-    NOTES: 
+    NOTES:
         - all required parameters should be set before using this function
         - all algorithms assume parking to the right.
 */
