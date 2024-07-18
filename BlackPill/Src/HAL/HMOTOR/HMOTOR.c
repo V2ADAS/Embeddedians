@@ -8,6 +8,11 @@
 #include"../../MCAL/MSTK/MSYSTICK_Int.h"
 #include"../../APP/Inc/Motion_Planing.h"
 #include "../../APP/Inc/Odometry.h"
+<<<<<<< HEAD
+=======
+#include "../../APP/Inc/Auto_Parking.h"
+
+>>>>>>> azza
 
 MOTOR_t DC_Motor ;
 MOTOR_t CALP_Motor ;
@@ -49,6 +54,7 @@ void HAL_MOTOR_Init(u8 MOTOR , u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 , 
 	Motor->PWM_CH  = PWM_CH	;
 	MGPIO_vSetPinMode(PORT_N1, PIN_N1, OUTPUT);
 	MGPIO_vSetPinMode(PORT_N2, PIN_N2, OUTPUT);
+
 }
 
 void HAL_ENCODER_Init( Enum_TIMER_NUM CNTR_TIMER , Enum_TIMER_CHs CNTR_CH ){
@@ -117,7 +123,12 @@ f64 HAL_MOTOR_GetMovedDistance(){
 void LOC_MotorCallBack(){
 	HAL_MOTOR_ForceStop(DC_MOTOR);
 	total_moved_distance += moved_distance ;
+<<<<<<< HEAD
 	Update_Odometry();
+=======
+	MSYSTICK_vDelayms(500);
+	Update_Odometry( &internal_data.Car_Control , &internal_data.Odometry );
+>>>>>>> azza
 }
 
 MOTOR_t* LOC_GetMotorName(u8 MOTOR){

@@ -2,9 +2,20 @@
 #define PATH_TRACKING_
 
 #include "../../LIB/STD_TYPES.h"
-#include "../Inc/Motion_Planing.h"
+#include "Motion_Planing.h"
 #include "../../LIB/BIT_MATH.h"
 #include "Odometry.h"
+//#include "Auto_Parking.h"
+
+
+
+typedef struct{
+//	Position_ST CurrentPoint ;
+	Position_ST NextPoint ;
+	f32 distanceBet2Points ;
+	s16 angleSlope ;
+
+}PathTracking_Data_ST;
 
 /******************************************************************************************************/
 /*                                       LOC_GetCurrentLocation                                       */
@@ -13,7 +24,7 @@
 /* 2- Function Input       -> void													                  */
 /* 3- Function Return      -> return Point_t >> the current poin                                      */
 /******************************************************************************************************/
-static Point_t LOC_GetCurrentLocation ();
+//static Point_t LOC_GetCurrentLocation ();
 
 
 
@@ -25,8 +36,9 @@ static Point_t LOC_GetCurrentLocation ();
 /* 2- Function Input       -> @param Func_Path() = PaB_Path , PeB_Path , PeF_Path                     */
 /* 3- Function Return      -> return Point_t >> the next point                                        */
 /******************************************************************************************************/
-static Point_t LOC_GetNextLocation (f32 (*Func_Path)(f32 x));
 
+void LOC_NextLocation (Odometry_Data_ST * Odometry_Data ,
+		MotionPlanning_Data_ST * MotionPlanning_Data , PathTracking_Data_ST *  PathTracking_Data);
 
 
 
@@ -38,7 +50,7 @@ static Point_t LOC_GetNextLocation (f32 (*Func_Path)(f32 x));
 /*  					   	  @param point2 >> next point								              */
 /* 3- Function Return      -> return float distance in cm unit                                        */
 /******************************************************************************************************/
-static f32 LOC_GetDistanceBet2Points (Point_t point1 ,Point_t point2 );
+void LOC_DistanceBet2Points (Odometry_Data_ST * Odometry_Data,PathTracking_Data_ST *  PathTracking_Data);
 
 
 
@@ -50,8 +62,7 @@ static f32 LOC_GetDistanceBet2Points (Point_t point1 ,Point_t point2 );
 /*  					   	  @param point2 >> next point								              */
 /* 3- Function Return      -> return signed integer                                                   */
 /******************************************************************************************************/
-static s8 LOC_GetAngleOfSlope(Point_t point1 ,Point_t point2);
-
+void LOC_AngleOfSlope(Odometry_Data_ST * Odometry_Data,PathTracking_Data_ST *  PathTracking_Data);
 
 /******************************************************************************************************/
 /*                                       PT_TrackThePath                                              */
@@ -60,7 +71,7 @@ static s8 LOC_GetAngleOfSlope(Point_t point1 ,Point_t point2);
 /* 2- Function Input       -> @param Func_Path() = PaB_Path , PeB_Path , PeF_Path                     */
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
-void PT_TrackThePath (f32 (*Func_Path)(f32 x)) ;
-
+void PT_TrackThePath (Odometry_Data_ST * Odometry_Data , MotionPlanning_Data_ST * MotionPlanning_Data ,
+						PathTracking_Data_ST *  PathTracking_Data , CarControl_Data_ST * CarControl_Data) ;
 
 #endif /*PATH_TRACKING_*/
