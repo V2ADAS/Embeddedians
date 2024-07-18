@@ -8,6 +8,8 @@
 #include"../../MCAL/MSTK/MSYSTICK_Int.h"
 #include"../../APP/Inc/Motion_Planing.h"
 #include "../../APP/Inc/Odometry.h"
+#include "../../APP/Inc/Auto_Parking.h"
+
 
 MOTOR_t DC_Motor ;
 MOTOR_t CALP_Motor ;
@@ -118,7 +120,8 @@ f64 HAL_MOTOR_GetMovedDistance(){
 void LOC_MotorCallBack(){
 	HAL_MOTOR_ForceStop(DC_MOTOR);
 	total_moved_distance += moved_distance ;
-//	Update_Odometry();
+	MSYSTICK_vDelayms(500);
+	Update_Odometry( &internal_data.Car_Control , &internal_data.Odometry );
 }
 
 MOTOR_t* LOC_GetMotorName(u8 MOTOR){

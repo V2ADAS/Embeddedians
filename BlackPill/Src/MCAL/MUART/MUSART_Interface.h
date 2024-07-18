@@ -11,8 +11,19 @@
 /*      05- MUART_Receive_Byte                                                                          */
 /*      06- MUART_Receive_Data                                                                          */
 /*******************************************************************************************************/
+/*
+UART1:
+ 	Tx : A9
+ 	Rx : A10
 
+UART2:
+	Tx : A2
+	Rx : A3
 
+UART6:
+	Tx : A11
+	Rx : A12
+*/
 /*******************************************************************************************************/
 /*                                   guard of file will call on time in .c                             */
 /*******************************************************************************************************/
@@ -31,9 +42,6 @@
 #define UART2               2
 #define UART6               6
 
-#define MUART1					0
-#define MUART2					1
-#define MUART3					2
 
 /*******************************************************************************************************/
 /*                                   USART LENGTH MODES : 8-BIT , 9-BIT                                */
@@ -61,6 +69,7 @@
 /* 3- Function Return      -> void                                                                    */
 /******************************************************************************************************/
 void MUART_Enable(u8 UART_Index);
+void MUART_Init(u8 UART_Index);
 /******************************************************************************************************/
 
 /******************************************************************************************************/
@@ -96,7 +105,7 @@ void MUART_Send_Byte(u8 UART_Index ,u8 data);
 /*                            @param data = Can be array , string or any data                          */                 
 /* 3- Function Return      -> void                                                                     */
 /*******************************************************************************************************/
-void MUART_Send_Data(u8 UART_Index ,u8* data);
+void MUART_Send_Data(u8 UART_Index , u8 *ptrToData , u16 size);
 /*********************************************************************************************************/
 
 
@@ -125,8 +134,8 @@ u8 MUART_Receive_Data(u8 UART_Index);
 
 
 /*Helper Function*/
-USART_REG Get_UART(u8 UART_Index);
-void MUART_vSetRxCallBackFunc(u8 Local_u8UARTNo,void(*Local_pvRxIRQ)(void));
+USART_t * Get_UART(u8 UART_Index);
+void MUART_vSetRxCallBackFunc(u8 UART_Index,void(*Local_pvRxIRQ)(void));
 
 
 #endif /* MUSART_INTERFACE_H_ */
