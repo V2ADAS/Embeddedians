@@ -72,9 +72,14 @@ void AutoParking (){
 
 		x=internal_data.Odometry.CurrentPoint.x;
 		y=internal_data.Odometry.CurrentPoint.y;
+
+		LOC_NextLocation (&internal_data.Odometry  , &internal_data.Motion_Planning ,&internal_data.Path_tracking);
+		LOC_DistanceBet2Points(&internal_data.Odometry , &internal_data.Path_tracking);
+		LOC_AngleOfSlope(&internal_data.Odometry , &internal_data.Path_tracking);
+		angle = internal_data.Path_tracking.angleSlope ;
 		slopeAngle = GetSlopeOfFunc(x);
-		error = yaw_mpu - slopeAngle ;
-		HSERVO_vServoDeg(SERVO1, -2*error);
+		error = angle - yaw_mpu ;
+		HSERVO_vServoDeg(SERVO1, -1 * error);
 		//		if(Get_Yaw(FUSION) >= angle)
 		//			HSERVO_vServoDeg(SERVO1, 0);
 

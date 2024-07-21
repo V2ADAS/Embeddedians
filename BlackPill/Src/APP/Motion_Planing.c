@@ -81,7 +81,7 @@ f32 circleLineCircle(f32 x) {
 
 
 f32 line_path (f32 x){
-	f32 y = x*x ;
+	f32 y = x ;
 	return y ;
 }
 
@@ -236,7 +236,6 @@ void Process(u8 Scanned_Area[])
 
 void Plot_The_Path(Scenario_t Scenario , .../*path */ );
 
-f32 a=0.0005,b=0;
 
 Position_ST Start_Point(){
 	Position_ST Position;
@@ -251,6 +250,8 @@ Position_ST End_Point(){
 	Position.y= -150;
 	return Position;
 }
+
+f32 a=0.0005,b=0;
 
 f32 Test_Func(f32 x){
 	f32 y = a * x * x * x + b ;
