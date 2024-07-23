@@ -5,13 +5,15 @@
 #include "math.h"
 
 // Define static variables to store previous values
-u8 Direction = FORWARD;
-s8 Steering = 0;
-f32 RR = 0;
+s8 direction = FORWARD;
+u8 speed ;
+u8 dircOfSteering ;
+s8 steering ;
+f32 ReductionRatio = 1 ;
 
 
 typedef struct{
-	u8 direction ;
+	s8 direction ;
 	s8 steering ;
 	f32 distance ;
 	u8 speed ;
@@ -24,6 +26,55 @@ Process_TS scheduler [100] = {
 		{0 , 0 , 0 , 0 , 1 , 1 }
 };
 
+
+void Set_ReductionRatio(f32 Copy_f32Yaw){
+	if (Copy_f32Yaw < 0 ){
+		Copy_f32Yaw *= -1 ;
+	}
+	ReductionRatio = 4.16 * pow(10, -8) * pow(Copy_f32Yaw, 4)
+        		 - 7.5 * pow(10, -6) * pow(Copy_f32Yaw, 3)
+				 + 0.00019 * pow(Copy_f32Yaw, 2)
+	- 0.00225 * Copy_f32Yaw + 1;
+}
+
+f32 Get_ReductionRatio(void){
+	return ReductionRatio;
+}
+
+void setSteering (s8 copySteering){
+	steering = copySteering ;
+	Set_ReductionRatio(copySteering);
+
+	if (copySteering > -5 || copySteering < 5 )
+		dircOfSteering = 0 ;
+	else if (copySteering < 0 )
+		dircOfSteering = -1 ;
+	else
+		dircOfSteering = 1 ;
+
+
+}
+
+s8 getSteering (){
+	return steering ;
+}
+
+void setSpeed (u8 copySpeed){
+	speed = copySpeed ;
+}
+
+u8 getSpeed (){
+	return speed ;
+}
+
+void setDirection (s8 copyDirection){
+	direction = copyDirection ;
+}
+
+u8 getDirction (){
+	return direction ;
+}
+
 void CarCtrl_UpdateScheduler(){
 	int i ;
 	for (i = 1; i <( sizeof(scheduler)/sizeof(scheduler[0]) ); ++i) {
@@ -32,21 +83,10 @@ void CarCtrl_UpdateScheduler(){
 	}
 }
 
-void CarCtrl_Dispatcher(CarControl_Data_ST * CarControl_Data){
+void CarCtrl_Dispatcher(){
 	int i ;
 	for (i = 1; i < ( sizeof(scheduler)/sizeof(scheduler[0]) ) ; ++i) {
 		if ( !scheduler[i].isDone && !scheduler[i].isExcuted && scheduler[i-1].isDone){
-			// Update CarControl Internal Data
-			Set_ReductionRatio(Steering);
-			CarControl_Data->Direction = scheduler[i].direction;
-			CarControl_Data->Steering = scheduler[i].steering ;
-			CarControl_Data->Speed = scheduler[i].speed ;
-			CarControl_Data->Reduction_Ratio = Get_ReductionRatio();
-			scheduler[i].distance = scheduler[i].distance / CarControl_Data->Reduction_Ratio  ;
-			if(scheduler[i].steering > scheduler[i-1].steering)
-				CarControl_Data->DircOfSteering = 1;
-			else
-				CarControl_Data->DircOfSteering = -1;
 			// Start Car Control
 			HSERVO_vServoDeg(SERVO1, scheduler[i].steering);
 			for(u32 i=0 ; i<1000000 ; ++i);//delay
@@ -56,37 +96,25 @@ void CarCtrl_Dispatcher(CarControl_Data_ST * CarControl_Data){
 		}
 	}
 }
-void setSteering (u8 steering){
-	Steering = steering ;
+
+void CarCtrl_UpdateData (CarControl_Data_ST * CarControl_Data){
+	// Update CarControl Internal Data
+	CarControl_Data->Direction = getDirction();
+	CarControl_Data->Steering = getSteering() ;
+	CarControl_Data->Speed = getSpeed();
+	CarControl_Data->Reduction_Ratio = Get_ReductionRatio();
+	CarControl_Data->DircOfSteering =  dircOfSteering ;
 }
 
-s8 getSteering (){
-	return Steering ;
-}
-
-void CarControl_Move(u8 Direction, f32 distance, s8 Steering , u8 speed){
+void CarCtrl_Move(s8 Direction, f32 distance, s8 Steering , u8 speed){
 
 	static u8 iterator = 1 ;
 	scheduler[iterator].direction = Direction;
 	scheduler[iterator].steering = Steering ;
 	scheduler[iterator].speed = speed ;
-	scheduler[iterator].distance = distance ;
+	scheduler[iterator].distance = distance / Get_ReductionRatio() ;
 	iterator++ ;
 
 }
 
-
-void Set_ReductionRatio(f32 Copy_f32Yaw){
-	if (Copy_f32Yaw < 0 ){
-		Copy_f32Yaw *= -1 ;
-	}
-	RR = 4.16 * pow(10, -8) * pow(Copy_f32Yaw, 4)
-         - 7.5 * pow(10, -6) * pow(Copy_f32Yaw, 3)
-		 + 0.00019 * pow(Copy_f32Yaw, 2)
-		 - 0.00225 * Copy_f32Yaw + 1;
-}
-
-f32 Get_ReductionRatio(void){
-	return RR;
-}
 

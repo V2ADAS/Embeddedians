@@ -15,7 +15,7 @@
 // Include HSERVO configuration and interface headers
 #include "HSERVO_Config.h"
 #include "HSERVO_Int.h"
-
+#include "../../APP/Inc/Car_Control.h"
 // Define a structure to store servo information
 typedef struct {
 	Enum_TIMER_NUM TIMER;    // Timer number associated with the servo
@@ -42,8 +42,8 @@ void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8Time
 void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum, s8 Copy_s8Deg) {
 	Copy_s8Deg = -Copy_s8Deg ;
 	// Ensure the angle is within the valid angle range (-45 to 45)
-	Copy_s8Deg = (Copy_s8Deg < -45) ? -45 : (Copy_s8Deg > 45) ? 45 : Copy_s8Deg;
-
+	Copy_s8Deg = (Copy_s8Deg < -40) ? -40 : (Copy_s8Deg > 40) ? 40 : Copy_s8Deg;
+	setSteering(Copy_s8Deg);
 	// Add Zero Position to the angle
 	Copy_s8Deg += ZERO_POS;
 
