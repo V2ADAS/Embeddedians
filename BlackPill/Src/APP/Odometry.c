@@ -104,9 +104,8 @@ void Update_Odometry(CarControl_Data_ST * CarControl_Data , Odometry_Data_ST * O
 	f32 delta_d = get_delta_distance() ;
 	f32 yaw = Get_Yaw(MPU);
 	f32 RR = CarControl_Data->Reduction_Ratio ;
-//	f32 steering = CarControl_Data->Steering ;
 	s8 DircOfSteering  = CarControl_Data->DircOfSteering ;
-	delta_d *= RR ;
+	delta_d *= RR * CarControl_Data->Direction;
 	yaw = yaw * PI /180 ;
 
 	Odometry_Data->CurrentPoint.x += delta_d  * sin(yaw + DircOfSteering*(yaw * 0.25) ) ;

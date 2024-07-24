@@ -6,7 +6,7 @@
 #include "../HAL/HLCD/HLCD_Int.h"
 #include "../HAL/HMPU/HMPU6050.h"
 #include "../HAL/HCOMPASS/HAL_COMPASS.h"
-
+#include "../MCAL/MSTK/MSYSTICK_Int.h"
 
 Internal_Data_ST internal_data = {0} ;
 
@@ -56,12 +56,13 @@ void AutoParking (){
 //	LOC_AngleOfSlope(&internal_data.Odometry , &internal_data.Path_tracking);
 //	distanceBet2Points = internal_data.Path_tracking.distanceBet2Points ;
 //	angle = internal_data.Path_tracking.angleSlope ;
-	CarControl_Move(FORWARD, 300,  0  , 50);
+	CarCtrl_Move(BACKWARD, 300,  0  , 100 );
 //	HAL_MOTOR_MOVE(DC_MOTOR, FORWARD, 50);
+
 	while(1){
 		CarCtrl_UpdateScheduler();
-		CarCtrl_Dispatcher(&internal_data.Car_Control);
-
+		CarCtrl_Dispatcher();
+		CarCtrl_UpdateData(&internal_data.Car_Control);
 
 		yaw_comp = Get_Yaw(COMPASS);
 		yaw_mpu = Get_Yaw(MPU);
@@ -78,18 +79,17 @@ void AutoParking (){
 		LOC_AngleOfSlope(&internal_data.Odometry , &internal_data.Path_tracking);
 		angle = internal_data.Path_tracking.angleSlope ;
 		slopeAngle = GetSlopeOfFunc(x);
-		error = angle - yaw_mpu ;
-		HSERVO_vServoDeg(SERVO1, -1 * error);
-		//		if(Get_Yaw(FUSION) >= angle)
-		//			HSERVO_vServoDeg(SERVO1, 0);
-
+		error = slopeAngle - yaw_mpu ;
+		HSERVO_vServoDeg(SERVO1, error);
 
 		HMPU_UpdateYawAngle(); // update MPU
 		HCOMPASS_vSetRowData();// update compass
 
 
 		LCD_Display();
-		//		MSYSTICK_vPeriodicMS(200);
+//		for (int i = 0;  i < 1000000; ++i) ;
+
+
 	}
 }
 
@@ -115,7 +115,7 @@ void LCD_Display(){
 	HLCD_vSendNum(error);
 	HLCD_vSendString("' ");
 	HLCD_vPutCur(0,6);
-	HLCD_vSendNum((s32)yaw_comp);
+	HLCD_vSendNum((s32)slopeAngle);
 	HLCD_vSendString("' ");
 	HLCD_vPutCur(0,12);
 	HLCD_vSendNum((s32)yaw_mpu);

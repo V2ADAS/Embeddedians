@@ -58,12 +58,12 @@ void PT_TrackThePath ( Odometry_Data_ST * Odometry_Data , MotionPlanning_Data_ST
 	LOC_AngleOfSlope(Odometry_Data , PathTracking_Data);
 	distanceBet2Points = PathTracking_Data->distanceBet2Points ;
 	angleSlope = PathTracking_Data->angleSlope ;
-	yaw = Get_Angle(MPU) ;
+	yaw = Get_Yaw(MPU) ;
 	if ( (yaw - angleSlope ) <= 5 || (yaw - angleSlope ) >= -5  )
 		steering = 0 ;
 	else if( yaw > angleSlope )
 		steering = -40 ;
 
-	CarControl_Move(FORWARD, distanceBet2Points, steering , 50 );
+	CarCtrl_Move(FORWARD, distanceBet2Points, steering , 50 );
 	// condition to check yaw == angleSlope
 }

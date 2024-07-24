@@ -9,6 +9,7 @@
 #include"../../APP/Inc/Motion_Planing.h"
 #include "../../APP/Inc/Odometry.h"
 #include "../../APP/Inc/Auto_Parking.h"
+#include "../../APP/Inc/Car_Control.h"
 
 
 MOTOR_t DC_Motor ;
@@ -60,13 +61,13 @@ void HAL_ENCODER_Init( Enum_TIMER_NUM CNTR_TIMER , Enum_TIMER_CHs CNTR_CH ){
 	MNVIC_vEnableInterrupt(NVIC_TIM5);
 }
 
-void HAL_MOTOR_MOVE(u8 MOTOR , u8 DIRCTION ,u8 SPEED ){
+void HAL_MOTOR_MOVE(u8 MOTOR , s8 DIRCTION ,u8 SPEED ){
+	setDirection(DIRCTION);
+	setSpeed(SPEED);
 
 	MOTOR_t *Motor = LOC_GetMotorName(MOTOR);
 
 	f32 high_duty = (SPEED / 100.0)  ;
-	f32 num_of_revolutions  ;
-	u32 target_distance_pulses = 0 ;
 
 	switch(DIRCTION){
 	case BACKWARD :

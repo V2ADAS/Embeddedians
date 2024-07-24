@@ -34,7 +34,7 @@ volatile USART_t * UART_6 = (USART_t*)USART6_BASE_ADDRESS ;
 void MUART_Enable(u8 UART_Index)
 {
 
-	volatile USART_t * UARTx = (USART_t *)Get_UART(UART_Index);
+	USART_t * UARTx = (USART_t *)Get_UART(UART_Index);
 	/*Enable Uart */
 
 	/*Select BaudRate -> 9600*/
@@ -43,6 +43,9 @@ void MUART_Enable(u8 UART_Index)
 
 	/* Select Stop Bits As 1-BIT */
 	UARTx -> CR2.STOP |= (USART1_ONE_STOP_BITS << 12);
+
+	/* Select Disable Parity */
+	UARTx ->CR1.PCE = 0;
 
 	/* ENABLE RX */
 	UARTx ->CR1.RE = 1;
@@ -55,11 +58,8 @@ void MUART_Enable(u8 UART_Index)
 	/* Select No Sending BREAK */
 	UARTx ->CR1.SBK = 0 ;
 
-	/* Select Disable Parity */
-	UARTx ->CR1.PCE = 0;
-
 	/* SELECT WORD LENGHT AS 8DATA-BITS */
-	UARTx ->CR1.M = _8DATA_LENGTH_ ;
+	UARTx ->CR1.M = _9DATA_LENGTH_ ;
 
 	/*SELECT OVER SAMPLING BY 16*/
 	UARTx ->CR1.OVER8 = 0 ;
@@ -127,9 +127,9 @@ void MUART_Send_Data(u8 UART_Index , u8 *ptrToData , u16 size)
 	USART_t * UARTx = Get_UART(UART_Index);
 	for(int i = 0; i < size; i++)
 	{
+		UARTx->DR = *ptrToData ;
 		//Busy wait until transmission complete
 		while(GET_BIT(UARTx ->SR,7) == 0);
-		UARTx->DR = *ptrToData ;
 		ptrToData++ ;
 	}
 }

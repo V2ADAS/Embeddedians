@@ -21,7 +21,7 @@ void HAL_MOTOR_Init(u8 MOTOR , u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 , 
 //void HAL_MOTOR_Init ( u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 ,u8 PORT_PWM ,
 //					u8 PIN_PWM, u8 PWM_TIMER , u8 ENCODER_EXTIx ,u8 NVIC_EXTIx);
 
-void HAL_MOTOR_MOVE(u8 MOTOR , u8 DIRCTION ,u8 SPEED );
+void HAL_MOTOR_MOVE(u8 MOTOR , s8 DIRCTION ,u8 SPEED );
 
 void HAL_MOTOR_ForceStop(u8 MOTOR);
 
@@ -50,7 +50,7 @@ typedef struct {
 	u8 CNTR_CH;
 }ENCODER_t;
 #define FORWARD   1
-#define BACKWARD  0
+#define BACKWARD  -1
 
 
 

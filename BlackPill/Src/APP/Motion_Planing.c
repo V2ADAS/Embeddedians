@@ -81,7 +81,7 @@ f32 circleLineCircle(f32 x) {
 
 
 f32 line_path (f32 x){
-	f32 y = x ;
+	f32 y = 0.01*x*x*x ;
 	return y ;
 }
 
@@ -90,7 +90,7 @@ f32 GetSlopeOfFunc(f32 x){
 	f32 deltaX = 0.02 ;
 
 	// Calculate the angle using arc tangent
-	f32 angle = atan2(deltaX, deltaY);
+	f32 angle = atan2(deltaX,deltaY);
 
 	// Convert the angle from radians to degrees
 	angle = angle * (180.0 / PI);
