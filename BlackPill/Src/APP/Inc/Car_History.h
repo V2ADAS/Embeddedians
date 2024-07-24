@@ -20,8 +20,8 @@
 
 typedef enum{
 
-	FORWORD,
-	REVERSE
+	REVERSE,
+	FORWORD
 }CarHist_Direction;
 
 typedef struct  {
