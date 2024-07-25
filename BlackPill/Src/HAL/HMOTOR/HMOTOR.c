@@ -97,6 +97,8 @@ void HAL_MOTOR_ForceStop(u8 MOTOR){
 
 	MGPIO_vSetPinValue(Motor->PORT_N1, Motor->PIN_N1, LOW);
 	MGPIO_vSetPinValue(Motor->PORT_N2, Motor->PIN_N2, LOW);
+
+	setSpeed(0);
 }
 
 void HAL_MOTOR_StopDcAfterDistance(f32 DISTANCE_cm_){
