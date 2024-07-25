@@ -10,7 +10,7 @@
 #define Safety_Margin 5
 #define Vth_Parallel (1.5*Car_Length)
 #define Array_Length  100
-static u8 Scanned_Area [Array_Length];
+extern u8 Scanned_Area [Array_Length];
 
  typedef struct{
 		f32 (*Func_Path)(f32 x) ;
