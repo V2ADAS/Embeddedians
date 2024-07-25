@@ -36,7 +36,7 @@ typedef struct{
 	f32 var5 ;
 }Data_ST ;
 
-static Data_ST App_Tx ={'*' , 50 , 199 ,0 ,1,10, 20, 30, 40, 50, -991, -70, 80.99, 90,11.11,80.8,999.9};
+extern Data_ST App_Tx;
 
 void App_Start_Connect(u8 Copy_u8UART_Num);
 
