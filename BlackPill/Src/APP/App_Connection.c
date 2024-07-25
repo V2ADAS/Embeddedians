@@ -9,6 +9,8 @@
 #include "../HAL/HMOTOR/HMOTOR.h"
 #include "../HAL/HSERVO/HSERVO_Int.h"
 #include "Inc/Car_Control.h"
+#include"Inc/MoveBack.h"
+#include"Inc/Personal_Parking.h"
 
 u8 Gl_UART_Used = 0;
 
@@ -30,6 +32,23 @@ void RX_Callback()
 	else if (data_rx == 's' ){
 		HAL_MOTOR_ForceStop(DC_MOTOR);
 	}
+	else if(data_rx == 'd')
+		MVBack_Start();
+
+	else if (data_rx == 'r'){
+		static u8 loc_flag = 0 ;
+		if(loc_flag == 0){
+			PersonalParking_StartSaving();
+			loc_flag=1;
+		}
+		else if(loc_flag == 1){
+			PersonalParking_EndSaving();
+			loc_flag = 0 ;
+		}
+	}
+	else if(data_rx == 'a')
+		PersonalParking_Apply();
+
 	else {
 		Steering_tx = data_rx - 41 ;
 		HSERVO_vServoDeg(SERVO1, Steering_tx);
