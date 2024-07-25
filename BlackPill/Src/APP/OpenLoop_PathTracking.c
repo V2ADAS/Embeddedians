@@ -24,7 +24,7 @@ void OP_PT_StartTracking(f32 (*Path_Func)(f32 x)){
 	f32 Arc_Length = OP_PT_CalculateArcLen(SegmentLength, Arc_Angle);
 
 	// TODO : determine the direction ??
-	CarControl_Move(FORWORD, Arc_Length, Steering_Angle, 50);
+	CarCtrl_Move(FORWORD, Arc_Length, Steering_Angle, 50);
 
 	/* Update Current Point */
 	CurrentPoint.x = NextPoint.x ;
