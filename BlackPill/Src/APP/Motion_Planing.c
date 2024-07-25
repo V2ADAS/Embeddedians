@@ -14,6 +14,8 @@ f32 _param_b = 0;
 f32 _param_c = 0;
 f32 _param_d = 0;
 
+u8 Scanned_Area [Array_Length];
+
 void Set_Param_A(f32 new_value) { _param_a = new_value; }
 void Set_Param_B(f32 new_value) { _param_b = new_value; }
 void Set_Param_C(f32 new_value) { _param_c = new_value; }
