@@ -21,9 +21,8 @@ void RX_Callback()
 	u8 data_rx = MUART_Receive_Data(UART1);
 	s8 Steering_tx = 0;
 	if (data_rx == 'f' ){
-		//HAL_MOTOR_StopDcAfterDistance( 1000 );
-		//HAL_MOTOR_MOVE(DC_MOTOR, FORWARD, 50);
-		CarCtrl_Move(FORWARD, 1000, 0, 70);
+		HAL_MOTOR_StopDcAfterDistance( 10000 );
+		HAL_MOTOR_MOVE(DC_MOTOR, FORWARD, 50);
 	}
 	else if (data_rx == 'b' ){
 		HAL_MOTOR_MOVE(DC_MOTOR, BACKWARD, 50);
