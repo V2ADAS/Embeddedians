@@ -11,6 +11,7 @@ u8 dircOfSteering ;
 s8 steering ;
 f32 ReductionRatio = 1 ;
 
+ u8 iterator = 1 ;
 u16 Proc_Handle_Num = 1;
 
 
@@ -81,7 +82,7 @@ void CarCtrl_UpdateScheduler(){
 	//int i;
 	//for (i=Proc_Handle_Num; i <( sizeof(scheduler)/sizeof(scheduler[0]) ); ++i) {
 		//scheduler[i].totalDistance = scheduler[i].distance + scheduler[i-1].totalDistance ;
-		if(HAL_MOTOR_GetMovedDistance() >= scheduler[Proc_Handle_Num].totalDistance){
+		if( Proc_Handle_Num < ( iterator-1 ) && HAL_MOTOR_GetMovedDistance() >= scheduler[Proc_Handle_Num].totalDistance){
 		scheduler[Proc_Handle_Num].isDone = 1;
 		++Proc_Handle_Num;
 		return ;
@@ -124,8 +125,6 @@ void CarCtrl_UpdateData (CarControl_Data_ST * CarControl_Data){
 }
 
 void CarCtrl_Move(s8 Direction, f32 distance, s8 Steering , u8 speed){
-
-	static u8 iterator = 1 ;
 	scheduler[iterator].direction = Direction;
 	scheduler[iterator].steering = Steering ;
 	scheduler[iterator].speed = speed ;
