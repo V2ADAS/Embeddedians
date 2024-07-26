@@ -11,6 +11,8 @@ u8 dircOfSteering ;
 s8 steering ;
 f32 ReductionRatio = 1 ;
 
+u16 Proc_Handle_Num = 1;
+
 
 typedef struct{
 	s8 direction ;
@@ -76,24 +78,39 @@ u8 getDirction (){
 }
 
 void CarCtrl_UpdateScheduler(){
-	int i ;
-	for (i = 1; i <( sizeof(scheduler)/sizeof(scheduler[0]) ); ++i) {
-		scheduler[i].totalDistance = scheduler[i].distance + scheduler[i-1].totalDistance ;
-		scheduler[i].isDone = (HAL_MOTOR_GetMovedDistance() >= scheduler[i].totalDistance );
-	}
+	//int i;
+	//for (i=Proc_Handle_Num; i <( sizeof(scheduler)/sizeof(scheduler[0]) ); ++i) {
+		//scheduler[i].totalDistance = scheduler[i].distance + scheduler[i-1].totalDistance ;
+		if(HAL_MOTOR_GetMovedDistance() >= scheduler[Proc_Handle_Num].totalDistance){
+		scheduler[Proc_Handle_Num].isDone = 1;
+		++Proc_Handle_Num;
+		return ;
+		}
+//	}
 }
 
+//void CarCtrl_UpdateScheduler(){
+//	int i;
+//	for (i=Proc_Handle_Num; i <( sizeof(scheduler)/sizeof(scheduler[0]) ); ++i) {
+//		scheduler[i].totalDistance = scheduler[i].distance + scheduler[i-1].totalDistance ;
+//		if( HAL_MOTOR_GetMovedDistance() >= scheduler[i].totalDistance){
+//		scheduler[i].isDone = (HAL_MOTOR_GetMovedDistance() >= scheduler[i].totalDistance );
+//		return;
+//		}
+//	}
+//}
+
 void CarCtrl_Dispatcher(){
-	int i ;
-	for (i = 1; i < ( sizeof(scheduler)/sizeof(scheduler[0]) ) ; ++i) {
-		if ( !scheduler[i].isDone && !scheduler[i].isExcuted && scheduler[i-1].isDone){
+//	for (i = 1; i < ( sizeof(scheduler)/sizeof(scheduler[0]) ) ; ++i) {
+		if (!scheduler[Proc_Handle_Num].isDone && !scheduler[Proc_Handle_Num].isExcuted && scheduler[Proc_Handle_Num-1].isDone){
 			// Start Car Control
-			HSERVO_vServoDeg(SERVO1, scheduler[i].steering);
+			HSERVO_vServoDeg(SERVO1, scheduler[Proc_Handle_Num].steering);
 			for(u32 i=0 ; i<1000000 ; ++i);//delay
-			HAL_MOTOR_StopDcAfterDistance(scheduler[i].distance);
-			HAL_MOTOR_MOVE(DC_MOTOR, scheduler[i].direction, scheduler[i].speed);
-			scheduler[i].isExcuted = 1 ;
-		}
+			HAL_MOTOR_StopDcAfterDistance(scheduler[Proc_Handle_Num].distance);
+			HAL_MOTOR_MOVE(DC_MOTOR, scheduler[Proc_Handle_Num].direction, scheduler[Proc_Handle_Num].speed);
+			scheduler[Proc_Handle_Num].isExcuted = 1 ;
+//			break;
+//		}
 	}
 }
 
@@ -113,6 +130,7 @@ void CarCtrl_Move(s8 Direction, f32 distance, s8 Steering , u8 speed){
 	scheduler[iterator].steering = Steering ;
 	scheduler[iterator].speed = speed ;
 	scheduler[iterator].distance = distance / Get_ReductionRatio() ;
+	scheduler[iterator].totalDistance = scheduler[iterator].distance + scheduler[iterator - 1].totalDistance;
 	iterator++ ;
 
 }
