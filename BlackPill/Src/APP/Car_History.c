@@ -6,7 +6,7 @@
  */
 
 #include"Inc/Car_History.h"
-
+#include"math.h"
 
 
 
@@ -46,6 +46,7 @@ void CarHistory_StartSaving(){
 
 void CarHistory_StartApplying(){
 
+	car_history_st.Buffer_PTR--;
 	Global_TMP_PTR = car_history_st.Buffer_PTR;
 	//car_history_st.Apply_Buffer_Dir=REVERSE;
 	MTIMER_vClearCNT(car_history_st.Used_Timer);
@@ -82,6 +83,7 @@ void Loc_SavingFunc(){
 
 	s16 Loc_PTR = car_history_st.Buffer_PTR;
 	u8 Speed = car_history_st.Global_PTR_CarControl->Speed ;
+
 	if(Speed == 0)
 		return;
 
@@ -100,12 +102,12 @@ void Loc_ApplyingFunc(){
 		static s16 Loc_ptr=0;
 		u8 Loc_Speed = car_history_st.Apply_Buffer_PTR[Loc_ptr][2];
 		if (Loc_Speed == 0){
-			Loc_ptr++;
-			if(Loc_ptr==CARHIST_BUFFER_SIZE){
+			//Loc_ptr++;
+			//if(Loc_ptr==CARHIST_BUFFER_SIZE){
 				HAL_MOTOR_ForceStop(DC_MOTOR);
 				CarHistory_StartSaving();
 				Loc_ptr=0;
-			}
+			//}
 			return;
 		}
 
@@ -137,12 +139,13 @@ void Loc_ApplyingFunc(){
 		u8 Loc_Speed = car_history_st.Apply_Buffer_PTR[car_history_st.Buffer_PTR][2];
 
 		if (Loc_Speed == 0){
-			car_history_st.Buffer_PTR--;
-			if(car_history_st.Buffer_PTR==Global_TMP_PTR){
+			//car_history_st.Buffer_PTR--;
+			//if(car_history_st.Buffer_PTR==Global_TMP_PTR){
 				HAL_MOTOR_ForceStop(DC_MOTOR);
+				memset(car_history_st.Apply_Buffer_PTR, 0, sizeof(car_history_st.History_Buffer) );
 				CarHistory_StartSaving();
 				car_history_st.Buffer_PTR=Global_TMP_PTR;
-			}
+			//}
 			return;
 		}
 		u8 Loc_Direction = (car_history_st.Apply_Buffer_PTR[car_history_st.Buffer_PTR][0])*-1;
@@ -150,7 +153,7 @@ void Loc_ApplyingFunc(){
 
 
 		HSERVO_vServoDeg(SERVO1, Loc_Steering);
-		//for(u32 i=0 ; i<1000000 ; ++i);//delay
+		for(u32 i=0 ; i<1000000 ; ++i);//delay
 		HAL_MOTOR_MOVE(DC_MOTOR, Loc_Direction,Loc_Speed);
 		// TODO
 		car_history_st.Buffer_PTR--;
