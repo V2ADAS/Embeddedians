@@ -18,48 +18,46 @@
 #include"../../MCAL/MTIMER/MTIMER_Int.h"
 #include"../../MCAL/MSTK/MSYSTICK_Int.h"
 #include"../../MCAL/MI2C/MI2C_int.h"
-
 #include"HMPU6050.h"
 
-#define clk 8000000
 #define DEG_TO_RAD 0.017453292519943295 // This is approximately pi/180
 
-u8 Data1;
-s16 buf[7];
-u8 data[6];
+
+#if MPU_ALL_READINGS
+	s16 buf[7];
+#else
+	s16 buf[1];
+#endif
+
+#if MPU_ALL_READINGS
 s16 Accel_X_RAW = 0;
 s16 Accel_Y_RAW = 0;
 s16 Accel_Z_RAW = 0;
 
 s16 TEMP_RAW=0;
-
 s16 Gyro_X_RAW = 0;
 s16 Gyro_Y_RAW = 0;
+#endif
 s16 Gyro_Z_RAW = 0;
 
+#if MPU_ALL_READINGS
 s16 OFFSET_ACCEL_X=0;
 s16 OFFSET_ACCEL_Y=0;
 s16 OFFSET_ACCEL_Z=0;
 
 s16 OFFSET_GYRO_X=0;
 s16 OFFSET_GYRO_Y=0;
+#endif
 s16 OFFSET_GYRO_Z=0;
 
-u16 Counter=0;
+#if MPU_ALL_READINGS
+float Gx;
+float Gy;
+#endif
+float Gz;
 
-u8 fifoBuffer[64];
-
-float GxL, GyL, GzL, Gx, Gy, Gz;
-
-float velocityX = 0; // Initial velocity
-float positionX = 0; // Initial position
-
-float velocityY = 0; // Initial velocity
-float positionY = 0; // Initial position
-
-float elapsedTime=0.015, currentTime, previousTime;
-float accAngleX, accAngleY, gyroAngleX, gyroAngleY, gyroAngleZ,yyaw,roll,pitch;
-
+float MPU_Yaw;
+float elapsedTime;
 
 u8 MPU_TIMER = 0;
 
@@ -138,25 +136,30 @@ void HMPU_vCalibration(u16 itr) {
 	// Loop for the specified number of iterations
 	for (u16 i = 0; i < itr; i++) {
 		// Read sensor data and accumulate values for calibration
-		Counter = i;
 		HMPU_s16ReadRowData(buf); // Read raw sensor data
+		#if MPU_ALL_READINGS
 		OFFSET_ACCEL_X += buf[0]; // Accumulate X-axis accelerometer readings
 		OFFSET_ACCEL_Y += buf[1]; // Accumulate Y-axis accelerometer readings
 		OFFSET_ACCEL_Z += buf[2]; // Accumulate Z-axis accelerometer readings
 		OFFSET_GYRO_X += buf[4];  // Accumulate X-axis gyroscope readings
 		OFFSET_GYRO_Y += buf[5];  // Accumulate Y-axis gyroscope readings
 		OFFSET_GYRO_Z += buf[6];  // Accumulate Z-axis gyroscope readings
+		#else
+		OFFSET_GYRO_Z += buf[0];  // Accumulate Z-axis gyroscope readings
+		#endif
 
 		// Delay for stabilization before next iteration
 		MSYSTICK_vDelayms(15);
 	}
 
 	// Calculate average offset values by dividing accumulated values by the number of iterations
+	#if MPU_ALL_READINGS
 	OFFSET_ACCEL_X /= itr; // Calculate average X-axis accelerometer offset
 	OFFSET_ACCEL_Y /= itr; // Calculate average Y-axis accelerometer offset
 	OFFSET_ACCEL_Z /= itr; // Calculate average Z-axis accelerometer offset
 	OFFSET_GYRO_X /= itr;  // Calculate average X-axis gyroscope offset
 	OFFSET_GYRO_Y /= itr;  // Calculate average Y-axis gyroscope offset
+	#endif
 	OFFSET_GYRO_Z /= itr;  // Calculate average Z-axis gyroscope offset
 }
 /*******************************************************************************************************/
@@ -177,6 +180,7 @@ void HMPU_vCalibration(u16 itr) {
  *                    The array must have a length of at least 7 elements to store all sensor readings.
  */
 void HMPU_s16ReadRowData(s16 *ptr_RowData) {
+	#if MPU_ALL_READINGS
 	// Array to hold the register address to read data from
 	u8 data[] = {REG_DATA};
 
@@ -210,6 +214,28 @@ void HMPU_s16ReadRowData(s16 *ptr_RowData) {
 	ptr_RowData[4] = (ptr_RowData[4] / GYRO_SENSITIVITY);
 	ptr_RowData[5] = (ptr_RowData[5] / GYRO_SENSITIVITY);
 	ptr_RowData[6] = (ptr_RowData[6] / GYRO_SENSITIVITY);
+
+	#else
+	// Array to hold the register address to read data from
+	u8 data[] = {REG_GYRO_Z_DATA};
+
+	// Array to hold the received raw sensor data
+	u8 dat[2] = {0};
+
+	// Send the register address to initiate the data read
+	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
+
+	// Read 6 bytes of data from the MPU
+	MI2C_u8MasterRx(I2C1, MPU_Add, dat, 2);
+
+	// Process the received data and store it in the ptr_RowData array
+	ptr_RowData[0] = (s16)((dat[0] << 8) | dat[1]); // Gyroscope Z-axis
+
+	// Convert gyroscope data to degrees per second (assuming sensitivity of 65.5 LSB/°/s)
+	ptr_RowData[0] = (ptr_RowData[0] / GYRO_SENSITIVITY);
+
+	#endif
+
 //	data[0] = REG_INT_STATUS;
 //	// Send the register address to initiate reading int status reg
 //	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
@@ -253,11 +279,27 @@ void HMPU_UpdateYawAngle() {
 	// Extract raw gyroscope data
 	//Gyro_X_RAW = (buf[4] - OFFSET_GYRO_X);
 	//Gyro_Y_RAW = (buf[5] - OFFSET_GYRO_Y);
-	Gyro_Z_RAW = (buf[6] - OFFSET_GYRO_Z);
+	//Gz = (buf[6] - OFFSET_GYRO_Z);
 	//Gx = Gyro_X_RAW;
 	//Gy = Gyro_Y_RAW;
-	Gz = Gyro_Z_RAW;
 
+	// Integrate gyroscope data to obtain angle changes
+	//gyroAngleX = gyroAngleX + Gx * elapsedTime; // deg/s * s = deg
+	//gyroAngleY = gyroAngleY + Gy * elapsedTime;
+
+	//velocityY=0;
+	// Calculate velocity using acceleration data from accelerometer
+	//velocityX = Accel_X_RAW * elapsedTime;
+
+	// Integrate velocity to get position
+	//positionX += velocityX * elapsedTime;
+
+	// Extract Gyro Z Raw Data
+	#if MPU_ALL_READINGS
+		Gz = (buf[6] - OFFSET_GYRO_Z);
+	#else
+		Gz = (buf[0] - OFFSET_GYRO_Z);
+	#endif
 	// Calculate the time elapsed using a timer
 	elapsedTime = MTIMER_f32GetElapsedTime(MPU_TIMER, sec); // timer off
 	MTIMER_vCntTimer(MPU_TIMER, StopTimer);
@@ -265,7 +307,7 @@ void HMPU_UpdateYawAngle() {
 	// Integrate gyroscope data to obtain angle changes
 	//gyroAngleX = gyroAngleX + Gx * elapsedTime; // deg/s * s = deg
 	//gyroAngleY = gyroAngleY + Gy * elapsedTime;
-	yyaw = (yyaw +  Gz * elapsedTime) + (alpha * accel_angle); //1.23
+	MPU_Yaw = (MPU_Yaw +  Gz * elapsedTime) + (alpha * accel_angle); //1.23
 	//velocityY=0;
 	// Calculate velocity using acceleration data from accelerometer
 	//velocityX = Accel_X_RAW * elapsedTime;
@@ -290,8 +332,10 @@ void HMPU_UpdateYawAngle() {
 /*******************************************************************************************************/
 
 f32 HMPU_f32GetYawAngle(){
-	return yyaw;
+	return MPU_Yaw;
 }
+/*******************************************************************************************************/
+
 
 
 /*****************************************TEST Functions************************************************/
@@ -327,46 +371,47 @@ void HMPU_vDMPtest(){
 
 }
 
-void HMPU_tt(u8 * ptr_RowData){
-	u8 data[] = {0x74};
 
-	// Send the register address to initiate the data read
-	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
-
-	// Read 14 bytes of data from the MPU
-	MI2C_u8MasterRx(I2C1, MPU_Add, fifoBuffer, 64);
-
-	Accel_X_RAW = fifoBuffer[28]<<8 | fifoBuffer[29];
-	Accel_Y_RAW = fifoBuffer[32]<<8 | fifoBuffer[33];
-	Accel_Z_RAW = fifoBuffer[36]<<8 | fifoBuffer[37];
-	Gyro_X_RAW = fifoBuffer[16]<<8 | fifoBuffer[17];
-	Gyro_Y_RAW = fifoBuffer[20]<<8 | fifoBuffer[21];
-	Gyro_Z_RAW = fifoBuffer[24]<<8 | fifoBuffer[25];
-
-	// Convert accelerometer data to g-force (assuming sensitivity of 8192 LSB/g)
-	Accel_X_RAW = (Accel_X_RAW / ACCEL_SENSITIVITY)*9.81;
-	Accel_Y_RAW = (Accel_Y_RAW / ACCEL_SENSITIVITY)*9.81;
-	Accel_Z_RAW = (Accel_Z_RAW / ACCEL_SENSITIVITY)*9.81;
-
-}
-u16 Count;
-void HMPU_r(){
-	u8 data[] = {0x3A};
-	u8 dat[]={0};
-	HMPU_tt(buf);
-	// Send the register address to initiate the data read
-	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
-	// Read 14 bytes of data from the MPU
-	MI2C_u8MasterRx(I2C1, MPU_Add, dat, 1);
-	data[0] = 0x72;
-	u8 dd[2] = {0};
-	// Send the register address to initiate the data read
-	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
-	// Read 14 bytes of data from the MPU
-	MI2C_u8MasterRx(I2C1, MPU_Add, dd, 2);
-	Count = dd[0]<<8 | dd[1];
-
-}
+//void HMPU_tt(u8 * ptr_RowData){
+//	u8 data[] = {0x74};
+//
+//	// Send the register address to initiate the data read
+//	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
+//
+//	// Read 14 bytes of data from the MPU
+//	MI2C_u8MasterRx(I2C1, MPU_Add, fifoBuffer, 64);
+//
+//	Accel_X_RAW = fifoBuffer[28]<<8 | fifoBuffer[29];
+//	Accel_Y_RAW = fifoBuffer[32]<<8 | fifoBuffer[33];
+//	Accel_Z_RAW = fifoBuffer[36]<<8 | fifoBuffer[37];
+//	Gyro_X_RAW = fifoBuffer[16]<<8 | fifoBuffer[17];
+//	Gyro_Y_RAW = fifoBuffer[20]<<8 | fifoBuffer[21];
+//	Gyro_Z_RAW = fifoBuffer[24]<<8 | fifoBuffer[25];
+//
+//	// Convert accelerometer data to g-force (assuming sensitivity of 8192 LSB/g)
+//	Accel_X_RAW = (Accel_X_RAW / ACCEL_SENSITIVITY)*9.81;
+//	Accel_Y_RAW = (Accel_Y_RAW / ACCEL_SENSITIVITY)*9.81;
+//	Accel_Z_RAW = (Accel_Z_RAW / ACCEL_SENSITIVITY)*9.81;
+//
+//}
+//u16 Count;
+//void HMPU_r(){
+//	u8 data[] = {0x3A};
+//	u8 dat[]={0};
+//	HMPU_tt(buf);
+//	// Send the register address to initiate the data read
+//	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
+//	// Read 14 bytes of data from the MPU
+//	MI2C_u8MasterRx(I2C1, MPU_Add, dat, 1);
+//	data[0] = 0x72;
+//	u8 dd[2] = {0};
+//	// Send the register address to initiate the data read
+//	MI2C_vMasterTx(I2C1, MPU_Add, data, 1, WithoutStop);
+//	// Read 14 bytes of data from the MPU
+//	MI2C_u8MasterRx(I2C1, MPU_Add, dd, 2);
+//	Count = dd[0]<<8 | dd[1];
+//
+//}
 
 
 

@@ -22,6 +22,10 @@
 #include"../../LIB/STD_TYPES.h" //Standard Types Lib
 #include"../../MCAL/MTIMER/MTIMER_Int.h" //TIMER Control
 
+//Define to enable all the readings from the mpu
+// or to just read wanted data "Gyro z , Yaw"
+#define MPU_ALL_READINGS	0
+
 #define MPU_Add				0x68
 
 #define FS_GYRO_250			0x00
@@ -41,6 +45,7 @@
 #define REG_INT_ENABLE		56
 #define REG_INT_STATUS		58
 #define REG_DATA			59
+#define REG_GYRO_Z_DATA		71
 
 #define REG_CONFIG_DLPF		0x1A
 #define DLPF_CFG_0			0x00
