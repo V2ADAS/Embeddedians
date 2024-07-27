@@ -60,7 +60,7 @@ void HLCD_vInit(void);
  *       specifies the action or configuration to be performed on the LCD, such as clearing the
  *       display, setting the cursor position, or other control commands.
  */
-static void LOC_HLCD_vSendCMD(u8 Copy_u8CMD);
+void LOC_HLCD_vSendCMD(u8 Copy_u8CMD);
 /*******************************************************************************************************/
 
 

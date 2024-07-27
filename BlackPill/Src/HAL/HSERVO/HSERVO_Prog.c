@@ -40,10 +40,11 @@ void HSERVO_vServoInit(Enum_SERVO_NUM Copy_u8ServoNum,Enum_TIMER_NUM Copy_u8Time
  * @param Copy_s8Deg: Desired angle in degrees (from -45 to 45).
  */
 void HSERVO_vServoDeg(Enum_SERVO_NUM Copy_u8ServoNum, s8 Copy_s8Deg) {
-	Copy_s8Deg = -Copy_s8Deg ;
 	// Ensure the angle is within the valid angle range (-45 to 45)
 	Copy_s8Deg = (Copy_s8Deg < -40) ? -40 : (Copy_s8Deg > 40) ? 40 : Copy_s8Deg;
 	setSteering(Copy_s8Deg);
+	Copy_s8Deg = -Copy_s8Deg ;
+
 	// Add Zero Position to the angle
 	Copy_s8Deg += ZERO_POS;
 

@@ -25,7 +25,6 @@
 #include "HLCD_Int.h"                    // Include the LCD interface header file.
 #include "../../MCAL/MI2C/MI2C_int.h"    // Include the I2C (Inter-Integrated Circuit) interface header file.
 #include "../../MCAL/MSTK/MSYSTICK_Int.h"// Include the SysTick Timer interface header file.
-#include "HLCD_Int.h"					 // Include the LCD Interface file.
 /*******************************************************************************************************/
 
 
@@ -45,7 +44,7 @@
  *       The LCD module is expected to be configured with a specific slave address (SLAVE_ADDRESS_LCD).
  *       The WithStop parameter indicates whether to generate a stop condition after the data transmission.
  */
-static void LOC_HLCD_vSendCMD(u8 Copy_u8CMD)
+void LOC_HLCD_vSendCMD(u8 Copy_u8CMD)
 {
 	u8 data_u, data_l;
 	u8 data_t[4];
@@ -82,6 +81,7 @@ static void LOC_HLCD_vSendCMD(u8 Copy_u8CMD)
  */
 void HLCD_vInit(void)
 {
+	MI2C_vMasterInit(I2C1);
 	// 4-bit initialization
 	MSYSTICK_vDelayms(50);    // Wait for >40ms
 	LOC_HLCD_vSendCMD(0x30);

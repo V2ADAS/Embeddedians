@@ -12,7 +12,7 @@
 #define SERVO_FullPeriod	20000
 
 //Macros for zero angle position as needed
-#define ZERO_POS		87
+#define ZERO_POS		82
 
 //Define Number of required working Servos "MAX is 20"
 #define TOT_SERVO_NUM	1
