@@ -16,7 +16,9 @@ Car_Histort_ST * Global_CarHistory_Data = NULL_PTR;
 
 void MVBack_Start(){
 
+
 	Global_CarHistory_Data=CarHistory_GetStructADD();
+	MTIMER_vCntTimer(Global_CarHistory_Data->Used_Timer, StopTimer);
 	/* Set Applying Parameters*/
 	Global_CarHistory_Data->Apply_Buffer_Dir=REVERSE;
 	Global_CarHistory_Data->Apply_Buffer_PTR=Global_CarHistory_Data->History_Buffer;

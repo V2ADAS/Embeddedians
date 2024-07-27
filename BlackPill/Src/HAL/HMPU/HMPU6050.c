@@ -75,6 +75,8 @@ u8 MPU_TIMER = 0;
  * setting the Digital Low Pass Filter (DLPF) mode, and managing power settings.
  */
 void HMPU_vInit(Enum_TIMER_NUM Copy_u8MPU_Timer){
+
+	MI2C_vMasterInit(I2C1);
 	// Data array to hold register addresses and configuration values
 	u8 data[2];
 
