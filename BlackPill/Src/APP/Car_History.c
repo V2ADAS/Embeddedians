@@ -153,7 +153,7 @@ void Loc_ApplyingFunc(){
 
 
 		HSERVO_vServoDeg(SERVO1, Loc_Steering);
-		for(u32 i=0 ; i<1000000 ; ++i);//delay
+		//for(u32 i=0 ; i<1000000 ; ++i);//delay
 		HAL_MOTOR_MOVE(DC_MOTOR, Loc_Direction,Loc_Speed);
 		// TODO
 		car_history_st.Buffer_PTR--;
