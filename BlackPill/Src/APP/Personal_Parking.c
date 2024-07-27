@@ -40,6 +40,8 @@ void PersonalParking_EndSaving(){
 }
 void PersonalParking_Apply(){
 
+	memset(&personalparking_data_st, 0, sizeof(personalparking_data_st));
+	personalparking_data_st.Global_CarHistory_ST_PTR = CarHistory_GetStructADD();
 	/* read from eprom */
 	HEPROM_vReadData(PARKING_EPROM_START_PAGE, CMP_EPROM_PAGE_OFFSET,personalparking_data_st.Parking_Buffer
 			,sizeof(personalparking_data_st.Parking_Buffer));
