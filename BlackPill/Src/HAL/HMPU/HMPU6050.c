@@ -218,7 +218,6 @@ void HMPU_s16ReadRowData(s16 *ptr_RowData) {
 	ptr_RowData[6] = (ptr_RowData[6] / GYRO_SENSITIVITY);
 
 	#else
-//	MI2C_vMasterInit(I2C1);
 	// Array to hold the register address to read data from
 	u8 data[] = {REG_GYRO_Z_DATA};
 
