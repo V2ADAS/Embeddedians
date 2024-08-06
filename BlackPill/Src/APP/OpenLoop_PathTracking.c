@@ -10,6 +10,8 @@
 Position_ST CurrentPoint = {0};
 Position_ST NextPoint = {0} ;
 
+
+
 void OP_PT_StartTracking(f32 (*Path_Func)(f32 x)){
 
 	/* get next point --> x2,y2 */
@@ -70,8 +72,8 @@ f32 OP_PT_GetArcAngle_Bet2Points(f32 (*Path_Func)(f32 x), f32 x1 , f32 x2){// ta
 f32 OP_PT_CalculateSteering(f32 SegmentLength , f32 ArcAngle){  // takes distance and angle return steering
 
 	f32 Radius = (SegmentLength/2) / sin(ArcAngle/2) ;
-	// TODO : Calculate steering from Radius
-	f32 Steering = 0 ;
+
+	f32 Steering = OP_PT_GetSteering_WrtRadius(Radius) ;
 	return Steering ;
 }
 
@@ -82,6 +84,11 @@ f32 OP_PT_CalculateArcLen(f32 SegmentLength , f32 ArcAngle){   // takes angle an
 	return (Radius * ArcAngle) ;
 }
 
+f32 OP_PT_GetSteering_WrtRadius(f32 ArcLength) {
+    f32 numerator = 41142270 - 2.040855;
+    f32 denominator = 1 + pow(ArcLength / 0.000815134, 1.234841);
+    return 2.040855 + numerator / denominator;
+}
 
 
 

@@ -24,10 +24,10 @@ void RX_Callback()
 	s8 Steering_tx = 0;
 	if (data_rx == 'f' ){
 		HAL_MOTOR_StopDcAfterDistance( 10000 );
-		HAL_MOTOR_MOVE(DC_MOTOR, FORWARD, 50);
+		HAL_MOTOR_MOVE(DC_MOTOR, FORWARD, 40);
 	}
 	else if (data_rx == 'b' ){
-		HAL_MOTOR_MOVE(DC_MOTOR, BACKWARD, 50);
+		HAL_MOTOR_MOVE(DC_MOTOR, BACKWARD, 40);
 	}
 	else if (data_rx == 's' ){
 		HAL_MOTOR_ForceStop(DC_MOTOR);
