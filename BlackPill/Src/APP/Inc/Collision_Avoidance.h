@@ -47,23 +47,45 @@
 
 #include "../../LIB/STD_TYPES.h"
 #include "../../LIB/BIT_MATH.h"
+#include "../../MCAL/MTIMER/MTIMER_Int.h"
+#include "../../MCAL/MGPIO/MGPIO_int.h"
+#include "../../HAL/HULTRA_SONIC/HULTRA_SONIC_Int.h"
 #include "../../HAL/HMOTOR/HMOTOR.h"
+#include "../../HAL/HLCD/HLCD_Int.h"
 #include "Car_Control.h"
+#include "Auto_Parking.h"
 
 typedef u8 collisionAvoidanceFlag;
 /*************************************************************************************************************************/
 /*                                             Enum for Ultrasonic ID                                                    */
 /*************************************************************************************************************************/
-typedef enum{
-	F_US=0,          /* F  for Forward Ultrasonic        */
-	FR_US,           /* FR for Forward_Right Ultrasonic  */
-	FL_US,           /* FL for Forward_Left Ultrasonic   */
-	R_US,            /* R  for Right Ultrasonic          */
-	L_US,            /* L  for Left Ultrasonic           */
-	B_US,            /* B  for Backward Ultrasonic       */
-	BR_US,           /* BR for Backward Right Ultrasonic */
-	BL_US,           /* BL for Backward Left Ultrasonic  */
-}ULTRASONIC_ID_t;
+//typedef enum{
+//	F_US=0,          /* F  for Forward Ultrasonic        */
+//	FR_US,           /* FR for Forward_Right Ultrasonic  */
+//	FL_US,           /* FL for Forward_Left Ultrasonic   */
+//	R_US,            /* R  for Right Ultrasonic          */
+//	L_US,            /* L  for Left Ultrasonic           */
+//	B_US,            /* B  for Backward Ultrasonic       */
+//	BR_US,           /* BR for Backward Right Ultrasonic */
+//	BL_US,           /* BL for Backward Left Ultrasonic  */
+//}ULTRASONIC_ID_t;
+
+//Number of used ultrasonic's
+#define Used_Ultra_Num 8
+
+//if defined 1 threshold of collision avoidance will by dynamic with speed
+#define CA_DYNAMIC		0
+
+#if CA_DYNAMIC
+#define SPD_THRESHOLD_RATIO		5
+#else
+//min distance in cm between vehicle and any object to stop
+#define COLLISION_THRESHOLD		15
+#endif
+
+void CollisionAvoidance_vInit(Enum_TIMER_NUM copy_u8TimerNum, u16 Copy_u16Periodic_msec);
+
+void LOC_Periodic_Update(void);
 
 /*************************************************************************************************************************/
 /*                                                        APIs                                                           */
@@ -85,7 +107,7 @@ typedef enum{
 /*                                       STD_LOW  if the selected scenario if finished                                   */
 /*                                       STD_HIGH if the selected scenario if not finished                               */
 /*************************************************************************************************************************/
-collisionAvoidanceFlag InitCollisionAvoidance(ULTRASONIC_ID_t ultrasonic_ID);
+//collisionAvoidanceFlag Enable_Collision_Avoidance(ULTRASONIC_ID_t ultrasonic_ID);
 
 /*************************************************************************************************************************/
 /*                                                  02-FR_CA_Scenario                                                    */
