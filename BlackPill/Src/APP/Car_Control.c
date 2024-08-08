@@ -103,12 +103,13 @@ void CarCtrl_UpdateScheduler(){
 
 void CarCtrl_Dispatcher(){
 //	for (i = 1; i < ( sizeof(scheduler)/sizeof(scheduler[0]) ) ; ++i) {
-		if (!scheduler[Proc_Handle_Num].isDone && !scheduler[Proc_Handle_Num].isExcuted && scheduler[Proc_Handle_Num-1].isDone){
+		if (!scheduler[Proc_Handle_Num].isDone && !scheduler[Proc_Handle_Num].isExcuted
+				&& scheduler[Proc_Handle_Num-1].isDone /*&& iterator != 1*/){
 			// Start Car Control
 			HSERVO_vServoDeg(SERVO1, scheduler[Proc_Handle_Num].steering);
 			for(u32 i=0 ; i<1000000 ; ++i);//delay
-			HAL_MOTOR_StopDcAfterDistance(scheduler[Proc_Handle_Num].distance);
 			HAL_MOTOR_MOVE(DC_MOTOR, scheduler[Proc_Handle_Num].direction, scheduler[Proc_Handle_Num].speed);
+			HAL_MOTOR_StopDcAfterDistance(scheduler[Proc_Handle_Num].distance);
 			scheduler[Proc_Handle_Num].isExcuted = 1 ;
 //			break;
 //		}
