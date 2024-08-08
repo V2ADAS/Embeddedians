@@ -29,14 +29,35 @@
 /********************************************************************************************************/
 /*                                     Enum for ULTRASONIC Numbering        		                    */
 /********************************************************************************************************/
+
 typedef	enum{
-	ULTRA_SONIC1,ULTRA_SONIC2,ULTRA_SONIC3,ULTRA_SONIC4,ULTRA_SONIC5,
-	ULTRA_SONIC6,ULTRA_SONIC7,ULTRA_SONIC8,ULTRA_SONIC9,ULTRA_SONIC10,
-	ULTRA_SONIC11,ULTRA_SONIC12,ULTRA_SONIC13,ULTRA_SONIC14,ULTRA_SONIC15,
-	ULTRA_SONIC16,ULTRA_SONIC17,ULTRA_SONIC18,ULTRA_SONIC19,ULTRA_SONIC20,
+	US_RF,  //Right Forward
+	US_CF,  //Center Forward
+	US_LF,  //LEft Forward
+
+	US_RC,  //Right Center
+	US_LC,  //Left Center
+
+	US_RB, //Right Backward
+	US_CB, //Center Backward
+	US_LB, //Left Backward
+
 }Enum_ULTRA_SONIC_NUM;
 
+typedef struct{
+	f32 RF;  //Right Forward
+	f32 CF;  //Center Forward
+	f32 LF;  //LEft Forward
 
+	f32 RC;  //Right Center
+	f32 LC;  //Left Center
+
+	f32 RB; //Right Backward
+	f32 CB; //Center Backward
+	f32 LB; //Left Backward
+} UltraSonics_STRUCT;
+
+extern UltraSonics_STRUCT UltraSonics_ST;
 
 
 /******************************************************************************************************/
@@ -104,7 +125,7 @@ void HULTRA_vSendTrigger(u8 Copy_u8Port, u8 Copy_u8Pin);
  *          The timer values are expected to represent the time taken for the ultrasonic signal to travel
  *          to an object and back, divided by 2 to get the one-way distance.
  */
-void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f64* Copy_f64Distance);
+void HULTRA_vGetDistance(Enum_ULTRA_SONIC_NUM Copy_u8Ultra_NUM,f32* Copy_f32Distance);
 
 /******************************************************************************************************/
 
