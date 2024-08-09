@@ -12,7 +12,7 @@
 
 f64 distance_old = 0 ;
 f32 ArcAngle = 0 ;
-f32 R_40 = 63 , R_30 = 80 , R_20 = 116.3 , R_10 ;
+f32 R_40 = 63 , R_30 = 80 , R_20 = 116.3 , R_10=221.5 ;
 
 //f32 distance_new , delta_distance ;
 
