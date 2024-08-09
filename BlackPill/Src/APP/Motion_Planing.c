@@ -260,6 +260,56 @@ f32 Test_Func(f32 x){
 	return y;
 }
 
+double PEB_threeKeyPath(double x) {
+    double a = 10.0; // Length of the forward straight line
+    double b = 20.0; // Total length of the path
+    f32 R = 63 ;
+    if (x >= 0 && x < a) {
+
+        return 0.0; // Forward straight line
+
+    } else if (x >= a && x < a + (PI * R / 2)) {
+
+        return sqrt(R * R - pow(x - a, 2)); // Quarter circle
+
+    } else if (x >= a + (PI * R / 2) && x <= b) {
+
+        return 0.0; // Backward straight line
+
+    } else {
+        return -1; // Invalid x
+    }
+}
+
+double PEB_fiveKeyPath(double x) {
+    double a = 10.0; // Length of the first forward straight line
+    double c = 20.0; // Length of the second forward straight line
+    double d = 30.0; // Total length of the path
+    f32 R = 63 ;
+    if (x >= 0 && x < a) {
+
+        return 0.0; // First forward straight line
+
+    } else if (x >= a && x < a + (PI * R / 4)) {
+
+        return sqrt(R * R - pow(x - a, 2)); // First quarter circle
+
+    } else if (x >= a + (PI * R / 4) && x < c) {
+
+        return 0.0; // Second forward straight line
+
+    } else if (x >= c && x < c + (PI * R / 2)) {
+
+        return sqrt(R * R - pow(x - c, 2)); // Second quarter circle
+
+    } else if (x >= c + (PI * R / 2) && x <= d) {
+
+        return 0.0; // Backward straight line
+
+    } else {
+        return -1; // Invalid x
+    }
+}
 
 
 
