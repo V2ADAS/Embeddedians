@@ -138,7 +138,7 @@ void Loc_ApplyingFunc(){
 
 		u8 Loc_Speed = car_history_st.Apply_Buffer_PTR[car_history_st.Buffer_PTR][2];
 
-		if (Loc_Speed == 0){
+		if (Loc_Speed == 0 ){
 			//car_history_st.Buffer_PTR--;
 			//if(car_history_st.Buffer_PTR==Global_TMP_PTR){
 				HAL_MOTOR_ForceStop(DC_MOTOR);
