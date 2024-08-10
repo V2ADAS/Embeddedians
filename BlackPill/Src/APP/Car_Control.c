@@ -74,7 +74,7 @@ void setDirection (s8 copyDirection){
 	direction = copyDirection ;
 }
 
-u8 getDirction (){
+s8 getDirction (){
 	return direction ;
 }
 
