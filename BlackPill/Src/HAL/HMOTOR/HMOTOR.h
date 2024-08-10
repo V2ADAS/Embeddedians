@@ -53,6 +53,7 @@ typedef struct {
 	u8 CNTR_CH;
 }ENCODER_t;
 #define FORWARD   1
+#define FIXED	  0
 #define BACKWARD  -1
 
 
