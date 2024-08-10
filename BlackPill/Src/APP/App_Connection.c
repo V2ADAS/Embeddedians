@@ -45,7 +45,7 @@ void RX_Callback(void) {
 
 	switch(data_rx) {
 	case 'p':
-		Scanning_vStart(PaB, Scan_Left,TIMER1,CH1);
+		Scanning_vStart(PaB, Scan_Both,TIMER1,CH1);
 		HAL_MOTOR_MOVE(DC_MOTOR, FORWARD, 80);
 		break;
 	case 'f':
