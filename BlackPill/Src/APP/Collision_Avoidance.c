@@ -53,7 +53,7 @@ void CollisionAvoidance_vInit(Enum_TIMER_NUM copy_u8TimerNum, u16 Copy_u16Period
 
 void LOC_Periodic_Update(){
 
-	//	HULTRA_vSendTrigger(PORTB, PIN12);
+	HULTRA_vSendTrigger(PORTB, PIN12);
 
 	HULTRA_vGetDistance(US_RF, &UltraSonics_ST.RF);
 	HULTRA_vGetDistance(US_CF, &UltraSonics_ST.CF);
@@ -72,18 +72,19 @@ void LOC_Periodic_Update(){
 //flag indicator to know whether it entered while or not
 u8 flg =0;
 void LOC_Check(void){
-	s8 dir = internal_data.Car_Control.Direction;
-	u8 spd = internal_data.Car_Control.Speed;
+	s8 dir = getDirction();
+	u8 Init_spd = getSpeed();
 #if	CA_DYNAMIC
 	u8 COLLISION_THRESHOLD = spd / SPD_THRESHOLD_RATIO;
 #endif
 	switch(dir){
 	case FORWARD:
-		while(UltraSonics_ST.CF <= COLLISION_THRESHOLD || UltraSonics_ST.RF <= COLLISION_THRESHOLD
-				|| UltraSonics_ST.LF <= COLLISION_THRESHOLD){
+		while(  (UltraSonics_ST.CF <= COLLISION_THRESHOLD || UltraSonics_ST.RF <= COLLISION_THRESHOLD
+				|| UltraSonics_ST.LF <= COLLISION_THRESHOLD) && ( getDirction() == FORWARD )  ){
 			MGPIO_vSetPinAtomic(DC_Motor.PORT_N2, DC_Motor.PIN_N2, LOW);
+			setSpeed(0);
 
-			//			HULTRA_vSendTrigger(PORTB, PIN12);
+			HULTRA_vSendTrigger(PORTB, PIN12);
 
 			HULTRA_vGetDistance(US_CF, &UltraSonics_ST.CF);
 			HULTRA_vGetDistance(US_RF, &UltraSonics_ST.RF);
@@ -94,15 +95,17 @@ void LOC_Check(void){
 
 			flg = 1;
 		}
-		if(flg && spd){
+		if(flg && Init_spd && ( getDirction() == FORWARD ) ){
 			MGPIO_vSetPinAtomic(DC_Motor.PORT_N2, DC_Motor.PIN_N2, HIGH);
+			setSpeed(Init_spd);
 			flg=0;
 		}
 		break;
 	case BACKWARD:
-		while(UltraSonics_ST.CB <= COLLISION_THRESHOLD || UltraSonics_ST.RB <= COLLISION_THRESHOLD
-				|| UltraSonics_ST.LB <= COLLISION_THRESHOLD){
+		while(  ( UltraSonics_ST.CB <= COLLISION_THRESHOLD || UltraSonics_ST.RB <= COLLISION_THRESHOLD
+				|| UltraSonics_ST.LB <= COLLISION_THRESHOLD )  && ( getDirction() == BACKWARD )  ){
 			MGPIO_vSetPinAtomic(DC_Motor.PORT_N1, DC_Motor.PIN_N1, LOW);
+			setSpeed(0);
 
 			//			HULTRA_vSendTrigger(PORTB, PIN12);
 
@@ -116,8 +119,9 @@ void LOC_Check(void){
 
 			flg=1;
 		}
-		if(flg && spd){
+		if(flg && Init_spd && ( getDirction() == BACKWARD )){
 			MGPIO_vSetPinAtomic(DC_Motor.PORT_N1, DC_Motor.PIN_N1, HIGH);
+			setSpeed(Init_spd);
 			flg=0;
 		}
 		break;
