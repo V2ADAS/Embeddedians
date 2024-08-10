@@ -26,7 +26,7 @@ void setSpeed (u8 copySpeed);
 u8 getSpeed ();
 
 void setDirection (s8 copyDirection);
-u8 getDirction ();
+s8 getDirction ();
 
 
 void CarCtrl_UpdateScheduler();
