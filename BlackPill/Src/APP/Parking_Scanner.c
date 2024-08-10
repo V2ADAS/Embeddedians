@@ -63,7 +63,6 @@ void Scanning_vStart(Enum_Parking_Scenarios Copy_EnumParkingScenario,Enum_Scanni
 	}
 	Gl_TimerNum = Copy_enumTimerNum;
 	MTIMER_vEXTCNTClock(Copy_enumTimerNum, Copy_enumTimerCh, PULSES_PER_1_CM);
-	MTIMER_CallBack(Copy_enumTimerNum, PaB_Scan);
 
 }
 
@@ -121,8 +120,10 @@ void PaB_Scan ()
 			// Center of scanned Area
 			point_CSA.y=Local_parkL[i]/2;
 			point_CSA.x=Local_parkW[i]/2;
-			//			HAL_MOTOR_ForceStop(DC_MOTOR);
-			//			MTIMER_vCntTimer(Gl_TimerNum, StopTimer);
+			Dis_Count[i] =0 ;
+			itr=0;
+			HAL_MOTOR_ForceStop(DC_MOTOR);
+			MTIMER_vCntTimer(Gl_TimerNum, StopTimer);
 			//			AutoParking();
 		}
 	}
@@ -180,8 +181,10 @@ void PeB_Scan(){
 			// Center of scanned Area
 			point_CSA.y=Local_parkL[i]/2;
 			point_CSA.x=Local_parkW[i]/2;
-			//			HAL_MOTOR_ForceStop(DC_MOTOR);
-			//			MTIMER_vCntTimer(Gl_TimerNum, StopTimer);
+			Dis_Count[i] =0 ;
+			itr=0;
+			HAL_MOTOR_ForceStop(DC_MOTOR);
+			MTIMER_vCntTimer(Gl_TimerNum, StopTimer);
 			//			AutoParking();
 		}
 	}
