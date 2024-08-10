@@ -61,8 +61,19 @@ void RX_Callback(void) {
 		HAL_MOTOR_ForceStop(DC_MOTOR);
 		break;
 	case 'd':
-		// Start move-back process
-		MVBack_Start();
+		static u8 loc_flag=0;
+		if(loc_flag==0){
+//			App_Tx.var5 =1;
+//			App_Tx_Data();
+			MVBack_Start();
+			loc_flag=1;
+		}
+		else if(loc_flag==1){
+//			App_Tx.var5 =0;
+//			App_Tx_Data();
+			MVBack_Stop();
+			loc_flag=0;
+		}
 		break;
 	case 'r':
 		// Handle personal parking states

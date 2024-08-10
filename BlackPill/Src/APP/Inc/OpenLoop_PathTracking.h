@@ -29,6 +29,8 @@ f32 OP_PT_CalculateSteering(f32 SegmentLength , f32 ArcAngle);   // takes distan
 
 f32 OP_PT_CalculateArcLen(f32 SegmentLength , f32 ArcAngle);    // takes angle and radius return arclen
 
+f32 OP_PT_GetSteering_WrtRadius(f32 ArcLength);
+
 
 
 #endif /* APP_INC_OPENLOOP_PATHTRACKING_H_ */
