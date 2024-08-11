@@ -13,6 +13,7 @@
 
 #define WHEEL_AREA   26
 #define PULSES_PER_REVOLUTION 1024
+#define PULSES_PER_1_CM		39		// ( 1 * PULSES_PER_REVOLUTION ) / WHEEL_AREA
 #define DC_MOTOR	1
 #define CALP_MOTOR	2
 
@@ -45,11 +46,14 @@ typedef struct {
 	u8 PWM_CH ;
 }MOTOR_t;
 
+extern MOTOR_t DC_Motor;
+
 typedef struct {
 	u8 CNTR_TIMER;
 	u8 CNTR_CH;
 }ENCODER_t;
 #define FORWARD   1
+#define FIXED	  0
 #define BACKWARD  -1
 
 

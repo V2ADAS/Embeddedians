@@ -11,6 +11,6 @@
 #define	Trigger_Pulse_Width		15
 
 //Number of ULtrasonic to be used "MAX 20"
-#define TOT_ULTRA_SONIC_NUM		10
+#define TOT_ULTRA_SONIC_NUM		8
 
 #endif /* HAL_HULTRA_SONIC_HULTRA_SONIC_CONFIG_H_ */
