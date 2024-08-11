@@ -32,8 +32,22 @@ void RX_Callback()
 	else if (data_rx == 's' ){
 		HAL_MOTOR_ForceStop(DC_MOTOR);
 	}
-	else if(data_rx == 'd')
-		MVBack_Start();
+	else if(data_rx == 'd'){
+		static u8 loc_flag=0;
+		if(loc_flag==0){
+//			App_Tx.var5 =1;
+//			App_Tx_Data();
+			MVBack_Start();
+			loc_flag=1;
+		}
+		else if(loc_flag==1){
+//			App_Tx.var5 =0;
+//			App_Tx_Data();
+			MVBack_Stop();
+			loc_flag=0;
+		}
+	}
+
 
 	else if (data_rx == 'r'){
 		static u8 loc_flag = 0 ;

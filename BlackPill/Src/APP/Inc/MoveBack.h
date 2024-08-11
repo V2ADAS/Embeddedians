@@ -13,5 +13,7 @@
 
 void MVBack_Start();
 
+void MVBack_Stop();
+
 
 #endif /* APP_INC_MOVEBACK_H_ */
