@@ -34,7 +34,7 @@
 /* 														TIMER9, TIMER10, TIMER11'					   */
 /*******************************************************************************************************/
 typedef enum{
-	TIMER1=1,
+	TIMER1=1, //VERY CRITICAL TO START With 1
 	TIMER2,
 	TIMER3,
 	TIMER4,
@@ -52,7 +52,7 @@ typedef enum{
 /* 									FOR TIMER10, TIMER11  ==> CH1					   				   */
 /*******************************************************************************************************/
 typedef enum{
-	CH1=1,
+	CH1=1, //VERY CRITICAL TO START With 1
 	CH2,
 	CH3,
 	CH4,
@@ -240,7 +240,7 @@ void MTIMER_vDelayms(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delayms);
  * @return f32	 	The elapsed time in either seconds or milliseconds.
  *
  * @note 			MAX value for timer1,3,4,9,10,11 is 65.31 sec,
- * 										And for timer2,5 is 49.71 DAY !!!.
+ * 										And for timer2,5 is 49.71 DAY !!!.  {Cal Assuming 16 MHz clk, 16000 prescaler}
  */
 f32 MTIMER_f32GetElapsedTime(Enum_TIMER_NUM Copy_u8TimerNum, Enum_TIMER_Unit Copy_u8TimerUnit);
 /*******************************************************************************************************/
@@ -284,6 +284,7 @@ u32 MTIMER_u32GetElapsedTicks(Enum_TIMER_NUM Copy_u8TimerNum);
  *          for TIMERS 2,5 MAXIMUM Allowable Delay is 203.61 DAY!!!!!.
  */
 void MTIMER_vPeriodicMS(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay);
+void MTIMER_vPeriodicMicro(Enum_TIMER_NUM Copy_u8TimerNum, u32 Copy_u32Delay);
 /*******************************************************************************************************/
 
 /*******************************************************************************************************/

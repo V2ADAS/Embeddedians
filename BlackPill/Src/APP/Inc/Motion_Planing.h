@@ -5,12 +5,6 @@
 #include "Scenario_Select.h"
 #include "Odometry.h"
 
-#define Car_Length  50
-#define Car_Width   35
-#define Safety_Margin 5
-#define Vth_Parallel (1.5*Car_Length)
-#define Array_Length  100
-extern u8 Scanned_Area [Array_Length];
 
  typedef struct{
 		f32 (*Func_Path)(f32 x) ;
@@ -69,6 +63,7 @@ void Set_Param_D(f32 new_value);
 */
 f32 line_path (f32 x);
 
+//void Plot_The_Path(Scenario_t Scenario , .../*path */ );
 f32 PaB_Path (f32 x);
 
 //Perpendicular backward Path
@@ -76,13 +71,8 @@ f32 PeB_Path (f32 x);
 
 //perpendicular forward Path
 f32 PeF_Path (f32 x);
+
 f32 GetSlopeOfFunc(f32 x);
-void MP_PaB_Scan();
-void Scan(u8 Scanned_Area[]);
-void Process(u8 Scanned_Area[]);
-
-void Plot_The_Path(Scenario_t Scenario , .../*path */ );
-
 
 Position_ST Start_Point();
 

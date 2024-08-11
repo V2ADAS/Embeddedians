@@ -58,7 +58,6 @@ void HAL_MOTOR_Init(u8 MOTOR , u8 PORT_N1 , u8 PIN_N1, u8 PORT_N2 , u8 PIN_N2 , 
 void HAL_ENCODER_Init( Enum_TIMER_NUM CNTR_TIMER , Enum_TIMER_CHs CNTR_CH ){
 	Encoder.CNTR_TIMER = CNTR_TIMER ;
 	Encoder.CNTR_CH = CNTR_CH ;
-	MNVIC_vEnableInterrupt(NVIC_TIM5);
 }
 
 void HAL_MOTOR_MOVE(u8 MOTOR , s8 DIRCTION ,u8 SPEED ){
@@ -89,6 +88,7 @@ void HAL_MOTOR_MOVE(u8 MOTOR , s8 DIRCTION ,u8 SPEED ){
 //	moved_distance = DISTANCE_cm_ ;
 //	MTIMER_CallBack(Encoder.CNTR_TIMER,LOC_MotorCallBack );
 
+	MTIMER_vEXTCNTClock(Encoder.CNTR_TIMER, Encoder.CNTR_CH , 0xffffffff );
 
 }
 
@@ -97,7 +97,7 @@ void HAL_MOTOR_ForceStop(u8 MOTOR){
 
 	MGPIO_vSetPinValue(Motor->PORT_N1, Motor->PIN_N1, LOW);
 	MGPIO_vSetPinValue(Motor->PORT_N2, Motor->PIN_N2, LOW);
-
+    setDirection(FIXED);
 	setSpeed(0);
 }
 
